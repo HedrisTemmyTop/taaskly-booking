@@ -24,10 +24,10 @@ export default function SelectDropdown({ countries }: PropTyes) {
   });
 
   return (
-    <div className="absolute border-1 border border-primary-400 bg-secondary-400 p-4 w-[80%] rounded mt-16 z-10">
+    <div className="absolute border-1 border border-primary-400 bg-secondary-400 p-4  w-full sm:w-[80%] rounded mt-16 z-10">
       <input
         type="search"
-        className="border-b-1 border-b text-sm mb-4 border-grey-400 outline-0 w-[100%]"
+        className="border-b-1 bg-transparent border-b text-sm border-grey-400 outline-0 w-[100%]"
         placeholder="Search country"
         value={query}
         onChange={(e) => {
@@ -35,11 +35,11 @@ export default function SelectDropdown({ countries }: PropTyes) {
           setFilteredCountries(filterCountries(countries, e.target.value));
         }}
       />
-      <ul className="h-[300px] overflow-y-auto">
+      <ul className="h-[300px] overflow-y-auto no-scrollbar mt-4">
         {!query &&
           sortedCountries.map((country) => (
             <li
-              className="flex justify-between items-center mb-4 cursor-pointer"
+              className="flex justify-between  items-center mb-4 cursor-pointer"
               key={`${country.name.common}${country.name.official} `}
               onClick={() => {
                 setSelectedCountry(country);
@@ -58,8 +58,7 @@ export default function SelectDropdown({ countries }: PropTyes) {
               <span>
                 {" "}
                 {country.idd.root}
-                {country.idd?.suffixes?.[0] && country.idd.suffixes[0] }
-
+                {country.idd?.suffixes?.[0] && country.idd.suffixes[0]}
               </span>
             </li>
           ))}
@@ -88,8 +87,7 @@ export default function SelectDropdown({ countries }: PropTyes) {
               </span>
               <span>
                 {country.idd?.root}
-                {country.idd?.suffixes?.[0] && country.idd.suffixes[0] }
-
+                {country.idd?.suffixes?.[0] && country.idd.suffixes[0]}
               </span>
             </li>
           ))}

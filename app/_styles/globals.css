@@ -22,6 +22,16 @@ body {
   /* styles/globals.css */
 }
 
+/* Hide scrollbar for all webkit-based browsers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.no-scrollbar {
+  scrollbar-width: none; /* For Firefox */
+}
+
 a,
 button {
   font-family: inherit;

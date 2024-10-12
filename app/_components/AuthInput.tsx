@@ -15,7 +15,6 @@ export default function AuthInput({ children }: { children: ReactNode }) {
   const isLogin = pathname === "login";
   const { state, showCountries, setShowCountries, selectedCountry } =
     useAuthContext();
-  console.log(selectedCountry);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
