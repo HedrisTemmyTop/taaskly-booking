@@ -21,7 +21,10 @@ export default function SwitchButtons() {
             ? "bg-grey-200 rounded-md text-primary-400"
             : "text-gray-300"
         } py-2  px-3.5 text-sm ml-2 transition-all font-medium`}
-        onClick={() => setState("number")}
+        onClick={() => {
+          console.log("hello wold");
+          setState("number");
+        }}
       >
         Phone number
       </button>

@@ -5,7 +5,6 @@ import React from "react";
 
 export default function AuthHeader() {
   const pathname = usePathname().split("/")[2];
-  console.log(pathname);
   const isLogin = pathname === "login";
 
   return (
