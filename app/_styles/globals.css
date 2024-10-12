@@ -41,3 +41,7 @@ button {
     text-wrap: balance;
   }
 }
+
+input {
+  outline: none;
+}

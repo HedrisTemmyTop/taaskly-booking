@@ -24,10 +24,10 @@ export default function SelectDropdown({ countries }: PropTyes) {
   });
 
   return (
-    <div className="absolute border-1 border border-primary-400 bg-secondary-400 p-4  w-full sm:w-[80%] rounded mt-16 z-10">
+    <div className="absolute border-1 border border-primary-400 bg-secondary-400 p-4  w-full sm:w-[80%] rounded top-[125%] z-10">
       <input
         type="search"
-        className="border-b-1 bg-transparent border-b text-sm border-grey-400 outline-0 w-[100%]"
+        className="border-b-1 bg-transparent border-b text-sm border-grey-400 outline-0 w-[100%] pb-1"
         placeholder="Search country"
         value={query}
         onChange={(e) => {
@@ -35,7 +35,7 @@ export default function SelectDropdown({ countries }: PropTyes) {
           setFilteredCountries(filterCountries(countries, e.target.value));
         }}
       />
-      <ul className="h-[300px] overflow-y-auto no-scrollbar mt-4">
+      <ul className="h-[300px] overflow-y-auto no-scrollbar  mt-4">
         {!query &&
           sortedCountries.map((country) => (
             <li
