@@ -172,7 +172,7 @@ rounded-lg text-inherit w-[100%] h-12"
         <div>
           <span>{isLogin ? "Don&apos;t" : "Already"} have an account?</span>{" "}
           <Link
-            href="/auth/register"
+            href={`/auth/${isLogin ? "register" : "login"}`}
             className="text-primary-400 underline font-semibold "
           >
             {isLogin ? "   Sign up" : "login"}
