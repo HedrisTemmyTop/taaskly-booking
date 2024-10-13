@@ -20,6 +20,7 @@ const config: Config = {
         },
         grey: {
           200: "#f3f3f4",
+          250: "#e4e7eb",
           300: "#737882c9",
           400: "#9ba3af",
           500: "#6A7280",
@@ -61,6 +62,10 @@ const config: Config = {
       boxShadow: {
         custom: "4px 3.5px 0px 0px #000", // Custom shadow using black
         "custom-colored": "4px 3.5px 0px 0px var(--tw-shadow-color)", // If you need a colored shadow
+        shadowlg:
+          "0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1)",
+        "shadowlg-colored":
+          "--tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color)",
       },
     },
   },
