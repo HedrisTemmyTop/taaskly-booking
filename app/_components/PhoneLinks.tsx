@@ -8,8 +8,8 @@ export default function PhoneLinks({ show }: { show: boolean }) {
   return (
     <aside
       className={`${
-        show ? "bg-[#0006] " : ""
-      } transition-all duration-500 ease-in-out top-0 left-0 right-0 bottom-0 z-10  w-[100vw] fixed h-[100vh]`}
+        show ? "bg-[#0006]  " : "duration-500 transition-all ease-in-out"
+      }  block md:hidden   top-0 left-0 right-0 bottom-0 z-10  w-[100vw] fixed h-[100vh]`}
     >
       <nav
         className={`${
