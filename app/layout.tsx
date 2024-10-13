@@ -23,9 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`bg-secondary-400 h-lvh w-lvw m-0 p-0 relative ${outfit.className}`}
-      >
+      <body className={`bg-secondary-400 ${outfit.className}`}>
         <Home>{children}</Home>
       </body>
     </html>
