@@ -60,6 +60,11 @@ const config: Config = {
       },
 
       boxShadow: {
+        customsm: [
+          "var(--tw-ring-offset-shadow, 0 0 #0000)",
+          "var(--tw-ring-shadow, 0 0 #0000)",
+          "var(--tw-shadow)",
+        ].join(", "),
         custom: "4px 3.5px 0px 0px #000", // Custom shadow using black
         "custom-colored": "4px 3.5px 0px 0px var(--tw-shadow-color)", // If you need a colored shadow
         shadowlg:
