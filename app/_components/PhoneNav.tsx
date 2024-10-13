@@ -13,7 +13,7 @@ export default function PhoneNav() {
   const [isMoreClicked, setIsMoreClicked] = useState(false);
   return (
     <>
-      <PhoneLinks show={isMoreClicked} />
+      <PhoneLinks show={isMoreClicked} handleClick={()=> setIsMoreClicked(prev => !prev)} />
       <footer className=" absolute bottom-0 w-full z-10 bg-secondary-400 px-2 vsm:px-5  block md:hidden h-16 border-t py-4 border-t-1 border-grey-400">
         <nav>
           <ul className="flex justify-between items-center">

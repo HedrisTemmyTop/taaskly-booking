@@ -3,7 +3,13 @@ import { sidebarLinks } from "../_data/sidebarLinks";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-export default function PhoneLinks({ show }: { show: boolean }) {
+export default function PhoneLinks({
+  show,
+  handleClick,
+}: {
+  show: boolean;
+  handleClick: () => void;
+}) {
   const pathname = usePathname();
   return (
     <aside
@@ -37,6 +43,7 @@ export default function PhoneLinks({ show }: { show: boolean }) {
                       ? "text-secondary-400"
                       : "text-primary-400"
                   }`}
+                  onClick={handleClick}
                 >
                   {item.icon}
                   <span className="text-tiny tanasobe:text-base ml-4">

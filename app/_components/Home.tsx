@@ -6,6 +6,7 @@ import HomeHeader from "./HomeHeader";
 import Sidebar from "./Sidebar";
 import { sidebarLinks } from "../_data/sidebarLinks";
 import PhoneNav from "./PhoneNav";
+import DashboardHeader from "./DashboardHeader";
 
 export default function Home({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -34,9 +35,9 @@ export default function Home({ children }: { children: ReactNode }) {
       <section className="flex">
         <PhoneNav />
         <Sidebar />
-        <main>
-          <div>disd</div>
-          {children}
+        <main className="flex-1">
+          <DashboardHeader />
+          <div className="p-4 text-primary-400"> {children}</div>
         </main>
       </section>
     );
