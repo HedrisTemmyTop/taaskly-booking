@@ -1,20 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
 import { MdOutlineMoreHoriz } from "react-icons/md";
 import BookingTypes from "../_icons/BookingTypes";
 import View from "../_icons/View";
 import ToggleButton from "./ToggleButton";
+import { BookingTypesResponse } from "../_types/IBookingTypes";
+import { toggleBookingType } from "../_lib/actions";
+import Modal from "./Modal";
 
-export default function BookingButtons() {
+export default function BookingButtons({
+  booking,
+  email="",
+}: {
+  booking: BookingTypesResponse;
+  email: string;
+}) {
   const [isEnabled, setIsEnabled] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [err, setErr] = useState("");
+  useEffect(() => {
+    setIsEnabled(booking.active);
+  }, [booking.active]);
 
-  const handledToggle = () => {
+  const handledToggle = async () => {
     setIsEnabled((prev) => !prev);
+    const response = await toggleBookingType(booking._id, isEnabled);
+    console.log(isEnabled, "isEnabld");
+    if (response?.success) {
+      setSuccess(response.message);
+    } else {
+    }
   };
   const handleMore = () => {
     setShowMore((prev) => !prev);
@@ -22,10 +42,21 @@ export default function BookingButtons() {
 
   return (
     <div className="flex  relative">
+      {success && (
+        <Modal
+          type="success"
+          message={success}
+          handleCancel={() => setSuccess("")}
+        />
+      )}
+      {err && (
+        <Modal type="fail" message={err} handleCancel={() => setErr("")} />
+      )}
       <ToggleButton isActive={isEnabled} onEnable={handledToggle} />
       <Link
-        href="/"
+        href={`/${email}/${booking.name.toLowerCase()}`}
         className="rounded hidden mx-2 font-medium text-sm [@media(min-width:820px)]:flex border max-h-[30px] items-center text-primary-400 boder-1 border-primary-400 py-1 px-2 bg-transparent"
+        target="_blank"
       >
         <View />
         <span className="ml-2">View</span>
@@ -78,8 +109,8 @@ const SmallBokkingTypes = () => (
     fill="none"
     stroke="currentColor"
     stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     className="lucide lucide-link-icon mr-2"
   >
     <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>

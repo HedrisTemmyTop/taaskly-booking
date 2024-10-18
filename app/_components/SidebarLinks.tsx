@@ -14,14 +14,15 @@ export default function SidebarLinks() {
         <li
           key={item.id}
           className={` ${
-            pathname === `/${item.link.toLowerCase().replace(" ", "-")}`
+            pathname ===
+            `/dashboard/${item.link.toLowerCase().replace(" ", "-")}`
               ? "bg-grey-250 lg:before:inline-block before:hidden font-medium before:bg-primary-400 before:h-full  before:absolute relative before:left-[-8%] before:w-1.5 before:rounded-l-sm flex before:content-['']"
               : ""
           } w-full lg:px-4 px-0 rounded text-sm hover:bg-grey-250  transaition duration-300`}
         >
           {" "}
           <Link
-            href={`/${item.link.toLowerCase().replace(" ", "-")}`}
+            href={`/dashboard/${item.link.toLowerCase().replace(" ", "-")}`}
             className={`flex h-10  items-center w-full`}
           >
             {item.icon}

@@ -11,8 +11,8 @@ export default function Booking() {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
-      stroke-linejoincap="round"
-      stroke-linejoinjoin="round"
+      // strokeLinejoincap="round"
+      // strokeLinejoinjoin="round"
       className="lucide lucide-calendar-icon lg:mr-4 lg:ml-0 mx-auto lg:w-5 lg:h-5 w-[18px] h-[18px]"
     >
       <path d="M8 2v4"></path>

@@ -1,5 +1,5 @@
 import React from "react";
-import Google from "../_icons/Google";
+import Google from "../../_icons/Google";
 
 export default function Page() {
   return (

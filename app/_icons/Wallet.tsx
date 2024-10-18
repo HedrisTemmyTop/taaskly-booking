@@ -11,8 +11,8 @@ export default function Wallet() {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
-      stroke-linejoincap="round"
-      stroke-linejoinjoin="round"
+      // strokeLinejoincap="round"
+      // strokeLinejoinjoin="round"
       className="lucide lucide-wallet-icon lg:mr-4 lg:ml-0 mx-auto lg:w-5 lg:h-5 w-[18px] h-[18px]"
     >
       <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path>

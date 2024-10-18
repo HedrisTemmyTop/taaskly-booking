@@ -11,8 +11,8 @@ export default function View() {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="lucide lucide-external-link-icon"
     >
       <path d="M15 3h6v6"></path>
