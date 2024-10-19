@@ -8,9 +8,8 @@ import { ErrorResponse } from "../_types/user";
 import { sendWelcome } from "../_utils/sendEmail";
 import User from "./models/User";
 import { dbConnect } from "./mongodb";
-// console.log(process.env);
 interface ExtendedUser extends IUser {
-  userId?: string; // Make it optional if needed
+  userId?: string;
 }
 
 interface ExtendedUser extends IUser {
@@ -66,6 +65,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     authorized({ auth }) {
       console.log("Authorization Check:", auth);
