@@ -4,7 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 
 import bcrypt from "bcryptjs";
 import google from "next-auth/providers/google";
-import { ErrorResponse } from "../_types/user";
+// import { ErrorResponse } from "../_types/user";
 import { sendWelcome } from "../_utils/sendEmail";
 import User from "./models/User";
 import { dbConnect } from "./mongodb";
@@ -110,47 +110,47 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       account: Account | null; // Allow account to be null
       // credentials?: Record<string, any>; // Change to optional and broader type
     }) {
-      try {
-        await dbConnect();
-        // if ((user as ExtendedUser).message)
-        //   throw new Error((user as ExtendedUser).message);
+      // try {
+      await dbConnect();
+      // if ((user as ExtendedUser).message)
+      //   throw new Error((user as ExtendedUser).message);
 
-        // Handle Google sign-in
-        if (account?.provider === "google") {
-          // const f
-          const existingUser = await User.findOne({ email: user.email });
-          console.log(account);
-          if (!existingUser) {
-            const newUser = await User.create({
-              email: user.email,
-              name: user.name,
-              image: user.image,
-              authMethod: "oauth",
-              isVerified: true,
-            });
-            await sendWelcome(newUser);
-            return true;
-          } else {
-            return true;
-          }
+      // Handle Google sign-in
+      if (account?.provider === "google") {
+        // const f
+        const existingUser = await User.findOne({ email: user.email });
+        console.log(account);
+        if (!existingUser) {
+          const newUser = await User.create({
+            email: user.email,
+            name: user.name,
+            image: user.image,
+            authMethod: "oauth",
+            isVerified: true,
+          });
+          await sendWelcome(newUser);
+          return true;
+        } else {
+          return true;
         }
-        return false;
-        // Handle credentials sign-in
-        // if (account?.provider === "credentials") {
-        //   const existingUser = await User.findOne({ email: user.email });
-        //   if (!existingUser) {
-        //     throw new Error("User does not exist, kindly register");
-        //   } else if (!existingUser.isVerified) {
-        //     throw new Error("User is not verified, please verify your account");
-        //   } else {
-        //     return true;
-        //   }
-        // }
-      } catch (error) {
-        // Handle errors and return an error message
-        const err = error as ErrorResponse;
-        return `/auth/error-page?error=${encodeURIComponent(err.message)}`;
       }
+      return false;
+      // Handle credentials sign-in
+      // if (account?.provider === "credentials") {
+      //   const existingUser = await User.findOne({ email: user.email });
+      //   if (!existingUser) {
+      //     throw new Error("User does not exist, kindly register");
+      //   } else if (!existingUser.isVerified) {
+      //     throw new Error("User is not verified, please verify your account");
+      //   } else {
+      //     return true;
+      //   }
+      // }
+      // } catch (error) {
+      //   // Handle errors and return an error message
+      //   const err = error as ErrorResponse;
+      //   return `/auth/error-page?error=${encodeURIComponent(err.message)}`;
+      // }
     },
   },
   pages: {
