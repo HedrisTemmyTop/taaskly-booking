@@ -41,7 +41,7 @@ export const createBookingType = async function (data: IBookingType) {
       availability,
       duration,
       owner: session.user.userId,
-    }).lean();
+    });
     if (newBookingType) {
       revalidatePath("/dashboard/booking-types");
       return { success: true, message: "Booking type created successfully!" };
