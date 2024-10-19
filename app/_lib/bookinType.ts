@@ -50,7 +50,7 @@ export const createBookingType = async function (data: IBookingType) {
     }
   } catch (error) {
     console.log(error);
-    let err = error as ErrorResponse;
+    const err = error as ErrorResponse;
     if (err.code === 409) {
       err.message = "Booking name already exist";
     }

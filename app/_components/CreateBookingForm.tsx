@@ -44,7 +44,7 @@ export default function CreateBookingForm({
       setDuration(null);
       setId("")
     }
-  }, [data]);
+  }, [data, setName, setAvailability, setDescription, setDuration, setId, setPrice, setPublic]);
 
   return (
     <>

@@ -1,16 +1,15 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { sidebarLinks } from "../_data/sidebarLinks";
 import { useBookingTypeContext } from "../_hooks/BookinTypesCtx";
+import { createBookingType, editBookingType } from "../_lib/bookinType";
+import { ErrorResponse } from "../_types/user";
+import getActiveRoute from "../_utils/getActiveRoute";
 import Modal from "./Modal";
 import ShadowBtn from "./ShadowBtn";
 import Spinner from "./Spinner";
-import { ErrorResponse } from "../_types/user";
-import { createBookingType, editBookingType } from "../_lib/bookinType";
-import getActiveRoute from "../_utils/getActiveRoute";
-import BackDrop from "./BackDrop";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
