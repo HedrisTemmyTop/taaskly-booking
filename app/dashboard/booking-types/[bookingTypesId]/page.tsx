@@ -6,10 +6,10 @@ import React from "react";
 export async function generateStaticParams() {
   const bookingTypes: BookingTypesResponse[] =
     (await getBookingTypes()) as BookingTypesResponse[];
-  const slugs = bookingTypes.map((type) => ({
-    slugs: String(type.slug),
+  const bookingTypesIds = bookingTypes.map((type) => ({
+    bookingTypesId: String(type.slug),
   }));
-  return slugs;
+  return bookingTypesIds;
 }
 
 export default async function Page({

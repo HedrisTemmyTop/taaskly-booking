@@ -5,7 +5,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import google from "next-auth/providers/google";
 import { ErrorResponse } from "../_types/user";
-// import { sendWelcome } from "../_utils/sendEmail";
+import { sendWelcome } from "../_utils/sendEmail";
 import User from "./models/User";
 import { dbConnect } from "./mongodb";
 interface ExtendedUser extends IUser {
@@ -65,6 +65,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: (process.env.NODE_ENV === "development"
+    ? true
+    : ["devhedris-taaskly-booking.vercel.app"]) as boolean,
 
   callbacks: {
     authorized({ auth }) {
@@ -99,7 +102,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     // },
 
     async signIn({
-      // user,
+      user,
       account,
     }: // credentials,
     {
@@ -108,28 +111,28 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       // credentials?: Record<string, any>; // Change to optional and broader type
     }) {
       try {
-        // await dbConnect();
+        await dbConnect();
         // if ((user as ExtendedUser).message)
         //   throw new Error((user as ExtendedUser).message);
 
         // Handle Google sign-in
         if (account?.provider === "google") {
           // const f
-          // const existingUser = await User.findOne({ email: user.email });
+          const existingUser = await User.findOne({ email: user.email });
           console.log(account);
-          // if (!) {
-          // const newUser = await User.create({
-          //   email: user.email,
-          //   name: user.name,
-          //   image: user.image,
-          //   authMethod: "oauth",
-          //   isVerified: true,
-          // });
-          // await sendWelcome(newUser);
-          // return true;
-          // } else {
-          return true;
-          // }
+          if (!existingUser) {
+            const newUser = await User.create({
+              email: user.email,
+              name: user.name,
+              image: user.image,
+              authMethod: "oauth",
+              isVerified: true,
+            });
+            await sendWelcome(newUser);
+            return true;
+          } else {
+            return true;
+          }
         }
         return false;
         // Handle credentials sign-in
