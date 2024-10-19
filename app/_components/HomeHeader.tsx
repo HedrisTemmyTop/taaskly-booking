@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { auth } from "../_lib/auth";
 
 type LinkType = {
   link: string;
@@ -13,7 +14,9 @@ const HomeLinks: LinkType[] = [
   { id: 2, link: "/terms", text: "Terms of service" },
 ];
 
-export default function HomeHeader() {
+export default async function HomeHeader() {
+  const session = await auth();
+  console.log(session);
   return (
     <header>
       <nav className="flex justify-between items-center flex-wrap">
@@ -33,10 +36,10 @@ export default function HomeHeader() {
           ))}
         </ul>
         <Link
-          href="/auth/login"
+          href={`${session?.user ? "/dashboard/booking-types" : "/auth/login"}`}
           className="border border-primary-400 order-2 md:order-3 px-10 text-4 text-primary-400 rounded-lg py-4 hover:shadow-custom transition-all"
         >
-          Login
+          {session?.user ? "Dashboard" : "Login"}
         </Link>
       </nav>
     </header>

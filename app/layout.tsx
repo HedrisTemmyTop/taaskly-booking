@@ -1,7 +1,6 @@
 import "@/app/_styles/globals.css";
-import { Outfit } from "@next/font/google";
+import { Outfit } from "next/font/google";
 import type { Metadata } from "next";
-import Home from "./_components/Home";
 
 const outfit = Outfit({
   subsets: ["latin"], // Specify the subsets you need
@@ -24,7 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`bg-secondary-400 ${outfit.className}`}>
-        <Home>{children}</Home>
+        {children}
+        {/* <Home>
+
+        </Home> */}
       </body>
     </html>
   );

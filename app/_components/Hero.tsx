@@ -1,7 +1,7 @@
 import React from "react";
 import { IoTimeOutline } from "react-icons/io5";
 // Pathway Extreme,sans-serif
-import { Pathway_Extreme } from "@next/font/google";
+import { Pathway_Extreme } from "next/font/google";
 
 const pathway = Pathway_Extreme({
   subsets: ["latin"], // Specify the subsets you need

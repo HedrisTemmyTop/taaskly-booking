@@ -1,17 +1,23 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ReactNode, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { AiOutlineEye } from "react-icons/ai";
-import { useAuthContext } from "../_hooks/AuthFormContext";
-import validateEmail from "../_utils/validateEmail";
-import Button from "./Button";
 import { FaChevronDown } from "react-icons/fa6";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { useAuthContext } from "../_hooks/AuthFormContext";
+import Button from "./Button";
 
-export default function AuthInput({ children }: { children: ReactNode }) {
+export default function AuthInput({
+  children,
+  page,
+}: {
+  children: ReactNode;
+  page: string;
+}) {
   const pathname = usePathname().split("/")[2];
+
   const isLogin = pathname === "login";
   const { state, showCountries, setShowCountries, selectedCountry } =
     useAuthContext();
@@ -19,15 +25,39 @@ export default function AuthInput({ children }: { children: ReactNode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [fullname, setFullname] = useState("");
   const { pending } = useFormStatus();
 
-  const isFormReady =
-    (validateEmail(email) && password.length > 6) || phoneNumber.length >= 8;
+  const isFormReady = false;
+  // (validateEmail(email) && password.length > 6) || phoneNumber.length >= 8;
   return (
     <>
+      {/* {modal && <Modal message={message} type={"fail"} />} */}
       {state === "email" ? (
         <>
           {" "}
+          {page === "register" && (
+            <div className="flex flex-col w-[100%] mb-4">
+              <label htmlFor="email" className="ml-1 mb-1 font-medium">
+                Name
+              </label>
+              <input
+                type="text"
+                name="fullname"
+                className="border-2 outline-0 py-1 px-4 border-primary-400
+rounded-lg text-inherit w-[100%] h-12"
+                placeholder="Enter your fullname"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+              />
+            </div>
+          )}
+          <input
+            type="hidden"
+            id="authMethod"
+            name="authMethod"
+            value={isFormReady ? "credentials" : "oauth"}
+          />
           <div className="flex flex-col w-[100%] mb-4">
             <label htmlFor="email" className="ml-1 mb-1 font-medium">
               Email
@@ -154,7 +184,8 @@ rounded-lg text-inherit w-[100%] h-12"
         disabled={pending || !isFormReady}
       >
         {state !== "email" && "Send OTP"}
-        {isLogin && state === "email" ? "Login" : "Register"}
+        {state === "email" && "Auth mode is comming soon"}
+        {/* {isLogin && state === "email" ? "Login" : "Register"} */}
       </Button>
       <div className="flex items-center my-4 justify-center font-medium relative">
         <span className="before:content-[''] before:block before:bg-primary-400 before:w-[45%] before:h-px before:absolute before:left-0 before:top-1/2 after:content-[''] after:block after:bg-primary-400 after:w-[45%] after:h-px after:absolute after:right-0 after:top-1/2">
@@ -169,7 +200,7 @@ rounded-lg text-inherit w-[100%] h-12"
       </Button>
       <div className="text-sm m-auto grid place-items-center mt-8">
         <div>
-          <span>{isLogin ? "Don&apos;t" : "Already"} have an account?</span>{" "}
+          <span>{isLogin ? "Don`t" : "Already"} have an account?</span>{" "}
           <Link
             href={`/auth/${isLogin ? "register" : "login"}`}
             className="text-primary-400 underline font-semibold "
