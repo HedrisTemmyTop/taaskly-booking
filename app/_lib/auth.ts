@@ -5,7 +5,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import google from "next-auth/providers/google";
 import { ErrorResponse } from "../_types/user";
-import { sendWelcome } from "../_utils/sendEmail";
+// import { sendWelcome } from "../_utils/sendEmail";
 import User from "./models/User";
 import { dbConnect } from "./mongodb";
 interface ExtendedUser extends IUser {
@@ -99,7 +99,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     // },
 
     async signIn({
-      user,
+      // user,
       account,
     }: // credentials,
     {
@@ -109,26 +109,27 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }) {
       try {
         // await dbConnect();
-        if ((user as ExtendedUser).message)
-          throw new Error((user as ExtendedUser).message);
+        // if ((user as ExtendedUser).message)
+        //   throw new Error((user as ExtendedUser).message);
 
         // Handle Google sign-in
         if (account?.provider === "google") {
-          const existingUser = await User.findOne({ email: user.email });
+          // const f
+          // const existingUser = await User.findOne({ email: user.email });
           console.log(account);
-          if (!existingUser) {
-            const newUser = await User.create({
-              email: user.email,
-              name: user.name,
-              image: user.image,
-              authMethod: "oauth",
-              isVerified: true,
-            });
-            await sendWelcome(newUser);
-            return true;
-          } else {
-            return true;
-          }
+          // if (!) {
+          // const newUser = await User.create({
+          //   email: user.email,
+          //   name: user.name,
+          //   image: user.image,
+          //   authMethod: "oauth",
+          //   isVerified: true,
+          // });
+          // await sendWelcome(newUser);
+          // return true;
+          // } else {
+          return true;
+          // }
         }
         return false;
         // Handle credentials sign-in
