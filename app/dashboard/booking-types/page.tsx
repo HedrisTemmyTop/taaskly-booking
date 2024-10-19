@@ -20,6 +20,11 @@ export default async function Page() {
     disabled: false,
   });
   console.log(bookingTypes);
+  //   const plainBookingTypes = bookingTypes.map((booking) => ({
+  //   ...booking,
+  //   _id: booking._id.toString(), // Convert to string
+  //   // Include other fields as necessary
+  // }));
   return (
     <div className="grid gap-4 grid-cols-1">
       {bookingTypes.length === 0 && (

@@ -66,7 +66,7 @@ export const toggleBookingType = async function (id: string, val: boolean) {
       $set: { active: val },
     },
     { new: true }
-  );
+  ).lean();
   console.log(result, val);
   if (result) {
     revalidatePath("/dashboard/booking-types");

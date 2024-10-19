@@ -3,8 +3,8 @@ import { Outfit } from "next/font/google";
 import type { Metadata } from "next";
 
 const outfit = Outfit({
-  subsets: ["latin"], // Specify the subsets you need
-  weight: ["400", "500", "600", "700"], // You can specify the weights you want to include
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 export const metadata: Metadata = {
   title: {

@@ -8,9 +8,8 @@ import { ErrorResponse } from "../_types/user";
 import { sendWelcome } from "../_utils/sendEmail";
 import User from "./models/User";
 import { dbConnect } from "./mongodb";
-// console.log(process.env);
 interface ExtendedUser extends IUser {
-  userId?: string; // Make it optional if needed
+  userId?: string;
 }
 
 interface ExtendedUser extends IUser {
@@ -66,6 +65,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     authorized({ auth }) {
       console.log("Authorization Check:", auth);
@@ -77,7 +77,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session }: { session: Session }) {
-      // Ensure session.user.email is defined
       const user = await User.findOne({ email: session?.user?.email });
 
       if (session && session.user) {
@@ -109,7 +108,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       // credentials?: Record<string, any>; // Change to optional and broader type
     }) {
       try {
-        await dbConnect();
+        // await dbConnect();
         if ((user as ExtendedUser).message)
           throw new Error((user as ExtendedUser).message);
 
@@ -153,6 +152,5 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   pages: {
     signIn: "/auth/login",
     error: "/auth/error-page",
-    // signUp: "/auth/register",
   },
 });
