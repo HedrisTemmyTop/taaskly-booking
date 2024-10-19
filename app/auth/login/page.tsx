@@ -86,12 +86,8 @@
 
 import AuthForm from "@/app/_components/AuthForm";
 import { signInAction } from "@/app/_lib/actions";
-import { auth } from "@/app/_lib/auth";
-import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const session = await auth();
-  if (session?.user) redirect("/dashboard/login");
   return (
     <form className="form mt-1.5 w-[100%]" action={signInAction}>
       {/* <input type="hidden" name="redirectTo" value="/booking-types" /> */}

@@ -6,15 +6,11 @@ import { SessionInterface } from "@/app/_types/user";
 import { IoTimeOutline } from "react-icons/io5";
 import BookingButtons from "../../_components/BookingButtons";
 
-import { redirect } from "next/navigation";
-
 export default async function Page() {
   const session = (await auth()) as SessionInterface;
 
   await dbConnect();
-  if (!session?.user) {
-    redirect("/auth/login");
-  }
+  console.log(session);
   const bookingTypes: BookingTypesResponse[] = await BookingTypesModel.find({
     owner: session.user.userId,
     disabled: false,

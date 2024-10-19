@@ -67,7 +67,7 @@ export default function DashboardHeader() {
   const renderButton = () => {
     if (activeRoute) {
       return (
-        <ShadowBtn handleClick={handleSubmit} disabled={loading}>
+        <ShadowBtn handleClick={handleSubmit} disabled={loading} hide={false}>
           {loading ? <Spinner /> : activeRoute.button}
         </ShadowBtn>
       );
@@ -114,9 +114,7 @@ export default function DashboardHeader() {
       <div className="block">{renderButton()}</div>
 
       <button
-        className={`bg-transparent ${
-          currentHead?.button || activeRoute?.button ? "hidden" : ""
-        }  
+        className={`bg-transparent ${activeRoute?.button ? "hidden" : ""}  
         text-inherit flex md:hidden justify-between items-center gap-2`}
       >
         <span

@@ -11,13 +11,14 @@ import PhoneLinks from "./PhoneLinks";
 export default function PhoneNav() {
   const pathname = usePathname();
   const [isMoreClicked, setIsMoreClicked] = useState(false);
+  const toggleMore = function () {
+    setIsMoreClicked((prev) => !prev);
+    console.log("clicked");
+  };
   return (
     <>
-      <PhoneLinks
-        show={isMoreClicked}
-        handleClick={() => setIsMoreClicked((prev) => !prev)}
-      />
-      <footer className=" fixed bottom-0 w-full z-10 bg-secondary-400 px-2 vsm:px-5  block md:hidden h-16 border-t py-4 border-t-1 border-grey-400">
+      <PhoneLinks show={isMoreClicked} handleClick={toggleMore} />
+      <footer className=" md:hidden  fixed bottom-0 w-full z-30 bg-secondary-400 px-2 vsm:px-5  block m h-16 border-t py-4 border-t-1 border-grey-400">
         <nav>
           <ul className="flex justify-between items-center">
             {sidebarLinks.slice(0, 4).map((item) => (
@@ -31,7 +32,9 @@ export default function PhoneNav() {
               >
                 {" "}
                 <Link
-                  href={`/${item.link.toLowerCase().replace(" ", "-")}`}
+                  href={`/dashboard/${item.link
+                    .toLowerCase()
+                    .replace(" ", "-")}`}
                   className={`flex h-10  flex-col items-center w-full`}
                 >
                   {item.icon}
@@ -50,7 +53,7 @@ export default function PhoneNav() {
             >
               {" "}
               <button
-                onClick={() => setIsMoreClicked((prev) => !prev)}
+                onClick={toggleMore}
                 // href={`/${item.link.toLowerCase().replace(" ", "-")}`}
                 className={`flex h-10  flex-col items-center w-full`}
               >
