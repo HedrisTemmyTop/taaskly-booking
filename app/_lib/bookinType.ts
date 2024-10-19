@@ -86,7 +86,7 @@ export const getBookingType = async function (slug: string) {
     slug,
     disabled: false,
     owner: session?.user?.userId,
-  }).lean();
+  });
 
   if (result) {
     return result;
@@ -95,7 +95,7 @@ export const getBookingType = async function (slug: string) {
 
 export const getBookingTypes = async function () {
   await dbConnect();
-  const result = await BookingTypesModel.find({ disabled: false }).lean();
+  const result = await BookingTypesModel.find({ disabled: false });
   return result;
 };
 
@@ -125,7 +125,7 @@ export const editBookingType = async function (id, data) {
       runValidators: true,
       new: true,
     }
-  ).lean();
+  );
   if (result) {
     revalidatePath("/dashboard/booking-types");
     return {
