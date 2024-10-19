@@ -41,7 +41,7 @@ export const createBookingType = async function (data: IBookingType) {
       availability,
       duration,
       owner: session.user.userId,
-    });
+    }).lean();
     if (newBookingType) {
       revalidatePath("/dashboard/booking-types");
       return { success: true, message: "Booking type created successfully!" };
@@ -66,7 +66,7 @@ export const toggleBookingType = async function (id: string, val: boolean) {
       $set: { active: val },
     },
     { new: true }
-  );
+  ).lean();
   console.log(result, val);
   if (result) {
     revalidatePath("/dashboard/booking-types");
@@ -86,7 +86,7 @@ export const getBookingType = async function (slug: string) {
     slug,
     disabled: false,
     owner: session?.user?.userId,
-  });
+  }).lean();
 
   if (result) {
     return result;
@@ -95,7 +95,7 @@ export const getBookingType = async function (slug: string) {
 
 export const getBookingTypes = async function () {
   await dbConnect();
-  const result = await BookingTypesModel.find({ disabled: false });
+  const result = await BookingTypesModel.find({ disabled: false }).lean();
   return result;
 };
 
@@ -125,7 +125,7 @@ export const editBookingType = async function (id, data) {
       runValidators: true,
       new: true,
     }
-  );
+  ).lean();
   if (result) {
     revalidatePath("/dashboard/booking-types");
     return {
