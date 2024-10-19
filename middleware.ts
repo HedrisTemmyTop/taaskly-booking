@@ -20,5 +20,13 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard"],
+  matcher: [
+    "/dashboard/booking-types",
+    "/dashboard/booking",
+    "/dashboard/availability",
+    "/dashboard/contact",
+    "/dashboard/wallet",
+    "/dashboard/integrations",
+    "/dashboard/settings",
+  ],
 };

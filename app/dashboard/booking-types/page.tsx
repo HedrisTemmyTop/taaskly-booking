@@ -12,10 +12,10 @@ export default async function Page() {
   await dbConnect();
   console.log(session);
   const bookingTypes: BookingTypesResponse[] = await BookingTypesModel.find({
-    owner: session.user.userId,
+    owner: session?.user?.userId,
     disabled: false,
   });
-  console.log(bookingTypes);
+  // console.log(bookingTypes);
   //   const plainBookingTypes = bookingTypes.map((booking) => ({
   //   ...booking,
   //   _id: booking._id.toString(), // Convert to string
