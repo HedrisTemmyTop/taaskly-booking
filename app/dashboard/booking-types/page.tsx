@@ -15,22 +15,22 @@ export default async function Page() {
   if (!session?.user) {
     redirect("/auth/login");
   }
-  const bookingTypes = (await BookingTypesModel.find({
+  const bookingTypes: BookingTypesResponse[] = await BookingTypesModel.find({
     owner: session.user.userId,
     disabled: false,
-  }).lean()) as unknown as BookingTypesResponse[];
-  const plainBookingTypes = bookingTypes.map((booking) => ({
-    ...booking,
-    _id: booking._id.toString(), // Convert to string
-    // Include other fields as necessary
-  }));
-
+  });
+  console.log(bookingTypes);
+  //   const plainBookingTypes = bookingTypes.map((booking) => ({
+  //   ...booking,
+  //   _id: booking._id.toString(), // Convert to string
+  //   // Include other fields as necessary
+  // }));
   return (
     <div className="grid gap-4 grid-cols-1">
-      {plainBookingTypes.length === 0 && (
+      {bookingTypes.length === 0 && (
         <div> You don`t have a booking types yet</div>
       )}
-      {plainBookingTypes.map((type: BookingTypesResponse) => {
+      {bookingTypes.map((type: BookingTypesResponse) => {
         return (
           <div
             className="border border-primary-400 rounded-lg p-4 w-[100%] flex justify-between"

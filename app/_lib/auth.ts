@@ -77,7 +77,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session }: { session: Session }) {
-      // Ensure session.user.email is defined
       const user = await User.findOne({ email: session?.user?.email });
 
       if (session && session.user) {
@@ -109,7 +108,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       // credentials?: Record<string, any>; // Change to optional and broader type
     }) {
       try {
-        await dbConnect();
+        // await dbConnect();
         if ((user as ExtendedUser).message)
           throw new Error((user as ExtendedUser).message);
 
