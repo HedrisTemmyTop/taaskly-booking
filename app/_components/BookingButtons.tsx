@@ -1,35 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
 import { MdOutlineMoreHoriz } from "react-icons/md";
 import BookingTypes from "../_icons/BookingTypes";
 import View from "../_icons/View";
-import ToggleButton from "./ToggleButton";
 import { BookingTypesResponse } from "../_types/IBookingTypes";
-import { toggleBookingType } from "../_lib/actions";
 import Modal from "./Modal";
+import ToggleButton from "./ToggleButton";
+import { useRouter } from "next/navigation";
+import { deleteBookingType, toggleBookingType } from "../_lib/bookinType";
+import BackDrop from "./BackDrop";
 
 export default function BookingButtons({
   booking,
-  email="",
+  email = "",
 }: {
   booking: BookingTypesResponse;
   email: string;
 }) {
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(booking.active);
   const [showMore, setShowMore] = useState(false);
   const [success, setSuccess] = useState("");
   const [err, setErr] = useState("");
-  useEffect(() => {
-    setIsEnabled(booking.active);
-  }, [booking.active]);
-
+  const [backdrop, setBackdrop] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
   const handledToggle = async () => {
     setIsEnabled((prev) => !prev);
-    const response = await toggleBookingType(booking._id, isEnabled);
+    const response = await toggleBookingType(booking._id, !isEnabled);
     console.log(isEnabled, "isEnabld");
     if (response?.success) {
       setSuccess(response.message);
@@ -39,7 +40,27 @@ export default function BookingButtons({
   const handleMore = () => {
     setShowMore((prev) => !prev);
   };
-
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `${window.location.protocol}/${window.location.host}/${email}/${booking.slug}`
+      );
+      setSuccess("Link has been copied");
+    } catch {
+      setErr("Could not copy !!");
+    }
+  };
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    const result = await deleteBookingType(booking._id);
+    if (result.success) {
+      setSuccess(result.message);
+    } else {
+      setErr("Something went wrong, try again");
+    }
+    setIsDeleting(false);
+    setBackdrop(false);
+  };
   return (
     <div className="flex  relative">
       {success && (
@@ -49,25 +70,26 @@ export default function BookingButtons({
           handleCancel={() => setSuccess("")}
         />
       )}
+
       {err && (
         <Modal type="fail" message={err} handleCancel={() => setErr("")} />
       )}
       <ToggleButton isActive={isEnabled} onEnable={handledToggle} />
       <Link
         href={`/${email}/${booking.name.toLowerCase()}`}
-        className="rounded hidden mx-2 font-medium text-sm [@media(min-width:820px)]:flex border max-h-[30px] items-center text-primary-400 boder-1 border-primary-400 py-1 px-2 bg-transparent"
+        className="rounded duration-300 hover:shadow-custom hidden mx-2 font-medium text-sm [@media(min-width:820px)]:flex border max-h-[30px] items-center text-primary-400 boder-1 border-primary-400 py-1 px-2 bg-transparent"
         target="_blank"
       >
         <View />
         <span className="ml-2">View</span>
       </Link>
-      <Link
-        href="/"
-        className="rounded mr-2 hidden text-sm font-medium [@media(min-width:820px)]:flex border max-h-[30px] items-center text-primary-400 boder-1 border-primary-400 py-1 px-2 bg-transparent"
+      <button
+        className="rounded cursor-copy mr-2 hidden text-sm font-medium [@media(min-width:820px)]:flex border max-h-[30px] items-center text-primary-400 boder-1 border-primary-400 py-1 px-2 bg-transparent"
+        onClick={handleCopy}
       >
         <BookingTypes />
         <span className="">Copy Link</span>
-      </Link>
+      </button>
       <button
         className="border border-primary-400 max-w-[35px]   px-1  text-8 font-semibold text-primary-400 rounded grid place-items-center py-1 max-h-[30px] hover:shadow-custom transition-all"
         onClick={handleMore}
@@ -76,23 +98,46 @@ export default function BookingButtons({
       </button>
       {/*  */}
       {showMore && (
-        <div className="shadow-lg flex z-30 bg-secondary-400 flex-col absolute right-0 bottom-[-90%] tanasobe:bottom-[-140%] sm:bottom-[-120%] [@media(min-width:820px)]:bottom-[-45%] w-[150px] [@media(min-width:820px)]:w-[75%] rounded-lg p-1 [@media(min-width:820px)]:p-2 border-1 border-primary-400 border">
-          <button className="px-4  [@media(min-width:820px)]:hidden [@media(min-width:820px)]:mb-2 mb-1 transition duration-300 ease-out hover:bg-primary-400 hover:text-secondary-400 rounded py-2 flex items-center">
+        <div className="shadow-lg flex z-8 bg-secondary-400 flex-col absolute right-0 bottom-[-90%] tanasobe:bottom-[-140%] sm:bottom-[-120%] [@media(min-width:820px)]:bottom-[-45%] w-[150px] [@media(min-width:820px)]:w-[75%] rounded-lg p-1 [@media(min-width:820px)]:p-2 border-1 border-primary-400 border">
+          <Link
+            href={`/${email}/${booking.name.toLowerCase()}`}
+            target="_blank"
+            className="px-4  [@media(min-width:820px)]:hidden [@media(min-width:820px)]:mb-2 mb-1 transition duration-300 ease-out hover:bg-primary-400 hover:text-secondary-400 rounded py-2 flex items-center"
+          >
             <View />
             <span className="ml-2 text-sm">Preview</span>
-          </button>
-          <button className="px-4 [@media(min-width:820px)]:mb-2 mb-1  [@media(min-width:820px)]:hidden transition duration-300 ease-out hover:bg-primary-400 hover:text-secondary-400 rounded py-2 flex items-center">
+          </Link>
+          <button
+            className="cursor-copy px-4 [@media(min-width:820px)]:mb-2 mb-1  [@media(min-width:820px)]:hidden transition duration-300 ease-out hover:bg-primary-400 hover:text-secondary-400 rounded py-2 flex items-center"
+            onClick={handleCopy}
+          >
             <SmallBokkingTypes />
             <span className="ml-1 text-sm">Copy link</span>
           </button>
-          <button className="px-4 [@media(min-width:820px)]:mb-2 mb-1 transition duration-300 ease-out hover:bg-primary-400 hover:text-secondary-400 rounded py-2 flex items-center">
+          <button
+            className="px-4 [@media(min-width:820px)]:mb-2 mb-1 transition duration-300 ease-out hover:bg-primary-400 hover:text-secondary-400 rounded py-2 flex items-center"
+            onClick={() => {
+              router.push(`/dashboard/booking-types/${booking.slug}`);
+            }}
+          >
             <FiEdit />
             <span className="ml-2 text-sm">Edit</span>
           </button>
-          <button className="px-4 py-2 transition duration-300 ease-out flex items-center hover:bg-red-500 rounded hover:text-secondary-400  text-red-500">
+          <button
+            className="px-4 py-2 transition duration-300 ease-out flex items-center hover:bg-red-500 rounded hover:text-secondary-400  text-red-500"
+            onClick={() => setBackdrop(true)}
+          >
             <AiOutlineDelete className="text-lg" />
             <span className="ml-2 text-sm">Delete</span>
           </button>
+
+          <BackDrop
+            onClose={() => setBackdrop(false)}
+            isOpen={backdrop}
+            message={`Are you sure you want to delete ${booking.name}`}
+            onConfirm={handleDelete}
+            loading={isDeleting}
+          />
         </div>
       )}
     </div>

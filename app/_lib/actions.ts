@@ -2,15 +2,13 @@
 import UserModel from "@/app/_lib/models/User";
 import { dbConnect } from "@/app/_lib/mongodb";
 import bcrypt from "bcryptjs";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { verifyYourEmail } from "../_htmlTemplates/template";
-import { ErrorResponse, SessionInterface } from "../_types/user";
+import { ErrorResponse } from "../_types/user";
 import { generateToken } from "../_utils/generateToken";
 import { encrypt } from "../_utils/hashString";
 import sendEmail from "../_utils/sendEmail";
-import { auth, signIn, signOut } from "./auth";
-import BookingTypesModel from "./models/BookingTypes";
+import { signIn, signOut } from "./auth";
 
 export async function signInAction() {
   await signIn("google", { redirectTo: "/dashboard/booking-types" });
@@ -155,72 +153,3 @@ export async function verifyUserEmail(formData: FormData) {
     throw error; // Re-throw the error to be caught by the form's error handling logic
   }
 }
-
-interface IBookinType {
-  name: string;
-  description: string;
-  public: string;
-  price: number;
-  duration: number;
-  availability: string;
-}
-
-export const createBookingType = async function (data: IBookinType) {
-  try {
-    await dbConnect();
-    const {
-      name,
-      description,
-
-      price,
-      duration,
-      availability,
-    } = data;
-    const session = (await auth()) as SessionInterface;
-    // const userId = (session as any).user.userId; // Using 'any' to bypass type checking (not recommended)
-
-    if (!name) {
-      throw new Error("Service name is required");
-    }
-    if (!description) throw new Error("Service description is required");
-    if (!price) throw new Error("Service price is required");
-    if (!duration) throw new Error("Service duration is required");
-    if (!availability) throw new Error("Service availability is required");
-    if (!data.public) throw new Error("Select if public or not");
-
-    const newBookingType = await BookingTypesModel.create({
-      name,
-      description,
-      price,
-      public: data.public,
-      availability,
-      duration,
-      owner: session.user.userId,
-    });
-    if (newBookingType) {
-      revalidatePath("/dashboard/booking-types");
-      return { success: true, message: "Booking type created successfully!" };
-    } else {
-      throw new Error("Something went wrong, please try again.");
-    }
-  } catch (error) {
-    const err = error as ErrorResponse;
-    throw new Error(err.message || "An error occurred.");
-  }
-};
-
-export const toggleBookingType = async function (id: string, val: boolean) {
-  await dbConnect();
-  const result = await BookingTypesModel.findByIdAndUpdate(id, {
-    $set: { active: val },
-  });
-  console.log(result, val);
-  if (result) {
-    return {
-      success: true,
-      message: `Booking has been  ${
-        result.active ? "enabled" : "disabled"
-      } successfully`,
-    };
-  }
-};

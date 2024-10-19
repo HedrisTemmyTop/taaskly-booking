@@ -200,7 +200,7 @@ rounded-lg text-inherit w-[100%] h-12"
       </Button>
       <div className="text-sm m-auto grid place-items-center mt-8">
         <div>
-          <span>{isLogin ? "Don&apos;t" : "Already"} have an account?</span>{" "}
+          <span>{isLogin ? "Don`t" : "Already"} have an account?</span>{" "}
           <Link
             href={`/auth/${isLogin ? "register" : "login"}`}
             className="text-primary-400 underline font-semibold "

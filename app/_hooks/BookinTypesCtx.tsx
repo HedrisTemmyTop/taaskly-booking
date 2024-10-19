@@ -4,11 +4,13 @@ import React, { createContext, ReactNode, useContext, useState } from "react";
 interface BookingTypeContextType {
   name: string;
   availability: string;
+  id: string;
   description: string;
   duration: number | null;
   price: number | null;
   isPublic: "Yes" | "No";
   setName: React.Dispatch<React.SetStateAction<string>>;
+  setId: React.Dispatch<React.SetStateAction<string>>;
   setAvailability: React.Dispatch<React.SetStateAction<string>>;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
   setDuration: React.Dispatch<React.SetStateAction<number | null>>;
@@ -27,12 +29,15 @@ export const BookingTypeProvider = ({ children }: { children: ReactNode }) => {
   const [duration, setDuration] = useState<null | number>(null);
   const [price, setPrice] = useState<null | number>(null);
   const [isPublic, setPublic] = useState<"Yes" | "No">("Yes");
+  const [id, setId] = useState("");
   return (
     <BookingTypeContext.Provider
       value={{
         name,
         setName,
         description,
+        id,
+        setId,
         isPublic,
         setPublic,
         price,

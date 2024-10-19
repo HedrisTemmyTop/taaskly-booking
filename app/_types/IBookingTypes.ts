@@ -12,4 +12,5 @@ export interface IBookingTypes {
 
 export interface BookingTypesResponse extends IBookingTypes {
   _id: string;
+  slug: string;
 }

@@ -3,6 +3,7 @@ import PhoneNav from "../_components/PhoneNav";
 import Sidebar from "../_components/Sidebar";
 import DashboardHeader from "../_components/DashboardHeader";
 import { BookingTypeProvider } from "../_hooks/BookinTypesCtx";
+import Create from "../_components/Create";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -17,6 +18,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             {children}
           </div>
         </BookingTypeProvider>
+        <Create />
       </main>
     </section>
   );

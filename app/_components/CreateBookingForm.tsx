@@ -1,10 +1,16 @@
 "use client";
 
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { useBookingTypeContext } from "../_hooks/BookinTypesCtx";
 import ReusableInput from "./ReusableInput";
+import { BookingTypesResponse } from "../_types/IBookingTypes";
 
-export default function CreateBookingForm() {
+export default function CreateBookingForm({
+  data,
+
+}: {
+  data?: BookingTypesResponse;
+}) {
   const {
     name,
     setName,
@@ -17,8 +23,28 @@ export default function CreateBookingForm() {
     price,
     setPrice,
     duration,
+    setId,
     setDuration,
   } = useBookingTypeContext();
+  useEffect(() => {
+    if (data) {
+      setName(data.name);
+      setDescription(data.description);
+      setPublic(data.public);
+      setAvailability(data.availability);
+      setPrice(data.price);
+      setDuration(data.duration);
+      setId(data._id)
+    } else {
+      setName("");
+      setDescription("");
+      setPublic("Yes");
+      setAvailability("");
+      setPrice(null);
+      setDuration(null);
+      setId("")
+    }
+  }, [data]);
 
   return (
     <>

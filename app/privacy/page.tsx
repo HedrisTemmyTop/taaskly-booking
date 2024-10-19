@@ -97,7 +97,7 @@ export default function Page() {
             device (“Usage Data”).
           </div>
           <div>
-            This Usage Data may include information such as your computer&apos;s
+            This Usage Data may include information such as your computer`s
             Internet Protocol address (e.g. IP address), browser type, browser
             version, the pages of our Service that you visit, the time and date
             of your visit, the time spent on those pages, unique device
@@ -421,7 +421,7 @@ export default function Page() {
             mobile phone number and the contents of any message you send or
             receive through such Service with our third-party partner, Twilio.
             For more information regarding how Twilio may store or use your
-            information, please review Twilio&apos;s Privacy Policy which can be
+            information, please review Twilio`s Privacy Policy which can be
             found here: https://www.twilio.com/legal/privacy.
           </div>
           <h2 className="text-2xl my-4">Payments</h2>
@@ -449,15 +449,15 @@ export default function Page() {
           <div>
             Our Service may contain links to other sites that are not operated
             by us. If you click a third party link, you will be directed to that
-            third party&apos;s site. We strongly advise you to review the
-            Privacy Policy of every site you visit.
+            third party`s site. We strongly advise you to review the Privacy
+            Policy of every site you visit.
           </div>
           <div>
             We have no control over and assume no responsibility for the
             content, privacy policies or practices of any third party sites or
             services.
           </div>
-          <h2 className="text-2xl my-4">Children&apos;s Privacy</h2>
+          <h2 className="text-2xl my-4">Children`s Privacy</h2>
           <div>
             Our Services are not intended for use by children under the age of
             18 (“Child” or “Children”).
@@ -489,9 +489,9 @@ export default function Page() {
             Google API Services User Data Policy and Limited Use Requirements
           </h2>
           <div>
-            Taaskly.site&apos;s use and transfer of information received from
-            Google APIs to any other app will adhere to the Google API Services
-            User Data Policy, including the Limited Use requirements.
+            Taaskly.site`s use and transfer of information received from Google
+            APIs to any other app will adhere to the Google API Services User
+            Data Policy, including the Limited Use requirements.
           </div>
           <h2 className="text-2xl my-4">Contact Us</h2>
           <div>

@@ -287,7 +287,7 @@ export default function Page() {
               href="https://support.google.com/analytics/answer/6004245"
               className="underline"
             >
-              Google&apos;s policy
+              Google`s policy
             </a>{" "}
             for safeguarding your data
           </div>
@@ -358,9 +358,9 @@ export default function Page() {
           </div>
           <div>
             You may be held accountable for damages (including costs and
-            attorneys&apos; fees) for misrepresentation or bad-faith claims on
-            the infringement of any Content found on and/or through Service on
-            your copyright.
+            attorneys` fees) for misrepresentation or bad-faith claims on the
+            infringement of any Content found on and/or through Service on your
+            copyright.
           </div>
           <div className="mt-10">
             You may submit a notification pursuant to the Digital Millennium
@@ -370,7 +370,7 @@ export default function Page() {
           </div>
           <div>
             an electronic or physical signature of the person authorized to act
-            on behalf of the owner of the copyright&apos;s interest;
+            on behalf of the owner of the copyright`s interest;
           </div>
           <div>
             a description of the copyrighted work that you claim has been
@@ -391,7 +391,7 @@ export default function Page() {
           <div>
             a statement by you, made under penalty of perjury, that the above
             information in your notice is accurate and that you are the
-            copyright owner or authorized to act on the copyright owner&apos;s
+            copyright owner or authorized to act on the copyright owner`s
             behalf.
           </div>
           <div>
@@ -485,22 +485,21 @@ export default function Page() {
             EXCEPT AS PROHIBITED BY LAW, YOU WILL HOLD US AND OUR OFFICERS,
             DIRECTORS, EMPLOYEES, AND AGENTS HARMLESS FOR ANY INDIRECT,
             PUNITIVE, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGE, HOWEVER IT
-            ARISES (INCLUDING ATTORNEYS&apos; FEES AND ALL RELATED COSTS AND
-            EXPENSES OF LITIGATION AND ARBITRATION, OR AT TRIAL OR ON APPEAL, IF
-            ANY, WHETHER OR NOT LITIGATION OR ARBITRATION IS INSTITUTED),
-            WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE, OR OTHER TORTIOUS
-            ACTION, OR ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT,
-            INCLUDING WITHOUT LIMITATION ANY CLAIM FOR PERSONAL INJURY OR
-            PROPERTY DAMAGE, ARISING FROM THIS AGREEMENT AND ANY VIOLATION BY
-            YOU OF ANY FEDERAL, STATE, OR LOCAL LAWS, STATUTES, RULES, OR
-            REGULATIONS, EVEN IF COMPANY HAS BEEN PREVIOUSLY ADVISED OF THE
-            POSSIBILITY OF SUCH DAMAGE. EXCEPT AS PROHIBITED BY LAW, IF THERE IS
-            LIABILITY FOUND ON THE PART OF COMPANY, IT WILL BE LIMITED TO THE
-            AMOUNT PAID FOR THE PRODUCTS AND/OR SERVICES, AND UNDER NO
-            CIRCUMSTANCES WILL THERE BE CONSEQUENTIAL OR PUNITIVE DAMAGES. SOME
-            STATES DO NOT ALLOW THE EXCLUSION OR LIMITATION OF PUNITIVE,
-            INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE PRIOR LIMITATION OR
-            EXCLUSION MAY NOT APPLY TO YOU.
+            ARISES (INCLUDING ATTORNEYS` FEES AND ALL RELATED COSTS AND EXPENSES
+            OF LITIGATION AND ARBITRATION, OR AT TRIAL OR ON APPEAL, IF ANY,
+            WHETHER OR NOT LITIGATION OR ARBITRATION IS INSTITUTED), WHETHER IN
+            AN ACTION OF CONTRACT, NEGLIGENCE, OR OTHER TORTIOUS ACTION, OR
+            ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, INCLUDING
+            WITHOUT LIMITATION ANY CLAIM FOR PERSONAL INJURY OR PROPERTY DAMAGE,
+            ARISING FROM THIS AGREEMENT AND ANY VIOLATION BY YOU OF ANY FEDERAL,
+            STATE, OR LOCAL LAWS, STATUTES, RULES, OR REGULATIONS, EVEN IF
+            COMPANY HAS BEEN PREVIOUSLY ADVISED OF THE POSSIBILITY OF SUCH
+            DAMAGE. EXCEPT AS PROHIBITED BY LAW, IF THERE IS LIABILITY FOUND ON
+            THE PART OF COMPANY, IT WILL BE LIMITED TO THE AMOUNT PAID FOR THE
+            PRODUCTS AND/OR SERVICES, AND UNDER NO CIRCUMSTANCES WILL THERE BE
+            CONSEQUENTIAL OR PUNITIVE DAMAGES. SOME STATES DO NOT ALLOW THE
+            EXCLUSION OR LIMITATION OF PUNITIVE, INCIDENTAL OR CONSEQUENTIAL
+            DAMAGES, SO THE PRIOR LIMITATION OR EXCLUSION MAY NOT APPLY TO YOU.
           </div>
           <div>
             We may terminate or suspend your account and bar access to Service
