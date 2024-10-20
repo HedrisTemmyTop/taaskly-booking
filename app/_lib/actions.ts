@@ -11,6 +11,7 @@ import sendEmail from "../_utils/sendEmail";
 import { signIn, signOut } from "./auth";
 
 export async function signInAction() {
+  await dbConnect();
   await signIn("google", { redirectTo: "/dashboard/booking-types" });
 }
 export const signOutAction = async function () {
@@ -152,4 +153,18 @@ export async function verifyUserEmail(formData: FormData) {
     // You could handle errors here as needed, but avoid returning responses
     throw error; // Re-throw the error to be caught by the form's error handling logic
   }
+}
+
+export async function createNewUser(user) {
+  await dbConnect();
+  return await UserModel.create({
+    email: user.email,
+    name: user.name,
+    image: user.image,
+    authMethod: "oauth",
+    isVerified: true,
+  });
+}
+export async function findUser(user) {
+  return await UserModel.findOne({ email: user.email });
 }

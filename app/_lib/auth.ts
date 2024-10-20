@@ -1,20 +1,23 @@
 import NextAuth, { Account, User as IUser, Session } from "next-auth";
 // import credentials from "next-auth/providers/credentials";
 // import Credentials from "next-auth/providers/credentials";
+// import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 
 // import bcrypt from "bcryptjs";
 import google from "next-auth/providers/google";
-// import { ErrorResponse } from "../_types/user";
-import { sendWelcome } from "../_utils/sendEmail";
-import User from "./models/User";
-import { dbConnect } from "./mongodb";
-interface ExtendedUser extends IUser {
-  userId?: string;
-}
 
-interface ExtendedUser extends IUser {
-  message: string;
-}
+// import { ErrorResponse } from "../_types/user";
+// import { sendWelcome } from "../_utils/sendEmail";
+import User from "./models/User";
+// import  { dbConnect } from "./mongodb";
+// import clientPromise from "./mongodbCon";
+// interface ExtendedUser extends IUser {
+//   userId?: string;
+// }
+
+// interface ExtendedUser extends IUser {
+//   message: string;
+// }
 export interface ExtendedSession {
   user: {
     userId: string;
@@ -64,10 +67,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     //   },
     // }),
   ],
-  // secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   // trustHost: (process.env.NODE_ENV === "development"
   //   ? true
   //   : ["devhedris-taaskly-booking.vercel.app"]) as boolean,
+  // adapter: MongoDBAdapter(clientPromise),
 
   callbacks: {
     authorized({ auth }) {
@@ -77,12 +81,12 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
 
     async session({ session }: { session: Session }) {
-      await dbConnect();
-      const user = await User.findOne({ email: session?.user?.email });
+      // await dbConnect();
+      // const user = await User.findOne({ email: session?.user?.email });
 
-      if (session && session.user) {
-        (session.user as ExtendedUser).userId = user?._id; // Use optional chaining for user if it's possible user can be null
-      }
+      // if (session && session.user) {
+      //   (session.user as ExtendedUser).userId = user?._id; // Use optional chaining for user if it's possible user can be null
+      // }
       return session;
     },
 
@@ -109,28 +113,28 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       // credentials?: Record<string, any>; // Change to optional and broader type
     }) {
       try {
-        await dbConnect();
+        // await dbConnect();
         // if ((user as ExtendedUser).message)
         //   throw new Error((user as ExtendedUser).message);
 
         // Handle Google sign-in
         if (account?.provider === "google") {
-          // const f
+          //   // const f
           const existingUser = await User.findOne({ email: user.email });
           console.log(account);
           if (!existingUser) {
-            const newUser = await User.create({
+            await User.create({
               email: user.email,
               name: user.name,
               image: user.image,
               authMethod: "oauth",
               isVerified: true,
             });
-            await sendWelcome(newUser);
           }
+          // await fetch("/api/send-mail", existingUser);
           return true;
         }
-        return false;
+        return true;
         // Handle credentials sign-in
         // if (account?.provider === "credentials") {
         //   const existingUser = await User.findOne({ email: user.email });
@@ -152,6 +156,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   pages: {
     signIn: "/auth/login",
-    error: "/auth/error-page",
+    // error: "/auth/error-page",
   },
 });

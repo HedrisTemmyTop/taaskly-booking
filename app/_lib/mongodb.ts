@@ -11,7 +11,7 @@ const conString = process.env.MONGODB_URL?.replace(
   "PASSWORD",
   password
 ).replace("USERNAME", username) as string;
-console.log(username, password);
+
 // import mongoose, { Mongoose } from "mongoose";
 
 global.mongoose = {
