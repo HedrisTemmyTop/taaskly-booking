@@ -36,7 +36,7 @@ export default async function HomeHeader() {
           ))}
         </ul>
         <Link
-          href={`/dashboard/booking-types`}
+          href={`${session?.user ? "/dashboard/booking-types" : "/auth/login"}`}
           className="border border-primary-400 order-2 md:order-3 px-10 text-4 text-primary-400 rounded-lg py-4 hover:shadow-custom transition-all"
         >
           {session?.user ? "Dashboard" : "Login"}

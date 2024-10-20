@@ -8,12 +8,12 @@ import google from "next-auth/providers/google";
 
 // import { ErrorResponse } from "../_types/user";
 // import { sendWelcome } from "../_utils/sendEmail";
-import User from "./models/User";
+import { createUserWithOauth, getUser } from "./data-service";
 // import  { dbConnect } from "./mongodb";
 // import clientPromise from "./mongodbCon";
-// interface ExtendedUser extends IUser {
-//   userId?: string;
-// }
+interface ExtendedUser extends IUser {
+  userId?: string;
+}
 
 // interface ExtendedUser extends IUser {
 //   message: string;
@@ -82,11 +82,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
     async session({ session }: { session: Session }) {
       // await dbConnect();
-      // const user = await User.findOne({ email: session?.user?.email });
+      const user = await getUser(session?.user?.email as string);
 
-      // if (session && session.user) {
-      //   (session.user as ExtendedUser).userId = user?._id; // Use optional chaining for user if it's possible user can be null
-      // }
+      if (session && session.user) {
+        (session.user as ExtendedUser).userId = user?._id; // Use optional chaining for user if it's possible user can be null
+      }
       return session;
     },
 
@@ -120,10 +120,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         // Handle Google sign-in
         if (account?.provider === "google") {
           //   // const f
-          const existingUser = await User.findOne({ email: user.email });
+          const existingUser = await getUser(user.email as string);
           console.log(account);
           if (!existingUser) {
-            await User.create({
+            await createUserWithOauth({
               email: user.email,
               name: user.name,
               image: user.image,
@@ -146,11 +146,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         //     return true;
         //   }
         // }
-      } catch {
+      } catch (error) {
+        console.error("SignIn Error:", error);
         return false;
-        //   // Handle errors and return an error message
-        //   const err = error as ErrorResponse;
-        //   return `/auth/error-page?error=${encodeURIComponent(err.message)}`;
       }
     },
   },
