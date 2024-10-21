@@ -5,8 +5,9 @@ interface IReusableInput {
   placeholder?: string;
   inputType?: string;
   type?: string;
-  option?: string[];
+  option?: string[] | { name: string; id: string }[];
   value?: string | number | null;
+  tag?: string;
   onChange?: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -23,7 +24,9 @@ export default function ReusableInput({
   option,
   onChange,
   value,
+  tag = "obj",
 }: IReusableInput) {
+  console.log(inputType, value);
   return (
     <div className="flex flex-col gap-2 w-full">
       <label htmlFor={label} className="font-medium">
@@ -64,11 +67,18 @@ rounded-lg text-inherit w-[100%] "
             {" "}
             Select {name}
           </option>
-          {option?.map((op) => (
-            <option value={op} key={op}>
-              {op}
-            </option>
-          ))}
+          {tag === "obj" &&
+            option?.map((op) => (
+              <option value={op.id} key={op.id} id={op.id}>
+                {op.name}
+              </option>
+            ))}
+          {tag !== "obj" &&
+            option?.map((op) => (
+              <option value={op} key={op}>
+                {op}
+              </option>
+            ))}
         </select>
       )}
     </div>

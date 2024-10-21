@@ -106,7 +106,7 @@ AvailabilitySchema.pre("save", function (next) {
   next();
 });
 const AvailabilityModel: mongoose.Model<IAvailability> =
-  mongoose.models["availability"] ||
-  model<IAvailability>("availability", AvailabilitySchema);
+  mongoose.models["Availability"] ||
+  model<IAvailability>("Availability", AvailabilitySchema);
 
 export default AvailabilityModel;

@@ -1,9 +1,9 @@
 import Availability from "@/app/_components/Availability";
 import AvailabilityBtns from "@/app/_components/AvailabilityBtns";
-import { getAvailabilities } from "@/app/_lib/availability";
+import { getUserAvailabilities } from "@/app/_lib/availability";
 
 export default async function Page() {
-  const availabilities = await getAvailabilities();
+  const availabilities = await getUserAvailabilities();
 
   if (availabilities.length === 0)
     return <div>You don`t have availability yet, pls create one</div>;

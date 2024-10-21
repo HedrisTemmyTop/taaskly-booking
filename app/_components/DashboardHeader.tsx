@@ -45,7 +45,7 @@ export default function DashboardHeader() {
   );
 
   const activeRoute = useMemo(() => getActiveRoute(pathname), [pathname]);
-  
+
   const handleSubmit = async () => {
     try {
       setErr("");
@@ -91,9 +91,9 @@ export default function DashboardHeader() {
           setSuccess(result.message);
 
           setTimeout(() => {
-            resetAvailability();
             router.push("/dashboard/availability");
           }, 250);
+          resetAvailability();
         }
       }
     } catch (error) {

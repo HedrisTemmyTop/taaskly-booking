@@ -68,10 +68,10 @@ export const getAvailability = async function (slug) {
 export const getUserAvailabilities = async function () {
   await dbConnect();
   const session = (await auth()) as SessionInterface;
-  const availabilities = await AvailabilityModel.find({
+  const availabilities = (await AvailabilityModel.find({
     owner: session.user.userId,
     disabled: false,
-  });
+  })) as unknown as IAvailability[];
 
   return availabilities;
 };

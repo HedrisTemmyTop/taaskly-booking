@@ -79,7 +79,7 @@ export default function BookingButtons({
         onEnable={handledToggle}
       />
       <Link
-        href={`/${email}/${booking.name.toLowerCase()}`}
+        href={`/${email}/${booking.slug}`}
         className="rounded duration-300 hover:shadow-custom hidden mx-2 font-medium text-sm [@media(min-width:820px)]:flex border max-h-[30px] items-center text-primary-400 boder-1 border-primary-400 py-1 px-2 bg-transparent"
         target="_blank"
       >

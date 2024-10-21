@@ -3,7 +3,7 @@ import React, { createContext, ReactNode, useContext, useState } from "react";
 
 interface BookingTypeContextType {
   name: string;
-  availability: string;
+  availability: { name: string; id: string };
   id: string;
   description: string;
   duration: number | null;
@@ -12,7 +12,9 @@ interface BookingTypeContextType {
   setName: React.Dispatch<React.SetStateAction<string>>;
   reset: () => void;
   setId: React.Dispatch<React.SetStateAction<string>>;
-  setAvailability: React.Dispatch<React.SetStateAction<string>>;
+  setAvailability: React.Dispatch<
+    React.SetStateAction<{ name: string; id: string }>
+  >;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
   setDuration: React.Dispatch<React.SetStateAction<number | null>>;
   setPrice: React.Dispatch<React.SetStateAction<number | null>>;
@@ -25,7 +27,10 @@ const BookingTypeContext = createContext<BookingTypeContextType | undefined>(
 
 export const BookingTypeProvider = ({ children }: { children: ReactNode }) => {
   const [name, setName] = useState("");
-  const [availability, setAvailability] = useState("");
+  const [availability, setAvailability] = useState({
+    name: "",
+    id: "",
+  });
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState<null | number>(null);
   const [price, setPrice] = useState<null | number>(null);
@@ -35,7 +40,10 @@ export const BookingTypeProvider = ({ children }: { children: ReactNode }) => {
     setName("");
     setDescription("");
     setPublic("Yes");
-    setAvailability("");
+    setAvailability({
+      name: "",
+      id: "",
+    });
     setPrice(null);
     setDuration(null);
     setId("");

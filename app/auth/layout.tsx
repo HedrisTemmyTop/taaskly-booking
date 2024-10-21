@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import AuthHeader from "../_components/AuthHeader";
 import SwitchButtons from "../_components/SwitchButtons";
-import { AuthProvider } from "../_hooks/AuthFormContext";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -18,12 +17,10 @@ export default function Layout({ children }: { children: ReactNode }) {
               height={100}
             />
           </Link>
-          <AuthProvider>
-            <AuthHeader />
-            <SwitchButtons />
+          <AuthHeader />
+          <SwitchButtons />
 
-            {children}
-          </AuthProvider>
+          {children}
         </div>
       </main>
     </section>

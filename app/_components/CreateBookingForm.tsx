@@ -2,15 +2,25 @@
 
 import { ChangeEvent, useEffect } from "react";
 import { useBookingTypeContext } from "../_hooks/BookinTypesCtx";
-import ReusableInput from "./ReusableInput";
 import { BookingTypesResponse } from "../_types/IBookingTypes";
+import ReusableInput from "./ReusableInput";
 
 export default function CreateBookingForm({
   data,
-
+  availabilites,
 }: {
   data?: BookingTypesResponse;
+  availabilites: { name: string; id: string }[];
 }) {
+  console.log("first");
+  const handleSetAvailability = function (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) {
+    console.log(e.target);
+    const selected = availabilites.find((av) => av.id == e.target.value);
+    console.log(selected);
+    if (selected) setAvailability(selected);
+  };
   const {
     name,
     setName,
@@ -28,24 +38,40 @@ export default function CreateBookingForm({
   } = useBookingTypeContext();
   useEffect(() => {
     if (data) {
+      console.log(data);
       setName(data.name);
       setDescription(data.description);
       setPublic(data.public);
-      setAvailability(data.availability);
+      const av = availabilites.find((av) => av.id === data.availability);
+      if (av) setAvailability(av);
       setPrice(data.price);
       setDuration(data.duration);
-      setId(data._id)
+      setId(data._id);
     } else {
       setName("");
       setDescription("");
       setPublic("Yes");
-      setAvailability("");
+      setAvailability({
+        id: "",
+        name: "",
+      });
       setPrice(null);
       setDuration(null);
-      setId("")
+      setId("");
     }
-  }, [data, setName, setAvailability, setDescription, setDuration, setId, setPrice, setPublic]);
+    // setAvailability(availabilites[0]);
+  }, [
+    data,
+    setName,
+    setAvailability,
+    setDescription,
+    setDuration,
+    setId,
+    setPrice,
+    setPublic,
+  ]);
 
+  console.log(availabilites, availability);
   return (
     <>
       <div className="md:basis-1/2 basis-full w-full border-1 flex gap-4 flex-col border rounded-md px-4 py-6 border-primary-400">
@@ -76,13 +102,9 @@ export default function CreateBookingForm({
           label="Availability"
           name="availability"
           inputType="select"
-          option={["Working hours", "Default Working hours"]}
-          value={availability}
-          onChange={(
-            e: ChangeEvent<
-              HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-            >
-          ) => setAvailability(e.target.value)} //
+          option={availabilites}
+          value={availability.id}
+          onChange={handleSetAvailability} //
         />
         <div className="relative">
           <ReusableInput
@@ -122,6 +144,7 @@ export default function CreateBookingForm({
           name="public"
           inputType="select"
           option={["Yes", "No"]}
+          tag={"array"}
           value={isPublic}
           onChange={(
             e: ChangeEvent<

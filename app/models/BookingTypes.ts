@@ -1,5 +1,5 @@
 import AppError from "@/app/_utils/appError";
-import mongoose, { Document, Schema, model } from "mongoose";
+import mongoose, { Document, Schema, Types, model } from "mongoose";
 
 interface IBookingTypes extends Document {
   name: string;
@@ -9,7 +9,7 @@ interface IBookingTypes extends Document {
   price: number | "Free";
   public: "Yes" | "No"; // Only "Yes" or "No"
   active: boolean;
-  availability: string;
+  availability: Types.ObjectId;
   duration: number;
   owner: string;
   disabled: boolean;
@@ -35,7 +35,7 @@ const BookingTypeSchema: Schema<IBookingTypes> = new Schema<IBookingTypes>(
     },
     slug: { type: String, required: true },
     active: { type: Boolean, required: true, default: true },
-    availability: { type: String, required: true },
+    availability: { type: mongoose.Schema.Types.ObjectId, ref: "Availability" },
     duration: { type: Number, required: true },
     owner: { type: String, required: true },
   },
@@ -66,7 +66,7 @@ BookingTypeSchema.pre("save", async function (next) {
 });
 
 const BookingTypesModel: mongoose.Model<IBookingTypes> =
-  mongoose.models["booking-types"] ||
-  model<IBookingTypes>("booking-types", BookingTypeSchema);
+  mongoose.models["Booking-types"] ||
+  model<IBookingTypes>("Booking-types", BookingTypeSchema);
 
 export default BookingTypesModel;
