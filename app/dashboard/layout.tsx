@@ -4,6 +4,7 @@ import Sidebar from "../_components/Sidebar";
 import DashboardHeader from "../_components/DashboardHeader";
 import { BookingTypeProvider } from "../_hooks/BookinTypesCtx";
 import Create from "../_components/Create";
+import { AvailabilityProvider } from "../_hooks/AvailabilityCtx";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -11,13 +12,15 @@ export default function Layout({ children }: { children: ReactNode }) {
       <PhoneNav />
       <Sidebar />
       <main className="flex-1">
-        <BookingTypeProvider>
-          <DashboardHeader />
-          <div className="p-4 text-primary-400 md:w-[calc(100%-40px)] lg:w-[calc(100%-20%)] w-full 2xl:min-w-[calc(100%-30rem)] lg:min-w-[calc(100%-15rem)] mt-[100px] absolute right-0">
-            {" "}
-            {children}
-          </div>
-        </BookingTypeProvider>
+        <AvailabilityProvider>
+          <BookingTypeProvider>
+            <DashboardHeader />
+            <div className="p-4 text-primary-400 md:w-[calc(100%-40px)] lg:w-[calc(100%-20%)] w-full 2xl:min-w-[calc(100%-30rem)] lg:min-w-[calc(100%-15rem)] mt-[100px] absolute right-0">
+              {" "}
+              {children}
+            </div>
+          </BookingTypeProvider>
+        </AvailabilityProvider>
         <Create />
       </main>
     </section>

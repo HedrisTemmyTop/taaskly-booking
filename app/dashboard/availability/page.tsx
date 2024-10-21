@@ -1,39 +1,36 @@
-import React from "react";
-import { AiOutlineDelete } from "react-icons/ai";
-import { FiEdit } from "react-icons/fi";
+import Availability from "@/app/_components/Availability";
+import AvailabilityBtns from "@/app/_components/AvailabilityBtns";
+import { getAvailabilities } from "@/app/_lib/availability";
 
-export default function Page() {
+export default async function Page() {
+  const availabilities = await getAvailabilities();
+
+  if (availabilities.length === 0)
+    return <div>You don`t have availability yet, pls create one</div>;
+
   return (
-    <div className="grid grid-cols-1">
-      <div className="border border-primary-400 rounded-lg p-4 w-[100%] flex justify-between">
-        <div className="w-[90%]">
-          <h2 className="font-medium text-xl mb-4">Working Hours</h2>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-x-0 mb-2">
-            <span className="font-medium">Monday</span>
-            <span className="">8:00 AM - 5:00 PM</span>
+    <div className="grid gap-4 grid-cols-1">
+      {availabilities.map((availability) => (
+        <div
+          className="border border-primary-400 rounded-lg p-4 w-[100%] flex justify-between"
+          key={String(availability._id)}
+        >
+          <div className="w-[90%]">
+            <h2 className="font-medium text-xl mb-4 capitalize">
+              {availability.name}
+            </h2>
+
+            <Availability day="sunday" availability={availability} />
+            <Availability day="monday" availability={availability} />
+            <Availability day="tuesday" availability={availability} />
+            <Availability day="wednesday" availability={availability} />
+            <Availability day="thursday" availability={availability} />
+            <Availability day="friday" availability={availability} />
+            <Availability day="saturday" availability={availability} />
           </div>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-x-0 mb-2">
-            <span className="font-medium">Tuesday</span>
-            <span className="">8:00 AM - 5:00 PM</span>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-x-0 mb-2">
-            <span className="font-medium">Wednesday</span>
-            <span className="">8:00 AM - 5:00 PM</span>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-x-0 mb-2">
-            <span className="font-medium">Thursday</span>
-            <span className="">8:00 AM - 5:00 PM</span>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-x-0 mb-2">
-            <span className="font-medium">Friday</span>
-            <span className="">8:00 AM - 5:00 PM</span>
-          </div>
+          <AvailabilityBtns slug={availability.slug} name={availability.name} />
         </div>
-        <div className="flex">
-          <FiEdit className="text-2xl" />
-          <AiOutlineDelete className="text-2xl text-red-500 ml-2" />
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

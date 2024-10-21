@@ -23,7 +23,6 @@ export default function Verification({ data }: IVerification) {
       }, 2000); // Redirect on success
     }
   }, [data.success, router]);
-  console.log(data);
 
   return (
     <>

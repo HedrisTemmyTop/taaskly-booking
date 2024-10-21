@@ -21,7 +21,11 @@ body {
 
   /* styles/globals.css */
 }
-
+@layer components {
+  .grid-cols-custom {
+    grid-template-columns: 150px 1fr;
+  }
+}
 /* Hide scrollbar for all webkit-based browsers */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

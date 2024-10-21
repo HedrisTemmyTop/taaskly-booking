@@ -75,8 +75,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
   callbacks: {
     authorized({ auth }) {
-      console.log("Authorization Check:", auth);
-
       return !!auth?.user;
     },
 
@@ -85,7 +83,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       const user = await getUser(session?.user?.email as string);
 
       if (session && session.user) {
-        (session.user as ExtendedUser).userId = user?._id; // Use optional chaining for user if it's possible user can be null
+        (session.user as ExtendedUser).userId = user?.id; // Use optional chaining for user if it's possible user can be null
       }
       return session;
     },
@@ -121,7 +119,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         if (account?.provider === "google") {
           //   // const f
           const existingUser = await getUser(user.email as string);
-          console.log(account);
           if (!existingUser) {
             await createUserWithOauth({
               email: user.email,

@@ -22,12 +22,6 @@ export const middleware = auth;
 
 export const config = {
   matcher: [
-    "/dashboard/booking-types",
-    "/dashboard/booking",
-    "/dashboard/availability",
-    "/dashboard/contact",
-    "/dashboard/wallet",
-    "/dashboard/integrations",
-    "/dashboard/settings",
+    "/dashboard/:path*", // Match all routes under /dashboard
   ],
 };

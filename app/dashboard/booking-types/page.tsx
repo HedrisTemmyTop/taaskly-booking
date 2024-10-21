@@ -1,5 +1,5 @@
 import { auth } from "@/app/_lib/auth";
-import BookingTypesModel from "@/app/_lib/models/BookingTypes";
+import BookingTypesModel from "@/app/models/BookingTypes";
 import { dbConnect } from "@/app/_lib/mongodb";
 import { BookingTypesResponse } from "@/app/_types/IBookingTypes";
 import { SessionInterface } from "@/app/_types/user";
@@ -10,7 +10,6 @@ export default async function Page() {
   const session = (await auth()) as SessionInterface;
 
   await dbConnect();
-  console.log(session);
   const bookingTypes: BookingTypesResponse[] = await BookingTypesModel.find({
     owner: session?.user?.userId,
     disabled: false,

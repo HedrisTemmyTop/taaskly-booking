@@ -1,9 +1,8 @@
 import React from "react";
 
-export default function Cancel() {
+export default function Add() {
   return (
     <svg
-      data-v-cd92bba8=""
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -13,10 +12,11 @@ export default function Cancel() {
       strokeWidth="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      className="lucide lucide-xicon text-dark w-7 cursor-pointer border-[1.5px] border-dark rounded-md"
+      className="lucide lucide-circle-plus-icon w-4 cursor-pointer"
     >
-      <path d="M18 6 6 18"></path>
-      <path d="m6 6 12 12"></path>
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M8 12h8"></path>
+      <path d="M12 8v8"></path>
     </svg>
   );
 }

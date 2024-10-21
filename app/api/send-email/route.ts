@@ -3,8 +3,7 @@ import { sendWelcome } from "@/app/_utils/sendEmail";
 export const POST = async function (request: Request) {
   try {
     const user = await request.json(); // This parses the JSON body
-    console.log(user, "user");
-
+    
     if (!user.email || !user.name) {
       return new Response("Missing required fields: email or name", {
         status: 400,

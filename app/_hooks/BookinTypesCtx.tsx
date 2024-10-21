@@ -10,6 +10,7 @@ interface BookingTypeContextType {
   price: number | null;
   isPublic: "Yes" | "No";
   setName: React.Dispatch<React.SetStateAction<string>>;
+  reset: () => void;
   setId: React.Dispatch<React.SetStateAction<string>>;
   setAvailability: React.Dispatch<React.SetStateAction<string>>;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
@@ -30,6 +31,15 @@ export const BookingTypeProvider = ({ children }: { children: ReactNode }) => {
   const [price, setPrice] = useState<null | number>(null);
   const [isPublic, setPublic] = useState<"Yes" | "No">("Yes");
   const [id, setId] = useState("");
+  const reset = function () {
+    setName("");
+    setDescription("");
+    setPublic("Yes");
+    setAvailability("");
+    setPrice(null);
+    setDuration(null);
+    setId("");
+  };
   return (
     <BookingTypeContext.Provider
       value={{
@@ -41,6 +51,7 @@ export const BookingTypeProvider = ({ children }: { children: ReactNode }) => {
         isPublic,
         setPublic,
         price,
+        reset,
         setPrice,
         setDescription,
         duration,

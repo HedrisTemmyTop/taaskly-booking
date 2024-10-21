@@ -16,7 +16,6 @@ const HomeLinks: LinkType[] = [
 
 export default async function HomeHeader() {
   const session = await auth();
-  console.log(session);
   return (
     <header>
       <nav className="flex justify-between items-center flex-wrap">

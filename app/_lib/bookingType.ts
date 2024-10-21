@@ -1,12 +1,11 @@
 "use server";
 
-import { notFound } from "next/navigation";
-import createSlug from "../_utils/createSlug";
-import BookingTypesModel from "./models/BookingTypes";
-import { dbConnect } from "./mongodb";
-import { ErrorResponse, SessionInterface } from "../_types/user";
-import { auth } from "./auth";
 import { revalidatePath } from "next/cache";
+import { ErrorResponse, SessionInterface } from "../_types/user";
+import createSlug from "../_utils/createSlug";
+import BookingTypesModel from "../models/BookingTypes";
+import { auth } from "./auth";
+import { dbConnect } from "./mongodb";
 interface IBookingType {
   name: string;
   description: string;
@@ -49,8 +48,7 @@ export const createBookingType = async function (data: IBookingType) {
       throw new Error("Something went wrong, please try again.");
     }
   } catch (error) {
-    console.log(error);
-    const err = error as ErrorResponse;
+      const err = error as ErrorResponse;
     if (err.code === 409) {
       err.message = "Booking name already exist";
     }
@@ -67,7 +65,6 @@ export const toggleBookingType = async function (id: string, val: boolean) {
     },
     { new: true }
   ).lean();
-  console.log(result, val);
   if (result) {
     revalidatePath("/dashboard/booking-types");
     return {
@@ -88,9 +85,7 @@ export const getBookingType = async function (slug: string) {
     owner: session?.user?.userId,
   });
 
-  if (result) {
-    return result;
-  } else notFound();
+  return result;
 };
 
 export const getBookingTypes = async function () {

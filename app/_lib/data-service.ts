@@ -56,9 +56,8 @@ export const createUserWithOauth = async function (newUser) {
   if (error) {
     throw new Error("User could not be created");
   }
-  console.log("new user created", data);
 
-  const response = await fetch(`${process.env.NEXTAUTH_URL}/api/send-email`, {
+  await fetch(`${process.env.NEXTAUTH_URL}/api/send-email`, {
     method: "POST",
     body: JSON.stringify(data[0]),
     headers: {
@@ -66,7 +65,6 @@ export const createUserWithOauth = async function (newUser) {
     },
   });
 
-  console.log(response, "respnse here");
   // await sendWelcome(data[0]);
 
   return data;
@@ -107,6 +105,5 @@ export const updateUser = async (
     throw new Error("User could not be updated");
   }
 
-  console.log("User updated successfully:", data);
   return data; // Return the updated user data
 };

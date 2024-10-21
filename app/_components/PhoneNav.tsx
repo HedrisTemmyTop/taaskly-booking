@@ -13,8 +13,7 @@ export default function PhoneNav() {
   const [isMoreClicked, setIsMoreClicked] = useState(false);
   const toggleMore = function () {
     setIsMoreClicked((prev) => !prev);
-    console.log("clicked");
-  };
+    };
   return (
     <>
       <PhoneLinks show={isMoreClicked} handleClick={toggleMore} />
