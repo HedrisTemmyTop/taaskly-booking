@@ -1,5 +1,6 @@
 import mongoose, { model, Schema } from "mongoose";
 import { Day } from "../_types/IAvailability";
+import generateSlugFromObjectId from "../_utils/generateSlug";
 
 export interface IAvailability extends Document {
   name: string;
@@ -16,10 +17,6 @@ export interface IAvailability extends Document {
   createdAt: Date;
   slug: string;
 }
-const generateSlugFromObjectId = (objectId) => {
-  const idString = objectId.toString();
-  return idString.replace(/(.{4})/g, "$1-").slice(0, -1);
-};
 
 const AvailabilitySchema: Schema<IAvailability> = new Schema<IAvailability>(
   {
@@ -106,7 +103,9 @@ AvailabilitySchema.pre("save", function (next) {
   next();
 });
 const AvailabilityModel: mongoose.Model<IAvailability> =
-  mongoose.models["Availability"] ||
-  model<IAvailability>("Availability", AvailabilitySchema);
+  mongoose.models.Availability ||  model<IAvailability>(
+  "Availability",
+  AvailabilitySchema
+);
 
 export default AvailabilityModel;

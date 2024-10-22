@@ -2,7 +2,10 @@ import CreateBookingForm from "@/app/_components/CreateBookingForm";
 import { getUserAvailabilities } from "@/app/_lib/availability";
 import { getBookingType, getBookingTypes } from "@/app/_lib/bookingType";
 import { notFound } from "next/navigation";
+export const metadata = {
+  title: "Booking types",
 
+};
 export async function generateStaticParams() {
   const bookingTypes = await getBookingTypes();
   const bookingTypesIds = bookingTypes.map((type) => ({

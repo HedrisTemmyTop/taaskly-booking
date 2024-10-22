@@ -6,7 +6,7 @@ interface IBookingTypes extends Document {
   description: string; // Required now
   createdAt: Date;
   updatedAt: Date;
-  price: number | "Free";
+  price: number;
   public: "Yes" | "No"; // Only "Yes" or "No"
   active: boolean;
   availability: Types.ObjectId;
@@ -22,7 +22,7 @@ const BookingTypeSchema: Schema<IBookingTypes> = new Schema<IBookingTypes>(
     description: { type: String, required: true },
     createdAt: { type: Date, required: true, default: Date.now },
     updatedAt: { type: Date, required: true, default: Date.now },
-    price: { type: Number, required: true },
+    price: { type: Number, required: true, default: 0 },
     public: {
       type: String,
       enum: ["Yes", "No"],

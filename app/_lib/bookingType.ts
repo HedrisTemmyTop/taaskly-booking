@@ -7,6 +7,7 @@ import BookingTypesModel from "../models/BookingTypes";
 import { auth } from "./auth";
 import { dbConnect } from "./mongodb";
 import { BookingTypesResponse } from "../_types/IBookingTypes";
+import { supabase } from "./supabase";
 interface IBookingType {
   name: string;
   description: string;
@@ -28,8 +29,9 @@ export const createBookingType = async function (data: IBookingType) {
       throw new Error("Service name is required");
     }
     if (!description) throw new Error("Service description is required");
-    if (!price) throw new Error("Service price is required");
-    if (!duration) throw new Error("Service duration is required");
+    if (price < 0) throw new Error("Service price should be 0 or more");
+    if (duration < 1)
+      throw new Error("Service duration is should be 1mins and above ");
     if (!availability.id) throw new Error("Service availability is required");
     if (!data.public) throw new Error("Select if public or not");
     const slug = createSlug(name);
@@ -154,3 +156,28 @@ export const deleteBookingType = async function (id: string) {
 
   throw new Error("Something went wrong");
 };
+
+export const getUserBookingWithAvailability = async function (slug) {
+  await dbConnect();
+  const response = await BookingTypesModel.findOne({
+    slug,
+  }).populate("availability");
+  return JSON.parse(JSON.stringify(response));
+};
+
+export async function getUserInServer(email: string) {
+  console.log(email);
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  if (error) {
+    console.error("Error fetching user:", error);
+    return null;
+  }
+  console.log(data);
+
+  return JSON.parse(JSON.stringify(data));
+}

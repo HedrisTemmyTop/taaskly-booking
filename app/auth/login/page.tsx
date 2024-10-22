@@ -86,8 +86,11 @@
 
 import AuthForm from "@/app/_components/AuthForm";
 import { signInAction } from "@/app/_lib/actions";
-
-export default async function Page() {
+export const metadata = {
+  title: "Login",
+  description: "Taaskly bookings login",
+};
+export default function Page() {
   return (
     <form className="form mt-1.5 w-[100%]" action={signInAction}>
       {/* <input type="hidden" name="redirectTo" value="/booking-types" /> */}

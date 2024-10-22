@@ -22,6 +22,7 @@ export default function AuthInput({
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState<null | number>(null);
 
   const [fullname, setFullname] = useState("");
   const { pending } = useFormStatus();
@@ -134,7 +135,12 @@ rounded-lg text-inherit w-[100%] h-12"
         </>
       ) : (
         <>
-          <PhoneNumberInput>{children}</PhoneNumberInput>
+          <PhoneNumberInput
+            phoneNumber={phoneNumber}
+            setPhoneNumber={setPhoneNumber}
+          >
+            {children}
+          </PhoneNumberInput>
         </>
       )}
 

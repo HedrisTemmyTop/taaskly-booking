@@ -1,17 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import React, { ReactNode, useState } from "react";
-import { useAuthContext } from "../_hooks/AuthFormContext";
+import { ReactNode } from "react";
 import { FaChevronDown } from "react-icons/fa6";
+import { useAuthContext } from "../_hooks/AuthFormContext";
 
 export default function PhoneNumberInput({
   children,
+  phoneNumber,
+  setPhoneNumber,
 }: {
   children: ReactNode;
+  phoneNumber: null | number;
+  setPhoneNumber: (val: number) => void;
 }) {
   const { showCountries, setShowCountries, selectedCountry } = useAuthContext();
-  const [phoneNumber, setPhoneNumber] = useState("");
   return (
     <div className="flex flex-col w-[100%] mb-4 relative">
       <label htmlFor="email" className="ml-1 mb-1 font-medium">
@@ -48,8 +51,8 @@ export default function PhoneNumberInput({
           className="border-2 outline-0 py-1 pl-32 border-primary-400
               rounded-lg text-inherit w-[100%] h-12"
           placeholder="Enter your phone number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
+          value={phoneNumber || ""}
+          onChange={(e) => setPhoneNumber(+e.target.value)}
         />
       </div>
     </div>

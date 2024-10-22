@@ -137,7 +137,11 @@ export default function CreateBookingForm({
             e: ChangeEvent<
               HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
             >
-          ) => setPrice(+e.target.value)} // Ensuring the right event type
+          ) => {
+            console.log(e.target.value);
+            if (isNaN(+e.target.value)) return;
+            setPrice(+e.target.value);
+          }} // Ensuring the right event type
         />
         <ReusableInput
           label="Public"

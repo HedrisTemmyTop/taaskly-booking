@@ -1,7 +1,10 @@
 import Availability from "@/app/_components/Availability";
 import AvailabilityBtns from "@/app/_components/AvailabilityBtns";
 import { getUserAvailabilities } from "@/app/_lib/availability";
-
+export const metadata = {
+  title: "Availability",
+  description: "Taaskly bookings availability",
+};
 export default async function Page() {
   const availabilities = await getUserAvailabilities();
 

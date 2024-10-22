@@ -30,13 +30,13 @@ export const AvailabilityCtx = createContext<AvailabilityTypeCtx | undefined>(
 );
 
 const initialDaysState: Day[] = [
-  { isActive: false, time: [{ id: 0, from: "8:00am", to: "5:00am" }] },
-  { isActive: true, time: [{ id: 1, from: "8:00am", to: "5:00am" }] },
-  { isActive: true, time: [{ id: 2, from: "8:00am", to: "5:00am" }] },
-  { isActive: true, time: [{ id: 3, from: "8:00am", to: "5:00am" }] },
-  { isActive: true, time: [{ id: 4, from: "8:00am", to: "5:00am" }] },
-  { isActive: true, time: [{ id: 5, from: "8:00am", to: "5:00am" }] },
-  { isActive: false, time: [{ id: 6, from: "8:00am", to: "5:00am" }] },
+  { isActive: false, time: [{ id: 0, from: "8:00am", to: "5:00pm" }] },
+  { isActive: true, time: [{ id: 1, from: "8:00am", to: "5:00pm" }] },
+  { isActive: true, time: [{ id: 2, from: "8:00am", to: "5:00pm" }] },
+  { isActive: true, time: [{ id: 3, from: "8:00am", to: "5:00pm" }] },
+  { isActive: true, time: [{ id: 4, from: "8:00am", to: "5:00pm" }] },
+  { isActive: true, time: [{ id: 5, from: "8:00am", to: "5:00pm" }] },
+  { isActive: false, time: [{ id: 6, from: "8:00am", to: "5:00pm" }] },
 ];
 
 export const AvailabilityProvider = ({ children }: { children: ReactNode }) => {

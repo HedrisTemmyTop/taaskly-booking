@@ -2,6 +2,11 @@ import HeroHeader from "../_components/HeroHeader";
 import HomeHeader from "../_components/HomeHeader";
 import ResponsiveWrapper from "../_components/ResponsiveWrapper";
 
+export const metadata = {
+  title: "Privacy",
+  description: "Taaskly booking privacy",
+};
+
 export default function Page() {
   return (
     <main className="max-w-screen-md lg:max-w-screen-lg 2xl:max-w-screen-xl py-8 px-4 vsm:px-8  m-auto">

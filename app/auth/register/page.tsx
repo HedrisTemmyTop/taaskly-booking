@@ -56,12 +56,11 @@
 
 import AuthForm from "@/app/_components/AuthForm";
 import { signInAction } from "@/app/_lib/actions";
-import { auth } from "@/app/_lib/auth";
-import { redirect } from "next/navigation";
-
-export default async function Page() {
-  const session = await auth();
-  if (session?.user) redirect("/dashboard/booking-types");
+export const metadata = {
+  title: "Register",
+  description: "Taaskly bookings registeration",
+};
+export default function Page() {
   return (
     <form className="form mt-1.5 w-[100%]" action={signInAction}>
       <AuthForm page={"register"} />

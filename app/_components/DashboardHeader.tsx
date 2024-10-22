@@ -54,15 +54,20 @@ export default function DashboardHeader() {
 
       if (activeRoute?.url === "booking-types") {
         const data = {
+          price: price || 0,
           name,
           description,
           public: isPublic,
-          price: price || 0,
           duration: duration || 0,
           availability,
         };
-        if (Object.values(data).some((value) => !value)) return; // Check for empty fields, if yes, return
-        if (data.price < 0 || data.duration < 0) return;
+        if (
+          Object.values(data)
+            .slice(1)
+            .some((value) => !value)
+        )
+          return; // Check for empty fields, if yes, return
+        if (data.duration < 0) return;
         const result = isCreate
           ? await createBookingType(data)
           : await editBookingType(id, data);

@@ -26,7 +26,7 @@ export default function ReusableInput({
   value,
   tag = "obj",
 }: IReusableInput) {
-  console.log(inputType, value);
+  console.log(value, placeholder);
   return (
     <div className="flex flex-col gap-2 w-full">
       <label htmlFor={label} className="font-medium">
@@ -50,7 +50,7 @@ rounded-lg text-inherit w-[100%] "
           placeholder={placeholder}
           className="border-[1.5px]  outline-0 py-1 px-4 border-primary-400
     rounded-lg text-inherit w-[100%] h-12"
-          value={value || ""}
+          value={value !== null ? value : ""} // Handle null properly
           onChange={onChange}
         />
       )}

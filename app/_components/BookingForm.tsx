@@ -1,11 +1,32 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import PhoneNumberInput from "./PhoneNumberInput";
 import ReusableInput from "./ReusableInput";
 
-export default function BookingForm({ children }: { children: ReactNode }) {
-  const [name, setName] = useState("");
+interface IBookingForm {
+  name: string;
+  setName: (val: string) => void;
+  email: string;
+  setEmail: (val: string) => void;
+  phoneNumber: number | null;
+  setPhoneNumber: Dispatch<SetStateAction<number | null>>;
+  notes: string;
+  setNotes: (val: string) => void;
+  children: ReactNode;
+}
+
+export default function BookingForm({
+  children,
+  name,
+  setName,
+  email,
+  setEmail,
+  phoneNumber,
+  setPhoneNumber,
+  notes,
+  setNotes,
+}: IBookingForm) {
   return (
     <>
       <ReusableInput
@@ -23,17 +44,22 @@ export default function BookingForm({ children }: { children: ReactNode }) {
         placeholder="Enter your email address"
         inputType={"input"}
         type={"email"}
-        onChange={(e) => setName(e.target.value)}
-        value={""}
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
       />
-      <PhoneNumberInput>{children}</PhoneNumberInput>
+      <PhoneNumberInput
+        phoneNumber={phoneNumber}
+        setPhoneNumber={setPhoneNumber}
+      >
+        {children}
+      </PhoneNumberInput>
       <ReusableInput
         label={"Additional Notes"}
         name="notes"
         placeholder="Add instruction for the vendor name"
         inputType={"textarea"}
-        onChange={(e) => setName(e.target.value)}
-        value={""}
+        onChange={(e) => setNotes(e.target.value)}
+        value={notes}
       />
     </>
   );

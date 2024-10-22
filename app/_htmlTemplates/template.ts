@@ -137,3 +137,109 @@ export const verifyYourEmail = function (url: string) {
   </html>
   `;
 };
+
+export const bookingEmail = function (data) {
+  return `<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+.head-text{
+    color: grey;
+    padding-left: 20px;
+    border-left: 1px solid grey;
+}
+    </style>
+    <title>Taaskly booking devhedris version</title>
+</head>
+<body>
+    <div>
+        Hello 👋 <b>${data.receiver}</b>
+    </div>
+    <i>
+        <b>A new booking has been scheduled</b>
+    </i>
+
+       <div>
+        <b class="heading">What</b>
+        <div class="head-text">${data.title} </div>
+    </div>
+
+    <div>
+        <b class="heading">When</b>
+        <div class="head-text">${data.fromDate}, ${data.fromTime} WAT -${
+    data.toDate
+  }, ${data.toTime} WAT</div>
+    </div>
+    <div>
+        <b>Who</b>
+      <div class="head-text">
+        <div>${data.ownersName} - Organizer</div>
+        <div>${data.ownersEmail}</div>
+        <div>${data.customerName} - Organizer</div>
+        <div>${data.customerEmail}</div>
+      </div>
+    </div>
+    <div>
+        <b>Description</b>
+      <div class="head-text">
+        <div>${data.description}</div>
+        
+      </div>
+    </div>
+    <div>
+        <b>Price</b>
+      <div class="head-text">
+        <div>${data.price === 0 ? "Free" : data.price}</div>
+        
+      </div>
+    </div>
+    <div>
+        <b>Additional Notes</b>
+      <div>
+        <div class="head-text">${data.notes}</div>
+        
+      </div>
+    </div>
+    <a href=${data.link}>click to visit booking</a>
+    <div>
+        <i>If you think this is a mistake, you can ignore this message or contact us at hedristemitope2001@gmail.com</i>
+    </div>
+</body>
+</html>`;
+};
+
+export const bookingWhatsappMessage = function (data) {
+  return `Hello 👋 *${data.receiver}*
+
+*_A new booking has been scheduled_*
+
+*What:*
+${data.title}
+
+*When:*
+${data.fromDate}, ${data.fromTime} WAT - ${data.toDate}, ${data.toTime} WAT
+
+*Who:*
+${data.ownersName} - Organizer  
+${data.ownersEmail}  
+${data.customerName} - Customer  
+${data.customerEmail}  
+
+*Description:*
+${data.description}
+
+*Price:*
+${data.price === 0 ? "Free" : data.price}
+
+*Additional Notes:*
+${data.notes}
+
+Click the link to view your booking: ${data.link}
+
+---
+
+_If you think this is a mistake, you can ignore this message or contact us at hedristemitope2001@gmail.com_
+`;
+};

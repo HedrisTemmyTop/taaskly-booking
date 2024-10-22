@@ -5,6 +5,7 @@ import { BookingTypesResponse } from "@/app/_types/IBookingTypes";
 import { SessionInterface } from "@/app/_types/user";
 import { IoTimeOutline } from "react-icons/io5";
 import BookingButtons from "../../_components/BookingButtons";
+import Price from "@/app/_icons/Price";
 
 export default async function Page() {
   const session = (await auth()) as SessionInterface;
@@ -43,10 +44,18 @@ export default async function Page() {
                 {" "}
                 <span className="bg-accent-400 p-1 items-center  flex rounded-sm text-xs">
                   <IoTimeOutline />
-                  <span>{type.duration}m</span>
+                  <span className="ml-1">{type.duration}m</span>
                 </span>
                 <span className="bg-accent-400 p-1 items-center  flex rounded-sm text-xs ml-4">
-                  <span>₦{type.price.toLocaleString("en-US")}</span>
+                  <span className="flex items-center">
+                    <Price />
+                    <span className="ml-1">
+                      {" "}
+                      {type.price > 0
+                        ? ` ₦${type.price.toLocaleString("en-US")}`
+                        : "Free"}
+                    </span>
+                  </span>
                 </span>
               </div>{" "}
             </div>

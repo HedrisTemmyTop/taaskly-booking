@@ -1,6 +1,9 @@
 import CreateBookingForm from "@/app/_components/CreateBookingForm";
 import { getUserAvailabilities } from "@/app/_lib/availability";
-
+export const metadata = {
+  title: "Booking types",
+  description: "Create Booking Types",
+};
 export default async function Page() {
   const data = await getUserAvailabilities();
   const formattedData = data.map((av) => ({

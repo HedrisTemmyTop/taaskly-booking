@@ -71,11 +71,16 @@ export const createUserWithOauth = async function (newUser) {
 };
 
 export async function getUser(email: string) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("users")
     .select("*")
     .eq("email", email)
-    .single();
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching user:", error);
+    return null;
+  }
 
   return data;
 }

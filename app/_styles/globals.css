@@ -187,3 +187,9 @@ input {
     border-spacing: 0px !important;
   }
 }
+
+@media only screen and (max-width: 768px) {
+  .rdp-months {
+    max-width: 100% !important;
+  }
+}
