@@ -2,7 +2,6 @@ import BookForm from "@/app/_components/DayPicker/BookForm";
 import SelectDropdown from "@/app/_components/SelectDropdown";
 import { getUserBookingWithAvailability } from "@/app/_lib/bookingType";
 import { getUser } from "@/app/_lib/data-service";
-import { dbConnect } from "@/app/_lib/mongodb";
 import { notFound } from "next/navigation";
 
 export const revalidate = 3000;
@@ -14,7 +13,6 @@ export default async function Page({
     bookingType: string;
   };
 }) {
-  await dbConnect();
   const response = await fetch("https://restcountries.com/v3.1/all");
   const countries = await response.json();
   const decodedEmail = decodeURIComponent(params.email); // Decode the email
