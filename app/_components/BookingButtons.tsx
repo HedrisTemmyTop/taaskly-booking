@@ -17,9 +17,13 @@ import BackDrop from "./BackDrop";
 export default function BookingButtons({
   booking,
   email = "",
+  index,
+  bookingLength,
 }: {
   booking: BookingTypesResponse;
   email: string;
+  index: number;
+  bookingLength;
 }) {
   const [isEnabled, setIsEnabled] = useState(booking.active);
   const [showMore, setShowMore] = useState(false);
@@ -61,7 +65,7 @@ export default function BookingButtons({
     setBackdrop(false);
   };
   return (
-    <div className="flex  relative">
+    <div className="flex ml-4 relative min-w-[30px] [@media(min-width:820px)]:min-w-[275px]">
       {success && (
         <Modal
           type="success"
@@ -101,9 +105,13 @@ export default function BookingButtons({
       </button>
       {/*  */}
       {showMore && (
-        <div className="shadow-lg flex z-8 bg-secondary-400 flex-col absolute right-0 bottom-[-90%] tanasobe:bottom-[-140%] sm:bottom-[-120%] [@media(min-width:820px)]:bottom-[-45%] w-[150px] [@media(min-width:820px)]:w-[75%] rounded-lg p-1 [@media(min-width:820px)]:p-2 border-1 border-primary-400 border">
+        <div
+          className={`shadow-lg flex z-10 ${
+            index === bookingLength - 1 ? "top-[35%]" : "top-[30%]"
+          } bg-secondary-400 flex-col absolute right-0  [@media(min-width:820px)]:bottom-[-45%] w-[150px] [@media(min-width:820px)]:w-[75%] rounded-lg p-1 [@media(min-width:820px)]:p-2 border-1 border-primary-400 border `}
+        >
           <Link
-            href={`/${email}/${booking.name.toLowerCase()}`}
+            href={`/${email}/${booking.slug}`}
             target="_blank"
             className="px-4  [@media(min-width:820px)]:hidden [@media(min-width:820px)]:mb-2 mb-1 transition duration-300 ease-out hover:bg-primary-400 hover:text-secondary-400 rounded py-2 flex items-center"
           >

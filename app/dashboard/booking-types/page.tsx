@@ -26,20 +26,22 @@ export default async function Page() {
       {bookingTypes.length === 0 && (
         <div> You don`t have a booking types yet</div>
       )}
-      {bookingTypes.map((type: BookingTypesResponse) => {
+      {bookingTypes.map((type: BookingTypesResponse, index) => {
         return (
           <div
             className="border border-primary-400 rounded-lg p-4 w-[100%] flex justify-between"
             key={type._id}
           >
-            <div>
+            <div className="">
               <div className="flex items-center">
                 <h2 className="text-xl m-0 font-semibold">{type.name} </h2>
                 <span className="ml-2 font-thin text-xs hidden sm:block">
                   /{session?.user?.email}/{type.slug}{" "}
                 </span>
               </div>
-              <div className="text-sm my-1  sm:my-2">{type.description}</div>
+              <div className="text-sm my-1 break-all sm:my-2">
+                {type.description}
+              </div>
               <div className="flex">
                 {" "}
                 <span className="bg-accent-400 p-1 items-center  flex rounded-sm text-xs">
@@ -59,7 +61,12 @@ export default async function Page() {
                 </span>
               </div>{" "}
             </div>
-            <BookingButtons booking={type} email={session?.user?.email || ""} />
+            <BookingButtons
+              booking={type}
+              bookingLength={bookingTypes.length}
+              index={index}
+              email={session?.user?.email || ""}
+            />
           </div>
         );
       })}
