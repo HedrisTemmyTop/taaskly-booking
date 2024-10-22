@@ -4,8 +4,7 @@ const nextConfig = {
     domains: ["lh3.googleusercontent.com"],
   },
   experimental: {
-    esmExternals: "loose", // <-- add this
-    serverComponentsExternalPackages: ["mongoose"], // <-- and this
+    instrumentationHook: true,
   },
 };
 
