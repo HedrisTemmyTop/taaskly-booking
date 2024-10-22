@@ -115,7 +115,7 @@ export default function BookForm({
             router.push(`/booking/${result.data.slug}`);
           }, 2000);
         } else {
-          throw new Error(result.message);
+          throw new Error(result.message || "Something went wrong");
         }
       } else {
         throw new Error(
