@@ -97,8 +97,6 @@ export default function BookForm({
             }`,
     };
     try {
-      console.log(reference);
-
       setLoading(true);
       let response;
 

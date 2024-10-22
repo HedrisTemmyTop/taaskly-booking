@@ -12,13 +12,10 @@ export default function CreateBookingForm({
   data?: BookingTypesResponse;
   availabilites: { name: string; id: string }[];
 }) {
-  console.log("first");
   const handleSetAvailability = function (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) {
-    console.log(e.target);
     const selected = availabilites.find((av) => av.id == e.target.value);
-    console.log(selected);
     if (selected) setAvailability(selected);
   };
   const {
@@ -38,7 +35,6 @@ export default function CreateBookingForm({
   } = useBookingTypeContext();
   useEffect(() => {
     if (data) {
-      console.log(data);
       setName(data.name);
       setDescription(data.description);
       setPublic(data.public);
@@ -71,8 +67,7 @@ export default function CreateBookingForm({
     setPublic,
   ]);
 
-  console.log(availabilites, availability);
-  return (
+   return (
     <>
       <div className="md:basis-1/2 basis-full w-full border-1 flex gap-4 flex-col border rounded-md px-4 py-6 border-primary-400">
         <ReusableInput
@@ -138,7 +133,6 @@ export default function CreateBookingForm({
               HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
             >
           ) => {
-            console.log(e.target.value);
             if (isNaN(+e.target.value)) return;
             setPrice(+e.target.value);
           }} // Ensuring the right event type
