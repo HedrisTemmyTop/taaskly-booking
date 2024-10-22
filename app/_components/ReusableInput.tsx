@@ -26,7 +26,6 @@ export default function ReusableInput({
   value,
   tag = "obj",
 }: IReusableInput) {
-  console.log(value, placeholder);
   return (
     <div className="flex flex-col gap-2 w-full">
       <label htmlFor={label} className="font-medium">

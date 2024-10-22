@@ -4,7 +4,6 @@
 import { useSearchParams } from "next/navigation";
 
 const AuthError = () => {
-  console.log("first");
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
