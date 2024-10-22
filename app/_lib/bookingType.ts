@@ -1,25 +1,27 @@
 "use server";
 
-import { notFound } from "next/navigation";
-import createSlug from "../_utils/createSlug";
-import BookingTypesModel from "./models/BookingTypes";
-import { dbConnect } from "./mongodb";
-import { ErrorResponse, SessionInterface } from "../_types/user";
-import { auth } from "./auth";
 import { revalidatePath } from "next/cache";
+import { ErrorResponse, SessionInterface } from "../_types/user";
+import createSlug from "../_utils/createSlug";
+import BookingTypesModel from "../models/BookingTypes";
+import { auth } from "./auth";
+import { dbConnect } from "./mongodb";
+import { BookingTypesResponse } from "../_types/IBookingTypes";
+import { supabase } from "./supabase";
 interface IBookingType {
   name: string;
   description: string;
   public: string;
   price: number;
   duration: number;
-  availability: string;
+  availability: { id: string; name: string };
 }
 
 export const createBookingType = async function (data: IBookingType) {
   try {
     await dbConnect();
     const { name, description, price, duration, availability } = data;
+    console.log(data);
     const session = (await auth()) as SessionInterface;
     // const userId = (session as any).user.userId; // Using 'any' to bypass type checking (not recommended)
 
@@ -27,18 +29,21 @@ export const createBookingType = async function (data: IBookingType) {
       throw new Error("Service name is required");
     }
     if (!description) throw new Error("Service description is required");
-    if (!price) throw new Error("Service price is required");
-    if (!duration) throw new Error("Service duration is required");
-    if (!availability) throw new Error("Service availability is required");
+    if (price < 0) throw new Error("Service price should be 0 or more");
+    if (duration < 1)
+      throw new Error("Service duration is should be 1mins and above ");
+    if (!availability.id) throw new Error("Service availability is required");
     if (!data.public) throw new Error("Select if public or not");
     const slug = createSlug(name);
+    console.log(availability);
     const newBookingType = await BookingTypesModel.create({
       name,
       slug,
       description,
       price,
       public: data.public,
-      availability,
+      availability: availability.id,
+
       duration,
       owner: session.user.userId,
     });
@@ -49,7 +54,6 @@ export const createBookingType = async function (data: IBookingType) {
       throw new Error("Something went wrong, please try again.");
     }
   } catch (error) {
-    console.log(error);
     const err = error as ErrorResponse;
     if (err.code === 409) {
       err.message = "Booking name already exist";
@@ -66,8 +70,7 @@ export const toggleBookingType = async function (id: string, val: boolean) {
       $set: { active: val },
     },
     { new: true }
-  );
-  console.log(result, val);
+  ).lean();
   if (result) {
     revalidatePath("/dashboard/booking-types");
     return {
@@ -82,15 +85,13 @@ export const toggleBookingType = async function (id: string, val: boolean) {
 export const getBookingType = async function (slug: string) {
   await dbConnect();
   const session = (await auth()) as SessionInterface;
-  const result = await BookingTypesModel.findOne({
+  const result = (await BookingTypesModel.findOne({
     slug,
     disabled: false,
     owner: session?.user?.userId,
-  });
-
-  if (result) {
-    return result;
-  } else notFound();
+  })) as unknown as BookingTypesResponse;
+  console.log("rrr", result);
+  return result;
 };
 
 export const getBookingTypes = async function () {
@@ -118,7 +119,7 @@ export const editBookingType = async function (id, data) {
       description,
       price,
       public: data.public,
-      availability,
+      availability: availability.id,
       duration,
     },
     {
@@ -155,3 +156,28 @@ export const deleteBookingType = async function (id: string) {
 
   throw new Error("Something went wrong");
 };
+
+export const getUserBookingWithAvailability = async function (slug) {
+  await dbConnect();
+  const response = await BookingTypesModel.findOne({
+    slug,
+  }).populate("availability");
+  return JSON.parse(JSON.stringify(response));
+};
+
+export async function getUserInServer(email: string) {
+  console.log(email);
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  if (error) {
+    console.error("Error fetching user:", error);
+    return null;
+  }
+  console.log(data);
+
+  return JSON.parse(JSON.stringify(data));
+}

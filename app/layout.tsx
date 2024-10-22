@@ -1,10 +1,11 @@
 import "@/app/_styles/globals.css";
 import { Outfit } from "next/font/google";
 import type { Metadata } from "next";
+import { AuthProvider } from "./_hooks/AuthFormContext";
 
 const outfit = Outfit({
-  subsets: ["latin"], // Specify the subsets you need
-  weight: ["400", "500", "600", "700"], // You can specify the weights you want to include
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 export const metadata: Metadata = {
   title: {
@@ -22,11 +23,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`bg-secondary-400 ${outfit.className}`}>
-        {children}
-        {/* <Home>
+      <body className={`bg-secondary-400 min-h-[100vh] ${outfit.className}`}>
+        <AuthProvider>
+          {children}
+          {/* <Home>
 
-        </Home> */}
+</Home> */}
+        </AuthProvider>
       </body>
     </html>
   );

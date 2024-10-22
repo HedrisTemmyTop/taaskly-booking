@@ -47,12 +47,7 @@ const newTransport = () => {
   });
 };
 
-const sendEmail = async (
-  user: IUser,
-
-  template: string,
-  subject: string
-) => {
+const sendEmail = async (user: IUser, template: string, subject: string) => {
   const mailOptions = {
     from: `HedrisTemmyTop <${process.env.EMAIL}>`,
     to: user.email,
@@ -60,16 +55,38 @@ const sendEmail = async (
     html: template,
   };
 
-  await newTransport().sendMail(mailOptions);
+  try {
+    const response = await newTransport().sendMail(mailOptions);
+
+    // Check if the response indicates success (some email libraries might not have an `ok` property)
+    if (response && response.accepted && response.accepted.length > 0) {
+      return { success: true, message: "Email sent successfully." };
+    } else {
+      console.error("Failed to send email:", response);
+      return { success: false, message: "Failed to send email." };
+    }
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return {
+      success: false,
+      message: "An error occurred while sending the email.",
+    };
+  }
 };
 
 export const sendWelcome = async function (user: IUser) {
-  await sendEmail(
+  const result = await sendEmail(
     user,
 
     welcome,
     "Welcome to Taaskly Bookings DevHedris Version"
   );
+  // if (result.success) {
+  //   return {
+  //     success: true,
+  //   };
+  // }
+  return result;
 };
 
 export default sendEmail;

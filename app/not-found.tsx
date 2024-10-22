@@ -5,7 +5,7 @@ import Link from "next/link";
 //     const response = await fetch()
 // }
 
-export default async function NotFound() {
+export default function NotFound() {
   return (
     <div className="w-[100vw] h-[100vh] p-8 flex flex-col items-center justify-between text-primary-400">
       <div className="flex flex-col gap-4 items-center">

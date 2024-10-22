@@ -1,25 +1,26 @@
 import { auth } from "@/app/_lib/auth";
-import BookingTypesModel from "@/app/_lib/models/BookingTypes";
+import BookingTypesModel from "@/app/models/BookingTypes";
 import { dbConnect } from "@/app/_lib/mongodb";
 import { BookingTypesResponse } from "@/app/_types/IBookingTypes";
 import { SessionInterface } from "@/app/_types/user";
 import { IoTimeOutline } from "react-icons/io5";
 import BookingButtons from "../../_components/BookingButtons";
-
-import { redirect } from "next/navigation";
+import Price from "@/app/_icons/Price";
 
 export default async function Page() {
   const session = (await auth()) as SessionInterface;
 
   await dbConnect();
-  if (!session?.user) {
-    redirect("/auth/login");
-  }
   const bookingTypes: BookingTypesResponse[] = await BookingTypesModel.find({
-    owner: session.user.userId,
+    owner: session?.user?.userId,
     disabled: false,
   });
-  console.log(bookingTypes);
+  // console.log(bookingTypes);
+  //   const plainBookingTypes = bookingTypes.map((booking) => ({
+  //   ...booking,
+  //   _id: booking._id.toString(), // Convert to string
+  //   // Include other fields as necessary
+  // }));
   return (
     <div className="grid gap-4 grid-cols-1">
       {bookingTypes.length === 0 && (
@@ -43,10 +44,18 @@ export default async function Page() {
                 {" "}
                 <span className="bg-accent-400 p-1 items-center  flex rounded-sm text-xs">
                   <IoTimeOutline />
-                  <span>{type.duration}m</span>
+                  <span className="ml-1">{type.duration}m</span>
                 </span>
                 <span className="bg-accent-400 p-1 items-center  flex rounded-sm text-xs ml-4">
-                  <span>₦{type.price.toLocaleString("en-US")}</span>
+                  <span className="flex items-center">
+                    <Price />
+                    <span className="ml-1">
+                      {" "}
+                      {type.price > 0
+                        ? ` ₦${type.price.toLocaleString("en-US")}`
+                        : "Free"}
+                    </span>
+                  </span>
                 </span>
               </div>{" "}
             </div>

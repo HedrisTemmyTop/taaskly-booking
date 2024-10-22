@@ -4,12 +4,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { sidebarLinks } from "../_data/sidebarLinks";
 import { useBookingTypeContext } from "../_hooks/BookinTypesCtx";
-import { createBookingType, editBookingType } from "../_lib/bookinType";
+import { createBookingType, editBookingType } from "../_lib/bookingType";
 import { ErrorResponse } from "../_types/user";
 import getActiveRoute from "../_utils/getActiveRoute";
 import Modal from "./Modal";
 import ShadowBtn from "./ShadowBtn";
 import Spinner from "./Spinner";
+import { useAvailabilityCtx } from "../_hooks/AvailabilityCtx";
+import { createAvailability, editAvailability } from "../_lib/availability";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
@@ -17,6 +19,18 @@ export default function DashboardHeader() {
   const { name, description, isPublic, id, price, duration, availability } =
     useBookingTypeContext();
 
+  const {
+    name: availabilityName,
+    id: availabilityId,
+    monday,
+    tuesday,
+    wednesday,
+    thursday,
+    friday,
+    saturday,
+    sunday,
+    reset: resetAvailability,
+  } = useAvailabilityCtx();
   const [err, setErr] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>("");
@@ -36,25 +50,56 @@ export default function DashboardHeader() {
     try {
       setErr("");
       setLoading(true);
+      const isCreate = activeRoute?.button === "create";
 
-      const data = {
-        name,
-        description,
-        public: isPublic,
-        price: price || 0,
-        duration: duration || 0,
-        availability,
-      };
-      if (Object.values(data).some((value) => !value)) return; // Check for empty fields
-      if (data.price < 0 || data.duration < 0) return;
-      const result =
-        activeRoute?.button === "create"
+      if (activeRoute?.url === "booking-types") {
+        const data = {
+          price: price || 0,
+          name,
+          description,
+          public: isPublic,
+          duration: duration || 0,
+          availability,
+        };
+        if (
+          Object.values(data)
+            .slice(1)
+            .some((value) => !value)
+        )
+          return; // Check for empty fields, if yes, return
+        if (data.duration < 0) return;
+        const result = isCreate
           ? await createBookingType(data)
           : await editBookingType(id, data);
 
-      if (result.success) {
-        setSuccess(result.message);
-        setTimeout(() => router.push("/dashboard/booking-types"), 250);
+        if (result.success) {
+          setSuccess(result.message);
+          setTimeout(() => router.push("/dashboard/booking-types"), 250);
+        }
+      }
+      if (activeRoute?.url === "availability") {
+        const data = {
+          name: availabilityName,
+          monday,
+          tuesday,
+          wednesday,
+          thursday,
+          friday,
+          saturday,
+          sunday,
+        };
+        if (!availabilityName) return;
+        const result = isCreate
+          ? await createAvailability(data)
+          : await editAvailability(availabilityId, data);
+        if (result.success) {
+          setSuccess(result.message);
+
+          setTimeout(() => {
+            router.push("/dashboard/availability");
+          }, 250);
+          resetAvailability();
+        }
       }
     } catch (error) {
       const e = error as ErrorResponse;
@@ -67,7 +112,7 @@ export default function DashboardHeader() {
   const renderButton = () => {
     if (activeRoute) {
       return (
-        <ShadowBtn handleClick={handleSubmit} disabled={loading}>
+        <ShadowBtn handleClick={handleSubmit} disabled={loading} hide={false}>
           {loading ? <Spinner /> : activeRoute.button}
         </ShadowBtn>
       );
@@ -114,9 +159,7 @@ export default function DashboardHeader() {
       <div className="block">{renderButton()}</div>
 
       <button
-        className={`bg-transparent ${
-          currentHead?.button || activeRoute?.button ? "hidden" : ""
-        }  
+        className={`bg-transparent ${activeRoute?.button ? "hidden" : ""}  
         text-inherit flex md:hidden justify-between items-center gap-2`}
       >
         <span

@@ -4,15 +4,19 @@ import Check from "../_icons/Check";
 export default function ToggleButton({
   isActive,
   onEnable,
+  hidden = false,
 }: {
   isActive: boolean;
   onEnable: () => void;
+  hidden?: boolean;
 }) {
   return (
     <button
       className={`${
         isActive ? "bg-primary-400" : "bg-gray-100"
-      }  w-[43px] h-[22px] rounded-[15px] shadow px-[1px] py-0 hidden [@media(min-width:820px)]:block transition duration-300 ease-out`}
+      }  w-[43px] h-[22px] rounded-[15px] shadow px-[1px] py-0 ${
+        hidden ? "hidden" : ""
+      } [@media(min-width:820px)]:block transition duration-300 ease-out`}
       onClick={onEnable}
     >
       <span

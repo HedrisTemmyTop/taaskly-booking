@@ -2,6 +2,10 @@ import React from "react";
 import HeroHeader from "../_components/HeroHeader";
 import ResponsiveWrapper from "../_components/ResponsiveWrapper";
 import HomeHeader from "../_components/HomeHeader";
+export const metadata = {
+  title: "Terms",
+  description: "Taaskly bookings devhedris version terms and condition.",
+};
 
 export default function Page() {
   return (

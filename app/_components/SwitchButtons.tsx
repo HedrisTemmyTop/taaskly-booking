@@ -22,7 +22,6 @@ export default function SwitchButtons() {
             : "text-gray-300"
         } py-2  px-3.5 text-sm ml-2 transition-all font-medium`}
         onClick={() => {
-          console.log("hello wold");
           setState("number");
         }}
       >

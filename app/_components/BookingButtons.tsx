@@ -11,7 +11,7 @@ import { BookingTypesResponse } from "../_types/IBookingTypes";
 import Modal from "./Modal";
 import ToggleButton from "./ToggleButton";
 import { useRouter } from "next/navigation";
-import { deleteBookingType, toggleBookingType } from "../_lib/bookinType";
+import { deleteBookingType, toggleBookingType } from "../_lib/bookingType";
 import BackDrop from "./BackDrop";
 
 export default function BookingButtons({
@@ -31,7 +31,6 @@ export default function BookingButtons({
   const handledToggle = async () => {
     setIsEnabled((prev) => !prev);
     const response = await toggleBookingType(booking._id, !isEnabled);
-    console.log(isEnabled, "isEnabld");
     if (response?.success) {
       setSuccess(response.message);
     } else {
@@ -74,9 +73,13 @@ export default function BookingButtons({
       {err && (
         <Modal type="fail" message={err} handleCancel={() => setErr("")} />
       )}
-      <ToggleButton isActive={isEnabled} onEnable={handledToggle} />
+      <ToggleButton
+        hidden={true}
+        isActive={isEnabled}
+        onEnable={handledToggle}
+      />
       <Link
-        href={`/${email}/${booking.name.toLowerCase()}`}
+        href={`/${email}/${booking.slug}`}
         className="rounded duration-300 hover:shadow-custom hidden mx-2 font-medium text-sm [@media(min-width:820px)]:flex border max-h-[30px] items-center text-primary-400 boder-1 border-primary-400 py-1 px-2 bg-transparent"
         target="_blank"
       >
@@ -153,7 +156,7 @@ const SmallBokkingTypes = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
+    strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
     className="lucide lucide-link-icon mr-2"

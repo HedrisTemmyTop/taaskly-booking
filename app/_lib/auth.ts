@@ -1,21 +1,23 @@
 import NextAuth, { Account, User as IUser, Session } from "next-auth";
 // import credentials from "next-auth/providers/credentials";
-import Credentials from "next-auth/providers/credentials";
+// import Credentials from "next-auth/providers/credentials";
+// import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 import google from "next-auth/providers/google";
-import { ErrorResponse } from "../_types/user";
-import { sendWelcome } from "../_utils/sendEmail";
-import User from "./models/User";
-import { dbConnect } from "./mongodb";
-// console.log(process.env);
+
+// import { ErrorResponse } from "../_types/user";
+// import { sendWelcome } from "../_utils/sendEmail";
+import { createUserWithOauth, getUser } from "./data-service";
+// import  { dbConnect } from "./mongodb";
+// import clientPromise from "./mongodbCon";
 interface ExtendedUser extends IUser {
-  userId?: string; // Make it optional if needed
+  userId?: string;
 }
 
-interface ExtendedUser extends IUser {
-  message: string;
-}
+// interface ExtendedUser extends IUser {
+//   message: string;
+// }
 export interface ExtendedSession {
   user: {
     userId: string;
@@ -23,65 +25,65 @@ export interface ExtendedSession {
   };
 }
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  session: {
-    strategy: "jwt", // Use JWT-based sessions
-  },
+  // session: {
+  //   strategy: "jwt", // Use JWT-based sessions
+  // },
   providers: [
     google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    Credentials({
-      name: "credentials",
-      credentials: {
-        email: { label: "email", type: "email", placeholder: "jsmith" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        await dbConnect();
-        try {
-          console.log("credentials", credentials);
-          const user = await User.findOne({
-            email: credentials.email,
-          }).select("+password");
-          console.log(user);
-          if (!user) throw new Error("User does not exist, kindly register");
-          if (!user.isVerified) throw new Error("User not verified");
-          const confirmPass = await bcrypt.compare(
-            credentials.password as string,
-            user.password
-          );
-          console.log("pass confirm", confirmPass);
-          if (credentials.password !== user.password && !confirmPass)
-            throw new Error("Incorrect password");
-          console.log(user, "user");
-          return {
-            email: user.email,
-            id: user._id,
-          };
-        } catch {
-          return null;
-        }
-      },
-    }),
+    // Credentials({
+    //   name: "credentials",
+    //   credentials: {
+    //     email: { label: "email", type: "email", placeholder: "jsmith" },
+    //     password: { label: "Password", type: "password" },
+    //   },
+    //   async authorize(credentials) {
+    //     await dbConnect();
+    //     try {
+    //       console.log("credentials", credentials);
+    //       const user = await User.findOne({
+    //         email: credentials.email,
+    //       }).select("+password");
+    //       console.log(user);
+    //       if (!user) throw new Error("User does not exist, kindly register");
+    //       if (!user.isVerified) throw new Error("User not verified");
+    //       const confirmPass = await bcrypt.compare(
+    //         credentials.password as string,
+    //         user.password
+    //       );
+    //       console.log("pass confirm", confirmPass);
+    //       if (credentials.password !== user.password && !confirmPass)
+    //         throw new Error("Incorrect password");
+    //       console.log(user, "user");
+    //       return {
+    //         email: user.email,
+    //         id: user._id,
+    //       };
+    //     } catch {
+    //       return null;
+    //     }
+    //   },
+    // }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  // trustHost: (process.env.NODE_ENV === "development"
+  //   ? true
+  //   : ["devhedris-taaskly-booking.vercel.app"]) as boolean,
+  // adapter: MongoDBAdapter(clientPromise),
+
   callbacks: {
     authorized({ auth }) {
-      console.log("Authorization Check:", auth);
-
       return !!auth?.user;
     },
-    async jwt({ token, user }) {
-      if (user) token.id = user.id; // Attach user ID to JWT token
-      return token;
-    },
+
     async session({ session }: { session: Session }) {
-      // Ensure session.user.email is defined
-      const user = await User.findOne({ email: session?.user?.email });
+      // await dbConnect();
+      const user = await getUser(session?.user?.email as string);
 
       if (session && session.user) {
-        (session.user as ExtendedUser).userId = user?._id; // Use optional chaining for user if it's possible user can be null
+        (session.user as ExtendedUser).userId = user?.id; // Use optional chaining for user if it's possible user can be null
       }
       return session;
     },
@@ -109,29 +111,27 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       // credentials?: Record<string, any>; // Change to optional and broader type
     }) {
       try {
-        await dbConnect();
-        if ((user as ExtendedUser).message)
-          throw new Error((user as ExtendedUser).message);
+        // await dbConnect();
+        // if ((user as ExtendedUser).message)
+        //   throw new Error((user as ExtendedUser).message);
 
         // Handle Google sign-in
         if (account?.provider === "google") {
-          const existingUser = await User.findOne({ email: user.email });
-          console.log(account);
+          //   // const f
+          const existingUser = await getUser(user.email as string);
           if (!existingUser) {
-            const newUser = await User.create({
+            await createUserWithOauth({
               email: user.email,
               name: user.name,
               image: user.image,
               authMethod: "oauth",
               isVerified: true,
             });
-            await sendWelcome(newUser);
-            return true;
-          } else {
-            return true;
           }
+          // await fetch("/api/send-mail", existingUser);
+          return true;
         }
-        return false;
+        return true;
         // Handle credentials sign-in
         // if (account?.provider === "credentials") {
         //   const existingUser = await User.findOne({ email: user.email });
@@ -144,15 +144,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         //   }
         // }
       } catch (error) {
-        // Handle errors and return an error message
-        const err = error as ErrorResponse;
-        return `/auth/error-page?error=${encodeURIComponent(err.message)}`;
+        console.error("SignIn Error:", error);
+        return false;
       }
     },
   },
   pages: {
     signIn: "/auth/login",
-    error: "/auth/error-page",
-    // signUp: "/auth/register",
+    // error: "/auth/error-page",
   },
 });

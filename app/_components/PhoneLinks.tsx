@@ -13,10 +13,16 @@ export default function PhoneLinks({
   const pathname = usePathname();
   return (
     <aside
-      className={`${
-        show ? "bg-[#0006]  " : "duration-500 transition-all ease-in-out"
-      }  block md:hidden   top-0 left-0 right-0 bottom-0 z-10  w-[100vw] fixed h-[100vh]`}
+      className={`  ${
+        show ? "block" : "hidden"
+      }   top-0 left-0 right-0 bottom-0 md:hidden inset-0 z-20 flex items-center justify-center  w-[100vw] fixed h-[100vh]`}
     >
+      {/* <div className="fixed inset-0 z-50 flex items-center justify-center"> */}
+      {/* Blurred backdrop */}
+      {show && (
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+      )}
+
       <nav
         className={`${
           show ? "border-t" : ""
