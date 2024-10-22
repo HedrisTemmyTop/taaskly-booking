@@ -67,7 +67,7 @@ export default function CreateBookingForm({
     setPublic,
   ]);
 
-   return (
+  return (
     <>
       <div className="md:basis-1/2 basis-full w-full border-1 flex gap-4 flex-col border rounded-md px-4 py-6 border-primary-400">
         <ReusableInput
@@ -113,7 +113,11 @@ export default function CreateBookingForm({
               e: ChangeEvent<
                 HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
               >
-            ) => setDuration(+e.target.value)} // Ensuring the right event type
+            ) => {
+              if (isNaN(+e.target.value)) return;
+              if (Number(e.target.value) < 0) return;
+              setDuration(e.target.value === "" ? null : +e.target.value);
+            }}
           />
           <span className="absolute rounded-full right-4 text-xs top-1/2 px-3 py-1 bg-[#f7f7f7] border border-primary-400">
             Minutes
@@ -134,7 +138,8 @@ export default function CreateBookingForm({
             >
           ) => {
             if (isNaN(+e.target.value)) return;
-            setPrice(+e.target.value);
+            if (Number(e.target.value) < 0) return;
+            setPrice(e.target.value === "" ? null : +e.target.value);
           }} // Ensuring the right event type
         />
         <ReusableInput

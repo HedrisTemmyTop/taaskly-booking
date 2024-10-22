@@ -49,7 +49,7 @@ rounded-lg text-inherit w-[100%] "
           placeholder={placeholder}
           className="border-[1.5px]  outline-0 py-1 px-4 border-primary-400
     rounded-lg text-inherit w-[100%] h-12"
-          value={value !== null ? value : ""} // Handle null properly
+          value={value !== null ? value : ""}
           onChange={onChange}
         />
       )}

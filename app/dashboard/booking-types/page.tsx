@@ -22,14 +22,16 @@ export default async function Page() {
   //   // Include other fields as necessary
   // }));
   return (
-    <div className="grid gap-4 grid-cols-1">
+    <div className="grid gap-4 pb-10 grid-cols-1">
       {bookingTypes.length === 0 && (
         <div> You don`t have a booking types yet</div>
       )}
       {bookingTypes.map((type: BookingTypesResponse, index) => {
         return (
           <div
-            className="border border-primary-400 rounded-lg p-4 w-[100%] flex justify-between"
+            className={`border border-primary-400 rounded-lg p-4 w-[100%] flex justify-between ${
+              index === bookingTypes.length - 1 ? "mb-20" : ""
+            }`}
             key={type._id}
           >
             <div className="">
