@@ -101,6 +101,7 @@ export const getBookingTypes = async function () {
 };
 
 export const editBookingType = async function (id, data) {
+  await dbConnect();
   const slug = createSlug(data.name);
   const {
     name,
@@ -139,6 +140,8 @@ export const editBookingType = async function (id, data) {
 };
 
 export const deleteBookingType = async function (id: string) {
+  await dbConnect();
+
   const result = await BookingTypesModel.findByIdAndUpdate(id, {
     $set: {
       disabled: true,
@@ -159,9 +162,13 @@ export const deleteBookingType = async function (id: string) {
 
 export const getUserBookingWithAvailability = async function (slug) {
   await dbConnect();
-  const response = await BookingTypesModel.findOne({
-    slug,
-  }).populate("availability");
+  const response = await BookingTypesModel.findOne({ slug }).populate(
+    "availability"
+  );
+
+  // const response = await BookingTypesModel.findOne({
+  //   slug,
+  // }).populate("availability");
   return JSON.parse(JSON.stringify(response));
 };
 

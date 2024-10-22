@@ -18,7 +18,7 @@ export interface IAvailability extends Document {
   slug: string;
 }
 
-const AvailabilitySchema: Schema<IAvailability> = new Schema<IAvailability>(
+const availabilitySchema: Schema<IAvailability> = new Schema<IAvailability>(
   {
     name: { type: String, required: true },
     owner: { type: String, required: true },
@@ -96,16 +96,15 @@ const AvailabilitySchema: Schema<IAvailability> = new Schema<IAvailability>(
   }
 );
 
-AvailabilitySchema.pre("save", function (next) {
+availabilitySchema.pre("save", function (next) {
   if (!this.slug && this._id) {
     this.slug = generateSlugFromObjectId(this._id);
   }
   next();
 });
+
 const AvailabilityModel: mongoose.Model<IAvailability> =
-  mongoose.models.Availability ||  model<IAvailability>(
-  "Availability",
-  AvailabilitySchema
-);
+  mongoose.models.Availability ||
+  model<IAvailability>("Availability", availabilitySchema);
 
 export default AvailabilityModel;
