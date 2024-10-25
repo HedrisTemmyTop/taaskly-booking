@@ -48,6 +48,11 @@ button {
   }
 }
 
+span,
+div {
+  overflow-wrap: break-word;
+}
+
 .loader {
   width: 28px;
   height: 28px;
@@ -58,7 +63,10 @@ button {
   box-sizing: border-box;
   animation: rotation 0.7s linear infinite;
 }
-
+.greySpinner {
+  border: 3px solid grey !important;
+  border-bottom-color: #000 !important;
+}
 @keyframes rotation {
   0% {
     transform: rotate(0deg);
@@ -178,6 +186,7 @@ input {
 .rdp-root {
   --rdp-font-family: "Outfit", sans-serif !important;
 }
+
 @media only screen and (max-width: 480px) {
   .rdp-weekdays,
   .rdp-week {

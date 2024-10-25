@@ -9,7 +9,7 @@ import Price from "@/app/_icons/Price";
 
 export default async function Page() {
   const session = (await auth()) as SessionInterface;
-
+  console.log(session);
   await dbConnect();
   const bookingTypes: BookingTypesResponse[] = await BookingTypesModel.find({
     owner: session?.user?.userId,

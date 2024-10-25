@@ -16,12 +16,12 @@ export default function Modal({
   useEffect(() => {
     setTimeout(() => {
       handleCancel();
-    }, 3000);
+    }, 4000);
   }, [type, message, handleCancel, showModal]);
   const border = type == "success" ? "border-green-800" : "border-red-500";
   return (
     <div
-      className={` z-10 duration-1000 fixed max-w-[500px]  bg-secondary-400  top-4 right-2 `}
+      className={` z-40 duration-1000 fixed max-w-[500px]  bg-secondary-400  top-4 right-2 `}
     >
       <div
         className={`flex relative py-6 pl-4 shadow-lg  pr-14 rounded-lg items-center border-2 ${border} `}

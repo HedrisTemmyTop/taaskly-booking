@@ -17,6 +17,8 @@ interface IBooking extends Document {
   reference: string;
   slug: string;
   customerSmsId: string;
+  ownersEmail: string;
+
   ownerSmsId: string;
 }
 
@@ -46,6 +48,16 @@ const bookingSchema: Schema<IBooking> = new Schema<IBooking>(
       type: String,
       required: [true, "Customer's name is required"],
     },
+
+    customerEmail: {
+      type: String,
+      required: [true, "Customer's email is required"],
+    },
+    ownersEmail: {
+      type: String,
+      required: [true, "Owner's email is required"],
+    },
+
     customerPhoneNumber: {
       type: String,
       required: [true, "Customer's phone number is required"],
@@ -76,6 +88,8 @@ bookingSchema.pre("save", function (next) {
   }
   next();
 });
+
+console.log(mongoose.models, "models");
 const BookingModel =
   mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
 export default BookingModel;

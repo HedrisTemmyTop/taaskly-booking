@@ -7,6 +7,7 @@ interface IReusableInput {
   type?: string;
   option?: string[] | { name: string; id: string }[];
   value?: string | number | null;
+  readOnly?: boolean;
   tag?: string;
   onChange?: (
     e: React.ChangeEvent<
@@ -25,9 +26,10 @@ export default function ReusableInput({
   onChange,
   value,
   tag = "obj",
+  readOnly,
 }: IReusableInput) {
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-1 w-full">
       <label htmlFor={label} className="font-medium">
         {label}
       </label>
@@ -47,10 +49,13 @@ rounded-lg text-inherit w-[100%] "
           name={name}
           type={type}
           placeholder={placeholder}
-          className="border-[1.5px]  outline-0 py-1 px-4 border-primary-400
-    rounded-lg text-inherit w-[100%] h-12"
+          className={`border-[1.5px]  outline-0 py-1 px-4 border-primary-400
+    rounded-lg text-inherit w-[100%] h-12 ${
+      readOnly ? "bg-[#e3e3e352]" : "bg-transparent"
+    }`}
           value={value !== null ? value : ""}
           onChange={onChange}
+          readOnly={readOnly}
         />
       )}
       {inputType === "select" && (

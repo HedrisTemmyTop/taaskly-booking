@@ -3,14 +3,14 @@
 // import { sendWelcome } from "@/app/_utils/sendEmail";
 
 // import { IUser } from "../_types/user";
-import { IUser } from "../_types/user";
+
+import { ErrorResponse, IUser } from "../_types/user";
+import { signIn } from "./auth";
 import { supabase } from "./supabase";
 
 export async function verifyEmail(token: string) {
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/auth/verify-email/${token}`
-    );
+    const response = await fetch(`/api/auth/verify-email/${token}`);
     const data = await response.json();
 
     return data;
@@ -54,6 +54,7 @@ export const createUserWithOauth = async function (newUser) {
     .insert([newUser])
     .select();
   if (error) {
+    console.log(error, "error message");
     throw new Error("User could not be created");
   }
 
@@ -70,7 +71,66 @@ export const createUserWithOauth = async function (newUser) {
   return data;
 };
 
+export const createUserWithCredentials = async function (newUser) {
+  const { data, error } = await supabase
+    .from("users")
+    .insert([newUser])
+    .select();
+  if (error) {
+    console.log(error);
+    if (error.code === "23505") throw new Error("Email already exist");
+    else throw new Error("User could not be created");
+  }
+
+  if (data) {
+    // const [newUser]: IUser[] = data as IUser[];
+    const token = await fetch("/api/users/get-token", {
+      method: "POST",
+      body: JSON.stringify(data[0]),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const tokenData = await token.json();
+    console.log(tokenData);
+    const response = await fetch(`/api/send-code`, {
+      method: "POST",
+      body: JSON.stringify({
+        ...data[0],
+        token: tokenData.token,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(response);
+    // const responseData = await response.json();
+    // console.log(responseData);
+    if (!response.ok) throw new Error("Something went wrong");
+    return {
+      success: true,
+      message: "Verification code sent to your mail",
+    };
+  }
+
+  // await sendWelcome(data[0]);
+};
 export async function getUser(email: string) {
+  const { data, error } = await supabase
+    .from("users_safe")
+    .select("*")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching user:", error);
+    return null;
+  }
+
+  return data;
+}
+
+export async function getUserWithPassword(email: string) {
   const { data, error } = await supabase
     .from("users")
     .select("*")
@@ -87,7 +147,7 @@ export async function getUser(email: string) {
 
 export async function getUserById(id: string) {
   const { data } = await supabase
-    .from("users")
+    .from("users_safe")
     .select("*")
     .eq("id", id)
     .single();
@@ -112,3 +172,76 @@ export const updateUser = async (
 
   return data; // Return the updated user data
 };
+
+export async function createUser(formData: FormData) {
+  try {
+    const name = formData.get("fullname");
+    const password = formData.get("password");
+    // const { encryptedData } = encrypt(password as string);
+    const authMethod = formData.get("authMethod") as string;
+    const hashResponse = await fetch("/api/hashPassword", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    });
+    console.log("hashResponse here", hashResponse);
+    const hashData = await hashResponse.json();
+    console.log("hashData", hashData);
+    const email = formData.get("email");
+
+    if (!name) {
+      throw new Error("Name is required");
+    }
+    if (!email) throw new Error("E-mail is required");
+    if (!password) throw new Error("Password is required");
+    // await dbConnect(); // Ensure you're connected to the database
+    const newUser = await createUserWithCredentials({
+      email,
+      name,
+      password: hashData.hashedPassword,
+      authMethod,
+      isVerified: false,
+    });
+    console.log(newUser);
+    if (newUser) return newUser;
+    throw new Error("something went wrong");
+  } catch (error) {
+    console.error(error);
+    const e = error as ErrorResponse;
+
+    // Handle other errors
+    throw new Error(
+      e.message || "An unexpected error occurred. Please try again later."
+    );
+  }
+}
+
+export async function loginAction(formData: FormData) {
+  const authMethod = formData.get("authMethod") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  console.log("authMethod", authMethod);
+
+  const user = await getUserWithPassword(email);
+  if (!user) throw new Error("User does not exist, kindly register");
+  if (user.authMethod !== "credentials")
+    throw new Error("You registered with a different auth method");
+  if (!user.isVerified) throw new Error("Your account is not verified");
+  const passwordCheckResponse = await fetch("/api/correct-password", {
+    method: "POST",
+    body: JSON.stringify({
+      ...user,
+      credentialPassword: password,
+    }),
+  });
+
+  const passwordCheck = await passwordCheckResponse.json();
+  if (!passwordCheck.isCorrectPassword)
+    throw new Error("Incorrect password, you can use the forgot password");
+
+  await signIn("credentials", {
+    email: user.email,
+    id: user.id,
+    name: user.name,
+    image: user.image,
+  });
+}

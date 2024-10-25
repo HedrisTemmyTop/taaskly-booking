@@ -12,6 +12,7 @@ import ShadowBtn from "./ShadowBtn";
 import Spinner from "./Spinner";
 import { useAvailabilityCtx } from "../_hooks/AvailabilityCtx";
 import { createAvailability, editAvailability } from "../_lib/availability";
+import Create from "./Create";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
@@ -112,17 +113,22 @@ export default function DashboardHeader() {
   const renderButton = () => {
     if (activeRoute) {
       return (
-        <ShadowBtn handleClick={handleSubmit} disabled={loading} hide={false}>
-          {loading ? <Spinner /> : activeRoute.button}
-        </ShadowBtn>
+        <>
+          <ShadowBtn handleClick={handleSubmit} disabled={loading} hide={false}>
+            {loading ? <Spinner /> : activeRoute.button}
+          </ShadowBtn>
+        </>
       );
     }
 
     if (currentHead?.button) {
       return (
-        <ShadowBtn handleClick={() => router.push(`${pathname}/create`)}>
-          {currentHead.button}
-        </ShadowBtn>
+        <>
+          <Create />
+          <ShadowBtn handleClick={() => router.push(`${pathname}/create`)}>
+            {currentHead.button}
+          </ShadowBtn>
+        </>
       );
     }
 

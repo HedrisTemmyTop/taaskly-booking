@@ -1,69 +1,23 @@
-// "use client";
+import RegisterForm from "@/app/_components/RegisterForm";
+// import { signInAction } from "@/app/_lib/actions";
+// export const metadata = {
+//   title: "Register",
+//   description: "Taaskly bookings registeration",
+// };
+export default async function Page() {
+  const response = await fetch("https://restcountries.com/v3.1/all");
+  const data = await response.json();
+
+  return <RegisterForm countries={data} />;
+}
 
 // import AuthForm from "@/app/_components/AuthForm";
-// import { createUser, signInAction } from "@/app/_lib/actions";
-// import React, { useState } from "react";
+// import { signInAction } from "@/app/_lib/actions";
 
 // export default function Page() {
-//   const [success, setSuccess] = useState(false);
-//   const [error, setError] = useState<string | null>(null); // State for error
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setError(null); // Reset error state before new submission
-
-//     const formData = new FormData(e.currentTarget);
-//     const authMethod = formData.get("authMethod") as string;
-
-//     try {
-//       if (authMethod === "oauth") {
-//         const result = await signInAction();
-//         if (result.error) {
-//           setError(result.error);
-//         }
-//       } else {
-//         const result = await createUser(formData);
-//         console.log(result);
-//         if (!result) {
-//           setSuccess(true);
-//           setError(null);
-//         } else {
-//           throw new Error(result); // Throwing error if something went wrong
-//         }
-//       }
-//     } catch (err: any) {
-//       console.log(err);
-//       setSuccess(false);
-//       setError(err.message); // Set error message in state
-//     }
-//   };
-
 //   return (
-//     <form className="form mt-1.5 w-[100%]" onSubmit={handleSubmit}>
-//       {success && (
-//         <div className="text-green-500 grid place-items-center">
-//           Verification code has been sent to your mail
-//         </div>
-//       )}
-
-//       {error && (
-//         <div className="text-red-500 grid place-items-center">{error}</div>
-//       )}
+//     <form className="form mt-1.5 w-[100%]" action={signInAction}>
 //       <AuthForm page={"register"} />
 //     </form>
 //   );
 // }
-
-import AuthForm from "@/app/_components/AuthForm";
-import { signInAction } from "@/app/_lib/actions";
-export const metadata = {
-  title: "Register",
-  description: "Taaskly bookings registeration",
-};
-export default function Page() {
-  return (
-    <form className="form mt-1.5 w-[100%]" action={signInAction}>
-      <AuthForm page={"register"} />
-    </form>
-  );
-}

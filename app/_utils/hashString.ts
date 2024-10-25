@@ -1,33 +1,67 @@
-import crypto from "crypto";
+import { subtle } from "crypto"; // Import subtle for TypeScript support
 
-// Key and Initialization Vector (IV)
-const algorithm = "aes-256-cbc";
-const secretKey = crypto.randomBytes(32); // 256-bit key
-const iv = crypto.randomBytes(16); // 128-bit IV
+const algorithm = "AES-CBC"; // AES with CBC mode
+const keyHex = process.env.ENCRYPTION_KEY; // Your existing key in hex format
 
-// Encrypt function
-export function encrypt(text: string): { encryptedData: string; iv: string } {
-  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
-  let encrypted = cipher.update(text, "utf8", "hex");
-  encrypted += cipher.final("hex");
-  return { encryptedData: encrypted, iv: iv.toString("hex") };
-}
-
-// Decrypt function
-export function decrypt(encryptedData: string, iv: string): string {
-  const decipher = crypto.createDecipheriv(
-    algorithm,
-    secretKey,
-    Buffer.from(iv, "hex")
+// Convert hex string to ArrayBuffer
+function hexStringToArrayBuffer(hex: string): ArrayBuffer {
+  const buffer = new Uint8Array(
+    hex.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16))
   );
-  let decrypted = decipher.update(encryptedData, "hex", "utf8");
-  decrypted += decipher.final("utf8");
-  return decrypted;
+  return buffer.buffer;
 }
 
-// Usage Example
-// const { encryptedData, iv } = encrypt('Hello, world!');
-// console.log('Encrypted:', encryptedData);
+// Create a CryptoKey from the hex string
+async function getCryptoKey(): Promise<CryptoKey> {
+  const keyData = hexStringToArrayBuffer(keyHex!); // Ensure the key is not undefined
+  return await subtle.importKey("raw", keyData, { name: algorithm }, false, [
+    "encrypt",
+    "decrypt",
+  ]);
+}
 
-// const decryptedText = decrypt(encryptedData, iv);
-// console.log('Decrypted:', decryptedText);
+// Encryption function
+export async function encrypt(
+  text: string
+): Promise<{ encryptedData: string; iv: string }> {
+  const iv = crypto.getRandomValues(new Uint8Array(16)); // 16 bytes IV for AES-CBC
+  const encodedText = new TextEncoder().encode(text);
+  const key = await getCryptoKey(); // Get the CryptoKey
+
+  const encryptedBuffer = await subtle.encrypt(
+    {
+      name: algorithm,
+      iv: iv,
+    },
+    key,
+    encodedText
+  );
+
+  const encryptedData = new Uint8Array(encryptedBuffer);
+  return {
+    encryptedData: Buffer.from(encryptedData).toString("hex"),
+    iv: Buffer.from(iv).toString("hex"),
+  };
+}
+
+// Decryption function
+export async function decrypt(
+  encryptedDataHex: string,
+  ivHex: string
+): Promise<string> {
+  const encryptedData = new Uint8Array(Buffer.from(encryptedDataHex, "hex"));
+  const iv = new Uint8Array(Buffer.from(ivHex, "hex"));
+  const key = await getCryptoKey(); // Get the CryptoKey
+
+  const decryptedBuffer = await subtle.decrypt(
+    {
+      name: algorithm,
+      iv: iv,
+    },
+    key,
+    encryptedData
+  );
+
+  const decryptedText = new TextDecoder().decode(decryptedBuffer);
+  return decryptedText;
+}
