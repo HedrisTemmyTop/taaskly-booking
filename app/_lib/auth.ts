@@ -90,9 +90,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               authMethod: "oauth",
               isVerified: true,
             });
-          }
-
-          if (existingUser.authMethod !== "oauth")
+          }else if ( existingUser.authMethod !== "oauth")
             return "/auth/login?error=Email%20already%20exist";
           // await fetch("/api/send-mail", existingUser);
           return true;
