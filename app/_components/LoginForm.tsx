@@ -21,13 +21,14 @@ export default function LoginForm({ countries }) {
   }, [loginError]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+
     setError("");
     const formData = new FormData(e.currentTarget);
     try {
       if (authMethod === "oauth") {
         await signInAction();
       } else {
+        setIsLoading(true);
         await loginAction(formData);
       }
     } catch (err) {

@@ -20,12 +20,12 @@ export default function RegisterForm({ countries }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
-    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     try {
       if (authMethod === "oauth") {
         await signInAction();
       } else {
+        setIsLoading(true);
         const result = await createUser(formData);
         if (result.success) {
           setSuccess(true);
