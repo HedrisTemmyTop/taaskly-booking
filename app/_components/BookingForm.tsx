@@ -56,7 +56,7 @@ export default function BookingForm({
       <ReusableInput
         label={"Additional Notes"}
         name="notes"
-        placeholder="Add instruction for the vendor name"
+        placeholder="Add instruction for the vendor name minimun of 3 words"
         inputType={"textarea"}
         onChange={(e) => setNotes(e.target.value)}
         value={notes}

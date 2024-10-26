@@ -21,6 +21,8 @@ import { ErrorResponse } from "@/app/_types/user";
 // import { sendWelcome } from "@/app/_utils/sendEmail";
 import { JwtPayload } from "jsonwebtoken";
 import { signIn } from "@/app/_lib/auth";
+import { createAvailability } from "@/app/_lib/availability";
+import { defaultAvailability } from "@/app/_utils/data";
 // import { signIn } from "next-auth/react";
 
 // export async function verifyEmail(token: string) {
@@ -86,6 +88,9 @@ export async function GET(request) {
     } else {
       const updated = await updateUser(user.id, {
         isVerified: true,
+      });
+      await createAvailability({
+        ...defaultAvailability,
       });
       if (!updated) throw new Error("Error occured");
       await signIn(

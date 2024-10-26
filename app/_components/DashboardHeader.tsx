@@ -62,6 +62,7 @@ export default function DashboardHeader() {
           duration: duration || 0,
           availability,
         };
+        if (!availability.id) return;
         if (
           Object.values(data)
             .slice(1)
@@ -98,7 +99,7 @@ export default function DashboardHeader() {
 
           setTimeout(() => {
             router.push("/dashboard/availability");
-          }, 250);
+          }, 200);
           resetAvailability();
         }
       }

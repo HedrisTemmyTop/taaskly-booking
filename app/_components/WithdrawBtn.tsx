@@ -1,8 +1,16 @@
 "use client";
 
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  memo,
+  useRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Cancel from "../_icons/Cancel";
 import { withdrawFunds } from "../_lib/booking";
+
 import { ErrorResponse } from "../_types/user";
 import formatToNaira from "../_utils/formatToNaira";
 import BackDrop from "./BackDrop";
@@ -359,10 +367,6 @@ const Form: React.FC<FormProps> = memo(
 
 Form.displayName = "Form";
 
-// export default Form;
-
-// import React, { useEffect, useState } from 'react';
-
 const BankDropdown = ({
   dropdown,
   setQuery,
@@ -372,19 +376,50 @@ const BankDropdown = ({
   loading,
   handleSelect,
 }) => {
+  const inputRef = useRef<HTMLInputElement | null>(null); // Ref for input
+  const dropdownRef = useRef<HTMLDivElement | null>(null); // Ref for dropdown
+
+  // Close dropdown when clicking outside input and dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        inputRef.current &&
+        dropdownRef.current &&
+        !inputRef.current.contains(e.target as Node) &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setDropdown(false); // Close the dropdown
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setDropdown]);
+
+  const handleBankSelect = (bank) => {
+    handleSelect(bank); // Set the selected bank
+    setDropdown(false); // Close the dropdown after selecting
+  };
+
   return (
     <div className="relative w-full">
       <input
         type="text"
+        ref={inputRef} // Attach ref to input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => setDropdown(true)}
+        onFocus={() => setDropdown(true)} // Open dropdown on focus
         className="border-[1.5px] outline-0 py-1 px-4 border-primary-400 rounded-lg text-inherit w-full h-12"
         placeholder="Search for a bank"
       />
 
       {dropdown && (
-        <div className="rounded-lg absolute top-[105%] z-10 pt-2 pb-4 border border-primary-400 bg-secondary-400 w-full max-h-[400px] overflow-auto flex flex-col gap-1">
+        <div
+          ref={dropdownRef} // Attach ref to dropdown
+          className="rounded-lg absolute top-[105%] z-10 pt-2 pb-4 border border-primary-400 bg-secondary-400 w-full max-h-[400px] overflow-auto flex flex-col gap-1"
+        >
           {loading ? (
             <div className="px-4 py-2 text-gray-500">Loading...</div>
           ) : filteredData.length > 0 ? (
@@ -392,7 +427,7 @@ const BankDropdown = ({
               <div
                 key={`${bank.value}${bank.name}`}
                 className="px-4 py-2 hover:bg-primary-400 hover:text-secondary-400 duration-100 cursor-pointer"
-                onClick={() => handleSelect(bank)}
+                onClick={() => handleBankSelect(bank)} // Handle bank selection
               >
                 {bank.name}
               </div>
