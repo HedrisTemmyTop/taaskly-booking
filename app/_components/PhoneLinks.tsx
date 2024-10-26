@@ -36,14 +36,17 @@ export default function PhoneLinks({
             <li
               key={item.id}
               className={`w-full flex px-0 rounded text-base transition duration-300 ${
-                pathname === `/${item.link.toLowerCase().replace(" ", "-")}`
+                pathname ===
+                `/dashboard/${item.link.toLowerCase().replace(" ", "-")}`
                   ? "font-medium bg-primary-400 relative text-primary-400"
                   : "text-grey-300 hover:bg-grey-250"
               }`}
             >
               <div>
                 <Link
-                  href={`/${item.link.toLowerCase().replace(" ", "-")}`}
+                  href={`/dashboard/${item.link
+                    .toLowerCase()
+                    .replace(" ", "-")}`}
                   className={`flex h-12 items-center px-4 w-full transition-colors ${
                     pathname === `/${item.link.toLowerCase().replace(" ", "-")}`
                       ? "text-secondary-400"

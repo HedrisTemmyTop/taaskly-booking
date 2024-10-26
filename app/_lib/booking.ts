@@ -126,7 +126,6 @@ export const createBooking = async function (bookingData) {
         customerMessageTemplate,
         newBooking.customerPhoneNumber
       );
-
       if (
         customerSms.status === "queued" &&
         ownersPhoneNumber &&
