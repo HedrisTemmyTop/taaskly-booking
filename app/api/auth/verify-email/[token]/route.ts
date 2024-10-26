@@ -67,7 +67,6 @@ export async function GET(request) {
         "credentials",
         {
           email: user.email,
-          password: user.password,
           name: user.name,
           id: user.id,
           image: user.image,
@@ -96,7 +95,7 @@ export async function GET(request) {
           id: user.id,
           name: user.name,
           image: user.image,
-       
+
           redirect: false,
         },
         "/dashboard/booking-types"

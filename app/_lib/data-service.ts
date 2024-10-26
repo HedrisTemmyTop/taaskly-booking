@@ -5,7 +5,6 @@
 // import { IUser } from "../_types/user";
 
 import { ErrorResponse, IUser } from "../_types/user";
-import { signIn } from "./auth";
 import { supabase } from "./supabase";
 
 export async function verifyEmail(token: string) {
@@ -226,22 +225,14 @@ export async function loginAction(formData: FormData) {
   if (user.authMethod !== "credentials")
     throw new Error("You registered with a different auth method");
   if (!user.isVerified) throw new Error("Your account is not verified");
-  const passwordCheckResponse = await fetch("/api/correct-password", {
+  const response = await fetch("/api/correct-password", {
     method: "POST",
     body: JSON.stringify({
       ...user,
       credentialPassword: password,
     }),
   });
-
-  const passwordCheck = await passwordCheckResponse.json();
-  if (!passwordCheck.isCorrectPassword)
-    throw new Error("Incorrect password, you can use the forgot password");
-
-  await signIn("credentials", {
-    email: user.email,
-    id: user.id,
-    name: user.name,
-    image: user.image,
-  });
+  const responseData = await response.json();
+  console.log(responseData);
+  if (responseData.success) window.location.href = "/dashboard/booking-types";
 }

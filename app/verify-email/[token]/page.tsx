@@ -21,6 +21,7 @@ export default function Page({ params }: { params: { token: string } }) {
       try {
         const response = await fetch(`/api/auth/verify-email/${params.token}`);
         const result = await response.json();
+
         setData(result); // Set fetched data
       } catch (err) {
         console.error(err);
