@@ -5,6 +5,8 @@
 // import { IUser } from "../_types/user";
 
 import { ErrorResponse, IUser } from "../_types/user";
+import { defaultAvailability } from "../_utils/data";
+import { createAvailability } from "./availability";
 import { supabase } from "./supabase";
 
 export async function verifyEmail(token: string) {
@@ -56,7 +58,7 @@ export const createUserWithOauth = async function (newUser) {
     console.log(error, "error message");
     throw new Error("User could not be created");
   }
-
+  await createAvailability(defaultAvailability);
   await fetch(`${process.env.NEXTAUTH_URL}/api/send-email`, {
     method: "POST",
     body: JSON.stringify(data[0]),
