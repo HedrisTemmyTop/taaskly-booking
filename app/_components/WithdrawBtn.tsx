@@ -270,7 +270,6 @@ const Form: React.FC<FormProps> = memo(
       const fetchUserFromPaystack = async () => {
         setIsLoading(true);
         try {
-          console.log(selectedBank);
           const response = await fetch(
             `/api/get-bank-details?account_number=${accountNumber}&bank_code=${selectedBank.value}`
           );

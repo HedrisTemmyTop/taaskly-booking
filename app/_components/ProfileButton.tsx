@@ -20,13 +20,15 @@ export default function ProfileButton({
         className="absolute bottom-4 left-1/2 lg:w-[100%] lg:max-w-[170px] -translate-x-1/2 lg:border border-1 border-primary-400 rounded  py-2.5 px-3 bg-transparent text-inherit flex justify-between items-center gap-2"
         onClick={() => setShowLogout((prev) => !prev)}
       >
-        <Image
-          width={100}
-          height={100}
-          className="border-2 hidden lg:block font-semibold border-primary-400 rounded-full w-[28px] h-[28px]"
-          src={image || ""}
-          alt={name || ""}
-        />
+        {image !== "null" && (
+          <Image
+            width={100}
+            height={100}
+            className="border-2 hidden lg:block font-semibold border-primary-400 rounded-full w-[28px] h-[28px]"
+            src={image}
+            alt={"profile image"}
+          />
+        )}
         <div className="border-2 block lg:hidden font-semibold border-primary-400 rounded-full w-[28px] h-[28px]">
           {name && name[0]}
         </div>

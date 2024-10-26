@@ -6,6 +6,7 @@ import { signInAction } from "@/app/_lib/actions";
 import { createUser } from "@/app/_lib/data-service";
 import { ErrorResponse } from "@/app/_types/user";
 import React, { useState } from "react";
+import Modal from "./Modal";
 // export const metadata = {
 //   title: "Register",
 //   description: "Taaskly bookings registeration",
@@ -19,7 +20,7 @@ export default function RegisterForm({ countries }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
-    setIsLoading(false);
+    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     try {
       if (authMethod === "oauth") {
@@ -45,9 +46,11 @@ export default function RegisterForm({ countries }) {
   return (
     <form className="form mt-1.5 w-[100%]" onSubmit={handleSubmit}>
       {success && (
-        <div className="text-green-500 grid place-items-center">
-          Verification code has been sent to your mail
-        </div>
+        <Modal
+          type="success"
+          message="Verification code has been sent to your mail"
+          handleCancel={() => setSuccess(false)}
+        />
       )}
 
       {error && (

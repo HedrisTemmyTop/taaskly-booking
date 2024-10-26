@@ -7,6 +7,7 @@ export const metadata = {
 };
 export default async function Page() {
   const availabilities = await getUserAvailabilities();
+  setTimeout(() => {}, 5000);
 
   if (availabilities.length === 0)
     return <div>You don`t have availability yet, pls create one</div>;
