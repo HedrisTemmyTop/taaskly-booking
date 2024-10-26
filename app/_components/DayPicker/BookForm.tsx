@@ -61,7 +61,7 @@ export default function BookForm({
     time &&
     selectedDay &&
     phoneNumber &&
-    notes.split(" ").length > 3;
+    notes.split(" ").length >= 3;
   const handleGoBack = () => {
     setTime("");
   };
