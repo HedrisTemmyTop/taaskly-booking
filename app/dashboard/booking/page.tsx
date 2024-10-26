@@ -4,7 +4,6 @@ import { getUserBookings } from "@/app/_lib/booking";
 import { SessionInterface } from "@/app/_types/user";
 import { addDuration } from "@/app/_utils/generateTime";
 import { format } from "date-fns";
-import React from "react";
 import { IoTimeOutline } from "react-icons/io5";
 
 export default async function Page() {
