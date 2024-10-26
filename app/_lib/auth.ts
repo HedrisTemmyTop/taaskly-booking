@@ -1,16 +1,8 @@
 import NextAuth, { Account, User as IUser, Session } from "next-auth";
-// import credentials from "next-auth/providers/credentials";
-// import Credentials from "next-auth/providers/credentials";
-// import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-
-// import bcrypt from "bcryptjs";
+import credentials from "next-auth/providers/credentials";
 import google from "next-auth/providers/google";
 
-// import { ErrorResponse } from "../_types/user";
-// import { sendWelcome } from "../_utils/sendEmail";
 import { createUserWithOauth, getUser } from "./data-service";
-// import  { dbConnect } from "./mongodb";
-// import clientPromise from "./mongodbCon";
 interface ExtendedUser extends IUser {
   userId?: string;
 }
@@ -33,39 +25,25 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    // Credentials({
-    //   name: "credentials",
-    //   credentials: {
-    //     email: { label: "email", type: "email", placeholder: "jsmith" },
-    //     password: { label: "Password", type: "password" },
-    //   },
-    //   async authorize(credentials) {
-    //     await dbConnect();
-    //     try {
-    //       console.log("credentials", credentials);
-    //       const user = await User.findOne({
-    //         email: credentials.email,
-    //       }).select("+password");
-    //       console.log(user);
-    //       if (!user) throw new Error("User does not exist, kindly register");
-    //       if (!user.isVerified) throw new Error("User not verified");
-    //       const confirmPass = await bcrypt.compare(
-    //         credentials.password as string,
-    //         user.password
-    //       );
-    //       console.log("pass confirm", confirmPass);
-    //       if (credentials.password !== user.password && !confirmPass)
-    //         throw new Error("Incorrect password");
-    //       console.log(user, "user");
-    //       return {
-    //         email: user.email,
-    //         id: user._id,
-    //       };
-    //     } catch {
-    //       return null;
-    //     }
-    //   },
-    // }),
+    credentials({
+      name: "credentials",
+      credentials: {
+        email: {},
+        password: {},
+        id: {},
+        name: {},
+        image: {},
+      },
+      authorize(credentials) {
+        console.log(credentials);
+        return {
+          email: credentials.email as string,
+          id: credentials.id as string,
+          name: credentials.name as string,
+          image: credentials.image as string,
+        };
+      },
+    }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   // trustHost: (process.env.NODE_ENV === "development"
@@ -80,6 +58,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
     async session({ session }: { session: Session }) {
       // await dbConnect();
+      console.log("first", session);
       const user = await getUser(session?.user?.email as string);
 
       if (session && session.user) {
@@ -87,19 +66,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
       return session;
     },
-
-    // async session({ session }: { session: SessionInterface }) {
-    //   const guest = await getGuest(session.user.email);
-    //   session.user.guestId = guest.id;
-    //   return session;
-    // },
-    // async redirect({ url, baseUrl }) {
-    //   // Allows relative callback URLs
-    //   if (url.startsWith("/")) return `${baseUrl}${url}`;
-    //   // Allows callback URLs on the same origin
-    //   else if (new URL(url).origin === baseUrl) return url;
-    //   return baseUrl;
-    // },
 
     async signIn({
       user,
@@ -112,13 +78,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }) {
       try {
         // await dbConnect();
-        // if ((user as ExtendedUser).message)
-        //   throw new Error((user as ExtendedUser).message);
-
-        // Handle Google sign-in
         if (account?.provider === "google") {
           //   // const f
           const existingUser = await getUser(user.email as string);
+          console.log(existingUser, "exiting user");
           if (!existingUser) {
             await createUserWithOauth({
               email: user.email,
@@ -128,21 +91,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               isVerified: true,
             });
           }
+
+          if (existingUser.authMethod !== "oauth")
+            return "/auth/login?error=Email%20already%20exist";
           // await fetch("/api/send-mail", existingUser);
           return true;
         }
-        return true;
+
         // Handle credentials sign-in
-        // if (account?.provider === "credentials") {
-        //   const existingUser = await User.findOne({ email: user.email });
-        //   if (!existingUser) {
-        //     throw new Error("User does not exist, kindly register");
-        //   } else if (!existingUser.isVerified) {
-        //     throw new Error("User is not verified, please verify your account");
-        //   } else {
-        //     return true;
-        //   }
-        // }
+        if (account?.provider === "credentials") {
+          return true;
+        }
+        return false;
       } catch (error) {
         console.error("SignIn Error:", error);
         return false;

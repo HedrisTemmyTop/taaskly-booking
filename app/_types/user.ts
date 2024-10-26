@@ -15,6 +15,7 @@ export interface IUser extends Document {
   verificationTokenExpiresAt: Date;
   verificationTokenAt: Date;
   image: string;
+  id: string;
 }
 
 export interface ISignUp {

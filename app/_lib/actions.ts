@@ -1,91 +1,24 @@
 "use server";
 import { redirect } from "next/navigation";
 // import UserModel from "@/app/_lib/models/User";
-// import { dbConnect } from "@/app/_lib/mongodb";
-// import bcrypt from "bcryptjs";
 // import { redirect } from "next/navigation";
 // import { verifyYourEmail } from "../_htmlTemplates/template";
-// import { ErrorResponse } from "../_types/user";
-// import { generateToken } from "../_utils/generateToken";
-// import { encrypt } from "../_utils/hashString";
-// import sendEmail from "../_utils/sendEmail";
 import { signIn, signOut } from "./auth";
-import { getUser, updateUser } from "./data-service";
-import { generateToken } from "../_utils/generateToken";
-import sendEmail from "../_utils/sendEmail";
-import { encrypt } from "../_utils/hashString";
+import { getUserById } from "./data-service";
+// import { generateToken } from "../_utils/generateToken";
+// import sendEmail from "../_utils/sendEmail";
+// import { encrypt } from "../_utils/hashString";
 
 export async function signInAction() {
   // await dbConnect();
-  await signIn("google", { redirectTo: "/dashboard/booking-types" });
+  await signIn("google", {
+    redirectTo: "/dashboard/booking-types",
+  });
+  // console.log("result==>", result);
 }
 export const signOutAction = async function () {
   await signOut({ redirectTo: "/" });
 };
-
-// export async function createUser(formData: FormData) {
-//   try {
-//     const name = formData.get("fullname");
-//     const password = formData.get("password");
-//     // const { encryptedData } = encrypt(password as string);
-//     const authMethod = formData.get("authMethod") as string;
-//     const hashedPassword = await bcrypt.hash(password as string, 12);
-//     const email = formData.get("email");
-
-//     if (!name) {
-//       throw new Error("Name is required");
-//     }
-//     if (!email) throw new Error("E-mail is required");
-//     if (!password) throw new Error("Password is required");
-//     await dbConnect(); // Ensure you're connected to the database
-//     const newUser = await UserModel.create({
-//       email,
-//       name,
-//       password: hashedPassword,
-//       authMethod,
-//     });
-//     if (newUser) {
-//       // const token = randomBytes(32).toString("hex");
-//       // const user = await  UserModel.findOne({email: email})
-//       const token = generateToken(newUser._id, "1m");
-
-//       const verify = verifyYourEmail(
-//         `${process.env.NEXTAUTH_URL}/verify-email/${token}`
-//       );
-//       await sendEmail(newUser, verify, "Verify your email");
-//       const { encryptedData: hashedToken } = encrypt(token);
-
-//       // Use the Web Crypto API to hash the token
-//       // const encoder = new TextEncoder();
-//       // const data = encoder.encode(token);
-//       // const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-//       // const hashArray = Array.from(new Uint8Array(hashBuffer));
-//       // const hashedToken = hashArray
-//       //   .map((b) => b.toString(16).padStart(2, "0"))
-//       //   .join("");
-
-//       const updatedData = {
-//         verificationToken: hashedToken,
-//       };
-
-//       await UserModel.findByIdAndUpdate(
-//         newUser._id,
-//         { $set: updatedData },
-//         { new: true }
-//       );
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     const e = error as ErrorResponse;
-//     if (e.code === 11000) {
-//       // Check for duplicate key error (E11000)
-//       throw new Error("Email already exists. Please login.");
-//     } else {
-//       // Handle other errors
-//       throw new Error("An unexpected error occurred. Please try again later.");
-//     }
-//   }
-// }
 
 // export async function loginAction(formData: FormData) {
 //   const authMethod = formData.get("authMethod") as string;
@@ -114,16 +47,17 @@ export const signOutAction = async function () {
 //     // }
 //   }
 // }
-export async function verifyUserEmail(formData: FormData) {
-  const id = formData.get("id") as string;
+export async function verifyUserEmail(id) {
+  // const id = formData.get("id") as string;
+  console.log(id);
 
   try {
-    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id) {
       throw new Error("Invalid ID format");
     }
 
     // const user = await UserModel.findById(id);
-    const user = await getUser(id);
+    const user = await getUserById(id);
 
     if (!user) throw new Error("User not found, kindly register");
     if (user.isVerified) {
@@ -138,16 +72,30 @@ export async function verifyUserEmail(formData: FormData) {
         redirect("/dashboard/booking-types");
       }
     }
-    const token = generateToken(user.id, "5m");
-    const verifyLink = `${process.env.NEXTAUTH_URL}/verify-email/${token}`;
-    await sendEmail(user, verifyLink, "Verify your email");
-    const { encryptedData: hashedToken } = encrypt(token);
+    const token = await fetch("/api/users/get-token", {
+      method: "POST",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const tokenData = await token.json();
 
-    const updatedData = {
-      verificationToken: hashedToken,
+    const response = await fetch(`/api/send-code`, {
+      method: "POST",
+      body: JSON.stringify({
+        ...user,
+        token: tokenData.token,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) throw new Error("Something went wrong");
+    return {
+      success: true,
+      message: "Verification code sent to your mail",
     };
-
-await updateUser(user.id,updatedData)
   } catch (error) {
     // Log the error for debugging
     console.error("Error in verifyUserEmail:", error);

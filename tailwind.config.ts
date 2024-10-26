@@ -25,6 +25,9 @@ const config: Config = {
           400: "#9ba3af",
           500: "#6A7280",
         },
+        purple: {
+          400: "#756bfe",
+        },
       },
       fontSize: {
         tiny: "0.625rem", // 10px

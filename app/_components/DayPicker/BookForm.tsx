@@ -90,11 +90,9 @@ export default function BookForm({
       reference: reference.reference,
 
       bookingTitle: booking.name,
-      countryCode: `${selectedCountry.idd?.root}
-            ${
-              selectedCountry.idd?.suffixes?.[0] &&
-              selectedCountry.idd.suffixes[0]
-            }`,
+      countryCode: `${selectedCountry.idd?.root}${
+        selectedCountry.idd?.suffixes?.[0] && selectedCountry.idd.suffixes[0]
+      }`,
     };
     try {
       setLoading(true);
@@ -103,15 +101,13 @@ export default function BookForm({
       if (booking.price > 0) response = await verifyPayment(reference);
       // const data = await response.json();
       // console.log(data);
-      console.log(response);
       if (bookinData.price === 0 || response.status) {
         const result = await createBooking(bookinData);
-        console.log(result);
         if (result.success && result.data) {
           setSuccess(result.message);
           setTimeout(() => {
             router.push(`/booking/${result.data.slug}`);
-          }, 2000);
+          }, 1000);
         } else {
           throw new Error(result.message || "Something went wrong");
         }
@@ -174,7 +170,6 @@ export default function BookForm({
   const timeArr = genTimeArr(booking, selectedDay);
   const availableTime =
     selectedDay && generateTimeSlots(timeArr, timeframe, selectedDay);
-  console.log(availableTime, timeArr);
 
   return (
     <div className="m-auto w-full min-h-[100vh] md:min-h-[463px] md:w-auto bg-secondary-400 flex md:flex-row flex-col border-1 border border-[#E5E6EB]">
@@ -226,7 +221,7 @@ export default function BookForm({
                   , {selectedDay.getFullYear()}
                 </span>
                 <span>
-                  {time} - {addDuration(time, booking.duration)}
+                  {time.toUpperCase()} - {addDuration(time, booking.duration)}
                 </span>
               </span>
             </span>
