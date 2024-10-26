@@ -58,7 +58,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
     async session({ session }: { session: Session }) {
       // await dbConnect();
-      console.log("first", session);
       const user = await getUser(session?.user?.email as string);
 
       if (session && session.user) {
@@ -90,7 +89,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               authMethod: "oauth",
               isVerified: true,
             });
-          }else if ( existingUser.authMethod !== "oauth")
+          } else if (existingUser.authMethod !== "oauth")
             return "/auth/login?error=Email%20already%20exist";
           // await fetch("/api/send-mail", existingUser);
           return true;

@@ -14,7 +14,7 @@ export const createAvailability = async function (availability) {
     const session = (await auth()) as SessionInterface;
     const data = await AvailabilityModel.create({
       ...availability,
-      owner: session?.user?.userId,
+      owner: availability.owner || session?.user?.userId,
     });
     if (data) {
       revalidatePath("/dashboard/availability");

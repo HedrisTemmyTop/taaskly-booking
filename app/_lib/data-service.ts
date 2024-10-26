@@ -56,18 +56,29 @@ export const createUserWithOauth = async function (newUser) {
     console.log(error, "error message");
     throw new Error("User could not be created");
   }
+  const defaultAvResponse = await fetch(
+    `${process.env.NEXTAUTH_URL}/api/create-deafult-availability`,
+    {
+      method: "POST",
+      body: JSON.stringify(data[0]),
+    }
+  );
 
-  await fetch(`${process.env.NEXTAUTH_URL}/api/send-email`, {
-    method: "POST",
-    body: JSON.stringify(data[0]),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  if (defaultAvResponse.ok) {
+    await fetch(`${process.env.NEXTAUTH_URL}/api/send-email`, {
+      method: "POST",
+      body: JSON.stringify(data[0]),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  // await sendWelcome(data[0]);
+    // await sendWelcome(data[0]);
 
-  return data;
+    return data;
+  } else {
+    throw new Error("Somethingw went wrong ");
+  }
 };
 
 export const createUserWithCredentials = async function (newUser) {
