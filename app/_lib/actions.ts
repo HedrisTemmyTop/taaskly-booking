@@ -16,8 +16,8 @@ export async function signInAction() {
   });
   // console.log("result==>", result);
 }
-export const signOutAction = async function () {
-  await signOut({ redirectTo: "/" });
+export const signOutAction = async function (path = "/") {
+  await signOut({ redirectTo: path });
 };
 
 // export async function loginAction(formData: FormData) {

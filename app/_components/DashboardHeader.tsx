@@ -3,20 +3,22 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { sidebarLinks } from "../_data/sidebarLinks";
+import { useAvailabilityCtx } from "../_hooks/AvailabilityCtx";
 import { useBookingTypeContext } from "../_hooks/BookinTypesCtx";
+import { createAvailability, editAvailability } from "../_lib/availability";
 import { createBookingType, editBookingType } from "../_lib/bookingType";
 import { ErrorResponse } from "../_types/user";
 import getActiveRoute from "../_utils/getActiveRoute";
+import Create from "./Create";
+import LogoutButton from "./LogoutButton";
 import Modal from "./Modal";
 import ShadowBtn from "./ShadowBtn";
 import Spinner from "./Spinner";
-import { useAvailabilityCtx } from "../_hooks/AvailabilityCtx";
-import { createAvailability, editAvailability } from "../_lib/availability";
-import Create from "./Create";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
   const router = useRouter();
+  const [showLogout, setShowLogout] = useState(false);
   const { name, description, isPublic, id, price, duration, availability } =
     useBookingTypeContext();
 
@@ -167,7 +169,8 @@ export default function DashboardHeader() {
 
       <button
         className={`bg-transparent ${activeRoute?.button ? "hidden" : ""}  
-        text-inherit flex md:hidden justify-between items-center gap-2`}
+        text-inherit  relative flex md:hidden justify-between items-center gap-2`}
+        onClick={() => setShowLogout((prev) => !prev)}
       >
         <span
           className="border-2 font-semibold text-xl border-primary-400 
@@ -175,6 +178,15 @@ export default function DashboardHeader() {
         >
           I
         </span>
+        {showLogout && (
+          <LogoutButton
+            style={{
+              top: "40px",
+              right: "0",
+              background: "#ffff",
+            }}
+          />
+        )}
       </button>
     </header>
   );
