@@ -26,7 +26,6 @@ export const POST = async function (req) {
         success: false,
       });
     }
-
     return Response.json({
       message: "Code is verified",
       success: true,

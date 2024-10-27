@@ -1,19 +1,17 @@
 "use client";
-import React, { useState } from "react";
-import ReusableInput from "./ReusableInput";
-import Button from "./Button";
-import Spinner from "./Spinner";
 import Link from "next/link";
+import { useState } from "react";
+import { signOutAction } from "../_lib/actions";
 import { resetPassword } from "../_lib/data-service";
-import { useRouter } from "next/navigation";
+import Button from "./Button";
+import ReusableInput from "./ReusableInput";
+import Spinner from "./Spinner";
 
 export default function ResetPasswordForm({ userId }) {
-  console.log(userId);
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [err, setErr] = useState("");
-  const router = useRouter();
   const handleSubmit = async function (e) {
     e.preventDefault();
     setErr("");
@@ -21,9 +19,9 @@ export default function ResetPasswordForm({ userId }) {
     try {
       const response = await resetPassword(userId, newPassword);
       setSuccess("Password has been reset");
-      setTimeout(() => {
-        router.push("/auth/login");
-      }, 500);
+
+      setTimeout(() => {}, 500);
+      await signOutAction("/auth/login");
       console.log(response);
     } catch (err) {
       setErr(err.message || "Something went wrong try again");
