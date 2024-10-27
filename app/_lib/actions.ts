@@ -16,7 +16,10 @@ export async function signInAction() {
   });
   // console.log("result==>", result);
 }
-export const signOutAction = async function (path = "/") {
+export const signOutAction = async function () {
+  await signOut({ redirectTo: "/" });
+};
+export const signOutActionWithPath = async function (path = "/") {
   await signOut({ redirectTo: path });
 };
 

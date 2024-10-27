@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { signOutAction } from "../_lib/actions";
+import { signOutActionWithPath } from "../_lib/actions";
 import { resetPassword } from "../_lib/data-service";
 import Button from "./Button";
 import ReusableInput from "./ReusableInput";
@@ -21,7 +21,7 @@ export default function ResetPasswordForm({ userId }) {
       setSuccess("Password has been reset");
 
       setTimeout(() => {}, 500);
-      await signOutAction("/auth/login");
+      await signOutActionWithPath("/auth/login");
       console.log(response);
     } catch (err) {
       setErr(err.message || "Something went wrong try again");
