@@ -11,16 +11,20 @@ export const POST = async function (request: Request) {
       });
     }
     let mailTemplate;
-    if (!user.reset)
+    let subject;
+    if (!user.reset) {
       mailTemplate = verifyYourEmail(
         `${process.env.NEXTAUTH_URL}/verify-email/${user.token}`
       );
-    if (user.reset)
+      subject = "Taaskly -- Verify your email";
+    }
+    if (user.reset) {
       mailTemplate = changePassword(
         `${process.env.NEXTAUTH_URL}/auth/reset-password/${user.token}`
       );
-
-    const result = await sendEmail(user, mailTemplate, "Verify your email");
+      subject = "Taaskly -- Reset Your password";
+    }
+    const result = await sendEmail(user, mailTemplate, subject);
     console.log("result", result);
     if (result.success) {
       return new Response("Verification code sent successfully", {

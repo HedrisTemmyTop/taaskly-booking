@@ -14,13 +14,17 @@ export const POST = async function (request: Request) {
     if (!isCorrectPassword)
       throw new Error("Incorrect password, you can use the forgot password");
 
-    await signIn("credentials", {
-      email: user.email,
-      id: user.id,
-      name: user.name,
-      image: user.image,
-      redirect: false,
-    });
+    await signIn(
+      "credentials",
+      {
+        email: user.email,
+        id: user.id,
+        name: user.name,
+        image: user.image,
+        redirect: false,
+      },
+      "/dashboard/booking-types"
+    );
     return Response.json({
       success: true,
       message: "Login successful",

@@ -14,6 +14,8 @@ export interface IUser extends Document {
   verificationToken: string;
   verificationTokenExpiresAt: Date;
   verificationTokenAt: Date;
+  passwordResetToken: string;
+  passwordResetTokenExpiresAt: Date;
   image: string;
   id: string;
 }

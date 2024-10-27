@@ -245,6 +245,8 @@ export async function resetPassword(userId: string, password: string) {
     .from("users")
     .update({
       password: hashData.hashedPassword,
+      passwordResetTokenExpiresAt: null,
+      passwordResetToken: null,
       authMethod: "credentials",
     })
     .eq("id", userId) // Assuming 'id' is the primary key for your users table
