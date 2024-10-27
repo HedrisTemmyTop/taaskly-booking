@@ -34,6 +34,7 @@ export default function LoginForm({ countries }) {
     } catch (err) {
       const error = err as ErrorResponse;
       //   setSuccess(false);
+      console.error(err);
       setError(error.message); // Set error message in state
       // }
     } finally {

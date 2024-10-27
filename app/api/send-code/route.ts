@@ -1,4 +1,4 @@
-import { verifyYourEmail } from "@/app/_htmlTemplates/template";
+import { changePassword, verifyYourEmail } from "@/app/_htmlTemplates/template";
 import sendEmail from "@/app/_utils/sendEmail";
 
 export const POST = async function (request: Request) {
@@ -10,12 +10,17 @@ export const POST = async function (request: Request) {
         status: 400,
       });
     }
+    let mailTemplate;
+    if (!user.reset)
+      mailTemplate = verifyYourEmail(
+        `${process.env.NEXTAUTH_URL}/verify-email/${user.token}`
+      );
+    if (user.reset)
+      mailTemplate = changePassword(
+        `${process.env.NEXTAUTH_URL}/auth/reset-password/${user.token}`
+      );
 
-    const verify = verifyYourEmail(
-      `${process.env.NEXTAUTH_URL}/verify-email/${user.token}`
-    );
-
-    const result = await sendEmail(user, verify, "Verify your email");
+    const result = await sendEmail(user, mailTemplate, "Verify your email");
     console.log("result", result);
     if (result.success) {
       return new Response("Verification code sent successfully", {

@@ -35,7 +35,7 @@ export default function AuthInput({
 
   if (isLogin) {
     isFormReady =
-      (validateEmail(email) && password.length > 6) ||
+      (validateEmail(email) && password.length >= 6) ||
       String(phoneNumber).length >= 8;
   } else {
     isFormReady =
@@ -144,9 +144,12 @@ rounded-lg text-inherit w-[100%] h-12"
               </label>
             </span>
             {isLogin && (
-              <span className="text-sm border-0 text-primary-400 underline disabled:cursor-not-allowed">
+              <Link
+                href={"/auth/forgot"}
+                className="text-sm border-0 text-primary-400 underline disabled:cursor-not-allowed"
+              >
                 Forgot password?
-              </span>
+              </Link>
             )}
           </div>
         </>
