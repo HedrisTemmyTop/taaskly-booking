@@ -8,7 +8,7 @@ export const POST = async function (request) {
     const token = generateToken(user.id, "10m");
 
     return Response.json({
-      message: "Nigeria banks has been queried",
+      message: "Token has been created",
       token,
     });
   } catch (error) {

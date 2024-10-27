@@ -1,8 +1,11 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useAuthContext } from "../_hooks/AuthFormContext";
 
 export default function SwitchButtons() {
   const { setState, state } = useAuthContext();
+  const pathname = usePathname().split("/")[2];
+  if (pathname !== "login" && pathname !== "register") return;
   return (
     <div className="flex self-baseline mb-6">
       <button

@@ -169,6 +169,9 @@ export const updateUser = async (
   userId: string,
   updatedUserData: Partial<IUser>
 ) => {
+  const user = await getUserById(userId);
+  if (!user) throw new Error("You brazzy gaan ooo, user does not exist");
+
   const { data, error } = await supabase
     .from("users") // Replace with your table name
     .update(updatedUserData)
@@ -179,7 +182,7 @@ export const updateUser = async (
     console.error("Error updating user:", error);
     throw new Error("User could not be updated");
   }
-
+  if (!data || data.length === 0) throw new Error("User does not exist");
   return data; // Return the updated user data
 };
 
@@ -225,11 +228,42 @@ export async function createUser(formData: FormData) {
   }
 }
 
+export async function resetPassword(userId: string, password: string) {
+  const hashResponse = await fetch("/api/hashPassword", {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
+  console.log(userId);
+  const user = await getUserById(userId);
+  console.log(user);
+  if (!user) throw new Error("You brazzy gaan ooo, user does not exist");
+
+  console.log("hashResponse here", hashResponse);
+  const hashData = await hashResponse.json();
+  console.log(hashData);
+  const { data, error } = await supabase
+    .from("users")
+    .update({
+      password: hashData.hashedPassword,
+      authMethod: "credentials",
+    })
+    .eq("id", userId) // Assuming 'id' is the primary key for your users table
+    .select();
+
+  // Get affected rows count
+
+  console.log(data, error);
+  if (error) throw new Error(error.message || "Something went wrong");
+  // updateUser()
+
+  return {
+    success: true,
+    data,
+  };
+}
 export async function loginAction(formData: FormData) {
-  const authMethod = formData.get("authMethod") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  console.log("authMethod", authMethod);
 
   const user = await getUserWithPassword(email);
   if (!user) throw new Error("User does not exist, kindly register");
@@ -244,6 +278,6 @@ export async function loginAction(formData: FormData) {
     }),
   });
   const responseData = await response.json();
-  console.log(responseData);
   if (responseData.success) window.location.href = "/dashboard/booking-types";
+  else throw new Error(responseData.message || "Something went wrong");
 }

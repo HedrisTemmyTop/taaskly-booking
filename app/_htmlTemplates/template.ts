@@ -138,6 +138,81 @@ export const verifyYourEmail = function (url: string) {
   `;
 };
 
+export const changePassword = function (url: string) {
+  return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Change your password</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #ffffff; /* White background */
+                color: #333; /* Black text */
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #ffffff; /* White background */
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+                text-align: center;
+                padding: 20px 0;
+            }
+            .header h1 {
+                color: #4CAF50; /* Green color */
+            }
+            .button {
+                display: inline-block;
+                padding: 12px 25px;
+                margin: 20px 0;
+                background-color: #007BFF; /* Primary button color */
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }
+            .button:hover {
+                background-color: #0056b3; /* Darker shade on hover */
+            }
+            .footer {
+                text-align: center;
+                font-size: 0.9em;
+                color: #777; /* Lighter gray */
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Reset your password, !</h1>
+            </div>
+            <p>Hey there, my G! 🌟</p>
+            <p>
+            Reset your password with the link below, password expires in 10mins
+            </p>
+            <a href="${url}" class="button">Reset your password</a>
+            <p>
+                If you no fit click the button, just copy and paste this link into your browser: <br>
+                <a href="${url}">${url}</a>
+            </p>
+            <div class="footer">
+                <p>Thank you for joining us! We dey appreciate you. ❤️</p>
+                <p>If you no sign up for this, make you ignore this email.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+};
+
 export const bookingEmail = function (data) {
   return `<html lang="en">
 <head>
