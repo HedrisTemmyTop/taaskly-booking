@@ -178,16 +178,16 @@ export default function DashboardHeader() {
         >
           I
         </span>
-        {showLogout && (
-          <LogoutButton
-            style={{
-              top: "40px",
-              right: "0",
-              background: "#ffff",
-            }}
-          />
-        )}
       </button>
+      {showLogout && (
+        <LogoutButton
+          style={{
+            top: "65px",
+            right: "10px",
+            background: "#ffff",
+          }}
+        />
+      )}
     </header>
   );
 }
