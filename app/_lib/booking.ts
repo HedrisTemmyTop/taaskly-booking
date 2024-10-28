@@ -432,7 +432,7 @@ export const withdrawFunds = async function (withdrawData, formData) {
     console.log(recepientCode);
     if (!recepientCode) throw new Error("Error occured");
     withdrawDetails.recepientCode = recepientCode;
-    withdrawDetails.status = "pending";
+    // withdrawDetails.status = "pending";
     // const transferResponse = await initiateTransfer(
     //   amountReceived,
     //   recepientCode
