@@ -20,11 +20,11 @@ export default function SettingsForm({ user }) {
   const [email, setEmail] = useState("");
   const [files, setFile] = useState("");
 
-  const handleSubmit = async function () {
+  const handleSubmit = async function (base64) {
     setLoading(true);
     try {
       const data = {
-        image,
+        image: base64,
         name: fullName,
         phoneNumber: Number(phoneNumber),
         bio,
@@ -43,16 +43,16 @@ export default function SettingsForm({ user }) {
   };
   const handleIsEdit = async function () {
     if (isEdit) {
-      await handleSubmit();
+      await handleSubmit(image);
     }
     setIsEdit((prev) => !prev);
   };
   const handleFileChange = async function (event) {
     const { files } = event.target;
     const base64 = await convertToBase64(files[0]);
-    setFile(files[0]);
     setImage(base64 as string);
-    await handleSubmit();
+    await handleSubmit(base64);
+    setFile(files[0]);
     // setFile(event.target.files[0]);
   };
   const handlePhoneNumber = function (event) {
