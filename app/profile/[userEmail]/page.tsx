@@ -31,12 +31,12 @@ export default async function Page({ params }) {
           <Fragment key={type._id as string}>
             <Link
               href={`/${email}/${type.slug}`}
-              className="flex flex-col gap-4"
+              className="flex flex-col gap-4 flex-1 w-full"
               target="_blank"
             >
               <div
                 className={`border border-[#737882c9] rounded p-4 w-[100%] flex justify-between ${
-                  index === bookingTypes.length - 1 ? "mb-20" : ""
+                  index === bookingTypes.length - 1 ? "mb-10" : ""
                 }`}
               >
                 <div className="">
