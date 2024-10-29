@@ -198,7 +198,9 @@ export default function BookForm({
             : "max-w-[220px] lg:w-[240px]"
         }`}
       >
-        <div className="flex flex-col gap-2 ">
+        <div
+          className={`flex flex-col gap-2  ${showForm ? "items-start" : ""}`}
+        >
           <button
             type="button"
             className="bg-transparent text-inherit flex justify-between items-center gap-2"
@@ -215,7 +217,7 @@ export default function BookForm({
           {selectedDay && time && (
             <span className="flex my-4">
               <Booking />
-              <span className="flex flex-col text-sm">
+              <span className="flex flex-col ml-2 text-sm">
                 <span className="capitalize">
                   {days[selectedDay.getDay()]}, {months[selectedDay.getMonth()]}
                   , {selectedDay.getFullYear()}
@@ -346,7 +348,7 @@ const SelectDate = function ({
             </button>
           </span>
         </div>
-        <div className="mt-4 h-[380px] overflow-auto">
+        <div className="mt-4 md:h-[380px] overflow-auto">
           {availableTime.length > 0 ? (
             availableTime.map((t) => (
               <button

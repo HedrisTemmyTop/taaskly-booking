@@ -1,7 +1,7 @@
 import { JwtPayload } from "jsonwebtoken";
 
 export interface IUser extends Document {
-  phoneNumber: number;
+  phoneNumber: string | number;
   email: string;
   password: string;
   authMethod: "oauth" | "credentials" | "emailLink" | "phone";
@@ -17,6 +17,7 @@ export interface IUser extends Document {
   passwordResetToken: string;
   passwordResetTokenExpiresAt: Date;
   image: string;
+  bio: string;
   id: string;
 }
 

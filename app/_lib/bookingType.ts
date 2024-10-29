@@ -34,7 +34,12 @@ export const createBookingType = async function (data: IBookingType) {
       throw new Error("Service duration is should be 1mins and above ");
     if (!availability.id) throw new Error("Service availability is required");
     if (!data.public) throw new Error("Select if public or not");
-    const slug = createSlug(name);
+    const slug = createSlug(
+      name
+        .replace(/[^a-zA-Z\s]/g, "")
+        .trim()
+        .replace(/\s+/g, "-")
+    );
     console.log(availability);
     const newBookingType = await BookingTypesModel.create({
       name,
@@ -97,6 +102,16 @@ export const getBookingType = async function (slug: string) {
 export const getBookingTypes = async function () {
   await dbConnect();
   const result = await BookingTypesModel.find({ disabled: false });
+  return result;
+};
+export const getUserActiveBookingTypes = async function (userId) {
+  await dbConnect();
+  const result = await BookingTypesModel.find({
+    owner: userId,
+    disabled: false,
+    active: true,
+    public: "Yes",
+  });
   return result;
 };
 

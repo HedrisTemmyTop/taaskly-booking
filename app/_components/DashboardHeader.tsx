@@ -58,7 +58,7 @@ export default function DashboardHeader() {
       if (activeRoute?.url === "booking-types") {
         const data = {
           price: price || 0,
-          name,
+          name: name.trim().replace(/\s+/g, " "),
           description,
           public: isPublic,
           duration: duration || 0,

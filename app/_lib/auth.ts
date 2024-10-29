@@ -62,6 +62,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       if (session && session.user) {
         (session.user as ExtendedUser).userId = user?.id; // Use optional chaining for user if it's possible user can be null
+        session.user.image = user?.image; // Use optional chaining for user if it's possible user can be null
       }
       return session;
     },

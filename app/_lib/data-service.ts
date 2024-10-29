@@ -175,7 +175,7 @@ export const updateUser = async (
   const { data, error } = await supabase
     .from("users") // Replace with your table name
     .update(updatedUserData)
-    .eq("id", userId) // Assuming 'id' is the primary key for your users table
+    .eq("id", userId)
     .select();
 
   if (error) {
@@ -183,6 +183,7 @@ export const updateUser = async (
     throw new Error("User could not be updated");
   }
   if (!data || data.length === 0) throw new Error("User does not exist");
+  console.log(data);
   return data; // Return the updated user data
 };
 
@@ -276,10 +277,12 @@ export async function loginAction(formData: FormData) {
     method: "POST",
     body: JSON.stringify({
       ...user,
+      image: null,
       credentialPassword: password,
     }),
   });
   const responseData = await response.json();
+  console.log(responseData);
   if (responseData.success) window.location.href = "/dashboard/booking-types";
   else throw new Error(responseData.message || "Something went wrong");
 }

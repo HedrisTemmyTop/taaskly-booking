@@ -38,10 +38,13 @@ export default function ReusableInput({
           rows={3}
           name={name}
           placeholder={placeholder}
-          className="border-[1.5px]  outline-0  p-4 border-primary-400
-rounded-lg text-inherit w-[100%] "
+          className={`border-[1.5px]  outline-0  p-4 border-primary-400
+rounded-lg text-inherit w-[100%] ${
+            readOnly ? "bg-[#e3e3e352]" : "bg-transparent"
+          }`}
           onChange={onChange}
           value={value || ""}
+          readOnly={readOnly}
         />
       )}
       {inputType === "input" && (

@@ -25,7 +25,7 @@ export default function ProfileButton({
             width={100}
             height={100}
             className="border-2 hidden lg:block font-semibold border-primary-400 rounded-full w-[28px] h-[28px]"
-            src={image}
+            src={image || "/filler.svg"}
             alt={"profile image"}
           />
         )}
