@@ -18,6 +18,7 @@ export default function SettingsForm({ user }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bio, setBio] = useState("");
   const [email, setEmail] = useState("");
+  const [files, setFile] = useState("");
 
   const handleSubmit = async function () {
     setLoading(true);
@@ -29,7 +30,6 @@ export default function SettingsForm({ user }) {
         bio,
       };
       const response = await updateUser(user.id, data);
-      console.log(response);
       if (response[0]) {
         setSuccess("Profile updated successfully");
       } else {
@@ -48,16 +48,14 @@ export default function SettingsForm({ user }) {
     setIsEdit((prev) => !prev);
   };
   const handleFileChange = async function (event) {
-    console.log(event.target.files[0]);
     const { files } = event.target;
     const base64 = await convertToBase64(files[0]);
+    setFile(files[0]);
     setImage(base64 as string);
     await handleSubmit();
-    console.log(base64);
     // setFile(event.target.files[0]);
   };
   const handlePhoneNumber = function (event) {
-    console.log(event.target.value);
     const { value } = event.target;
     if (!isNaN(Number(value))) {
       if (value.length > 11) return;
@@ -66,7 +64,6 @@ export default function SettingsForm({ user }) {
   };
 
   useEffect(() => {
-    console.log(user);
     if (!user) return;
     if (!phoneNumber && user.phoneNumber)
       setPhoneNumber(`0${user.phoneNumber}`);
@@ -106,7 +103,7 @@ export default function SettingsForm({ user }) {
             className="absolute w-full h-full left-0 right-0 top-0 bottom-0 opacity-0"
             name="image"
             onChange={handleFileChange}
-            value={image}
+            value={files}
             readOnly={loading}
           />
           <Button

@@ -5,7 +5,7 @@ import { SessionInterface } from "@/app/_types/user";
 
 export default async function Page() {
   const session = (await auth()) as SessionInterface;
-    const user = await getUserById(session.user.userId);
+  const user = await getUserById(session.user.userId);
   return (
     <div>
       <SettingsForm user={user} />

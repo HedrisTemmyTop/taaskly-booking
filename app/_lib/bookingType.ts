@@ -21,7 +21,6 @@ export const createBookingType = async function (data: IBookingType) {
   try {
     await dbConnect();
     const { name, description, price, duration, availability } = data;
-    console.log(data);
     const session = (await auth()) as SessionInterface;
     // const userId = (session as any).user.userId; // Using 'any' to bypass type checking (not recommended)
 
@@ -40,7 +39,6 @@ export const createBookingType = async function (data: IBookingType) {
         .trim()
         .replace(/\s+/g, "-")
     );
-    console.log(availability);
     const newBookingType = await BookingTypesModel.create({
       name,
       slug,
@@ -95,7 +93,6 @@ export const getBookingType = async function (slug: string) {
     disabled: false,
     owner: session?.user?.userId,
   })) as unknown as BookingTypesResponse;
-  console.log("rrr", result);
   return result;
 };
 
@@ -188,7 +185,6 @@ export const getUserBookingWithAvailability = async function (slug) {
 };
 
 export async function getUserInServer(email: string) {
-  console.log(email);
   const { data, error } = await supabase
     .from("users")
     .select("*")
@@ -199,7 +195,6 @@ export async function getUserInServer(email: string) {
     console.error("Error fetching user:", error);
     return null;
   }
-  console.log(data);
 
   return JSON.parse(JSON.stringify(data));
 }

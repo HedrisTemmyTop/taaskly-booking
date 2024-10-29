@@ -26,7 +26,6 @@ export default function ForgotPasswordForm() {
         body: JSON.stringify({ email }),
       });
       const data = await response.json();
-      console.log(data);
       if (data.success) {
         setSuccess(data.message);
       } else {
@@ -34,7 +33,6 @@ export default function ForgotPasswordForm() {
       }
     } catch (err) {
       const error = err as ErrorResponse;
-      console.error(err);
       setErr(error.message || "Something went wrong");
     } finally {
       setLoading(false);

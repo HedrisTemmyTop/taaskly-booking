@@ -53,7 +53,6 @@ export const createUserWithOauth = async function (newUser) {
     .insert([newUser])
     .select();
   if (error) {
-    console.log(error, "error message");
     throw new Error("User could not be created");
   }
   const defaultAvResponse = await fetch(

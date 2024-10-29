@@ -22,7 +22,6 @@ export default function ResetPasswordForm({ userId }) {
 
       setTimeout(() => {}, 500);
       await signOutActionWithPath("/auth/login");
-      console.log(response);
     } catch (err) {
       setErr(err.message || "Something went wrong try again");
     } finally {

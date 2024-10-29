@@ -35,7 +35,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         image: {},
       },
       authorize(credentials) {
-        console.log(credentials);
         return {
           email: credentials.email as string,
           id: credentials.id as string,
@@ -81,7 +80,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         if (account?.provider === "google") {
           //   // const f
           const existingUser = await getUser(user.email as string);
-          console.log(existingUser, "exiting user");
           if (!existingUser) {
             await createUserWithOauth({
               email: user.email,

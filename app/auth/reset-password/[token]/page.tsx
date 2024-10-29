@@ -11,7 +11,6 @@ export default async function Page({ params }) {
     }
   );
   const data = await response.json();
-  console.log(data);
   if (!data.success)
     return (
       <div className="text-red-500 fixed w-full z-10 bg-secondary-400 grid place-items-center h-full bottom-0 top-0 left-0 right-0 min-h-[100vh]">

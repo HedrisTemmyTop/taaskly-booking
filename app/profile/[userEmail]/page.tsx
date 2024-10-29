@@ -8,7 +8,6 @@ import { Fragment } from "react";
 import { IoTimeOutline } from "react-icons/io5";
 
 export default async function Page({ params }) {
-  console.log(params);
   const email = decodeURIComponent(params.userEmail);
   const user = await getUser(email);
   if (!user) notFound();

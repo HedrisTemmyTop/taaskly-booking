@@ -63,7 +63,6 @@ export const createBooking = async function (bookingData) {
       ownersName,
     });
 
-    console.log(newBooking);
     if (newBooking) {
       /// implementation to send email and whatsapp
       const dateSelected = new Date(newBooking.bookedDate);
@@ -159,7 +158,6 @@ export const createBooking = async function (bookingData) {
       );
   } catch (error) {
     const err = error as ErrorResponse;
-    console.log("error", err.message);
     return {
       success: false,
       message: err.message || "Something went wrong",
@@ -171,11 +169,9 @@ export const getUserBookings = async function () {
   try {
     await dbConnect();
     const session = await auth();
-    console.log(session?.user);
     const bookings = await BookingModel.find({
       ownersEmail: session?.user?.email,
     });
-    console.log(bookings);
 
     return bookings;
   } catch (error) {
@@ -216,7 +212,6 @@ export const getUserBookingStats = async function () {
       },
     ]);
 
-    console.log(bookings);
     return bookings;
   } catch (error) {
     const err = error as Error;
@@ -415,21 +410,18 @@ export const withdrawFunds = async function (withdrawData, formData) {
     reference: undefined,
   };
   const amountDebited = amountReceived + gatewayFee;
-  console.log("withdraw detail", withdrawData, withdrawDetails);
   //   userId: string;
   // accountName: string;
   // accountNumber: number;
   // bankName: string;
   // gatewayFee: number;
   // amountReceived: number;
-  console.log(formData, withdrawData);
   try {
     const recepientCode = await createTransferRecipient(
       accountNumber,
       bankCode,
       accountName
     );
-    console.log(recepientCode);
     if (!recepientCode) throw new Error("Error occured");
     withdrawDetails.recepientCode = recepientCode;
     // withdrawDetails.status = "pending";
@@ -464,7 +456,6 @@ const createTransferRecipient = async (
   bank_code: string,
   name: string
 ) => {
-  console.log(process.env.PAYSTACK_SECRET_KEY);
   try {
     const response = await fetch("https://api.paystack.co/transferrecipient", {
       method: "POST",
@@ -480,7 +471,6 @@ const createTransferRecipient = async (
         currency: "NGN",
       }),
     });
-    console.log("response", response);
     if (response.ok) {
       const data = await response.json();
       return data.data.recipient_code;

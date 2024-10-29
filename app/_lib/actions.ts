@@ -52,7 +52,6 @@ export const signOutActionWithPath = async function (path = "/") {
 // }
 export async function verifyUserEmail(id) {
   // const id = formData.get("id") as string;
-  console.log(id);
 
   try {
     if (!id) {
