@@ -27,7 +27,7 @@ export default async function Page({ params }) {
         <div className="text-3xl font-semibold">{user.name}</div>
         <div className="text-sm">{user.bio}</div>
 
-        {bookingTypes.map((type) => (
+        {bookingTypes.map((type, index) => (
           <Fragment key={type._id as string}>
             <Link
               href={`/${email}/${type.slug}`}
@@ -36,7 +36,7 @@ export default async function Page({ params }) {
             >
               <div
                 className={`border border-[#737882c9] rounded p-4 w-[100%] flex justify-between ${
-                  1 === bookingTypes.length - 1 ? "mb-20" : ""
+                  index === bookingTypes.length - 1 ? "mb-20" : ""
                 }`}
               >
                 <div className="">
