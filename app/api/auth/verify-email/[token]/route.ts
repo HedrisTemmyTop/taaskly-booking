@@ -91,6 +91,7 @@ export async function GET(request) {
       });
       await createAvailability({
         ...defaultAvailability,
+        owner: user.id,
       });
       if (!updated) throw new Error("Error occured");
       await signIn(

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { sidebarLinks } from "../_data/sidebarLinks";
 import { useAvailabilityCtx } from "../_hooks/AvailabilityCtx";
 import { useBookingTypeContext } from "../_hooks/BookinTypesCtx";
@@ -37,6 +37,7 @@ export default function DashboardHeader() {
   const [err, setErr] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>("");
+  const logoutRef = useRef<HTMLFormElement>(null);
 
   const currentHead = useMemo(
     () =>
@@ -113,6 +114,22 @@ export default function DashboardHeader() {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = function (event) {
+      console.log("clicked");
+      if (
+        logoutRef.current &&
+        !logoutRef.current.contains(event.target as Node)
+      ) {
+        setShowLogout(false);
+      }
+    };
+    if (showLogout) document.addEventListener("click", handleClickOutside);
+    else document.removeEventListener("click", handleClickOutside);
+
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [showLogout]);
+
   const renderButton = () => {
     if (activeRoute) {
       return (
@@ -186,6 +203,7 @@ export default function DashboardHeader() {
             right: "10px",
             background: "#ffff",
           }}
+          ref={logoutRef}
         />
       )}
     </header>
