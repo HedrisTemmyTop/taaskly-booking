@@ -7,7 +7,8 @@ import { notFound } from "next/navigation";
 import { Fragment } from "react";
 import { IoTimeOutline } from "react-icons/io5";
 
-export default async function Page({ params }) {
+export default async function Page(props) {
+  const params = await props.params;
   const email = decodeURIComponent(params.userEmail);
   const user = await getUser(email);
   if (!user) notFound();

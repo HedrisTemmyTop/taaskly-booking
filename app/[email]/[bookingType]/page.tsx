@@ -5,17 +5,16 @@ import { getUser } from "@/app/_lib/data-service";
 import { notFound } from "next/navigation";
 
 export const revalidate = 3000;
-export default async function Page({
-  params,
-}: {
-  params: {
+export default async function Page(props: {
+  params: Promise<{
     email: string;
     bookingType: string;
-  };
+  }>;
 }) {
+  const params = await props.params;
   const response = await fetch("https://restcountries.com/v3.1/all");
   const countries = await response.json();
-  const decodedEmail = decodeURIComponent(params.email); // Decode the email
+  const decodedEmail = decodeURIComponent(params.email); // decode the email
 
   const owner = await getUser(decodedEmail);
   const booking = await getUserBookingWithAvailability(params.bookingType);

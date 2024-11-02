@@ -14,11 +14,12 @@ export async function generateStaticParams() {
   return bookingTypesIds;
 }
 
-export default async function Page({
-  params,
-}: {
-  params: { bookingTypesId: string };
-}) {
+export default async function Page(
+  props: {
+    params: Promise<{ bookingTypesId: string }>;
+  }
+) {
+  const params = await props.params;
   const data = await getUserAvailabilities();
   const formattedData = data.map((av) => ({
     name: av.name,

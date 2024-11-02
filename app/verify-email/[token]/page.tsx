@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import Verification from "@/app/_components/Verification";
 import { verifyUserEmail } from "@/app/_lib/actions";
 
-export default function Page({ params }: { params: { token: string } }) {
+export default function Page(props: { params: Promise<{ token: string }> }) {
+  const params = use(props.params);
   const [success, setSuccess] = useState("");
   const [data, setData] = useState<null | {
     success: boolean;

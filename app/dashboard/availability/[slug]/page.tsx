@@ -3,9 +3,9 @@ import { getAvailabilities, getAvailability } from "@/app/_lib/availability";
 import { notFound } from "next/navigation";
 
 interface IParams {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export const generateStaticParams = async function () {
@@ -17,7 +17,8 @@ export const generateStaticParams = async function () {
   return slug;
 };
 
-export default async function Page({ params }: IParams) {
+export default async function Page(props: IParams) {
+  const params = await props.params;
   const availability = await getAvailability(params.slug);
   if (!availability) {
     notFound();

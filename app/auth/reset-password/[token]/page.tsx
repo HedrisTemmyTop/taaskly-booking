@@ -1,7 +1,8 @@
 import ResetPasswordForm from "@/app/_components/ResetPasswordForm";
 import React from "react";
 
-export default async function Page({ params }) {
+export default async function Page(props) {
+  const params = await props.params;
   const { token } = params;
   const response = await fetch(
     `${process.env.NEXTAUTH_URL}/api/auth/verify-reset-token`,

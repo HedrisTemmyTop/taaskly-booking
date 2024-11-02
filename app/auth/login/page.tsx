@@ -1,12 +1,6 @@
-import { Fragment } from "react";
-// import LoginForm from "./../../_components/LoginForm";
-import dynamic from "next/dynamic";
-const LoginFormComponent = dynamic(
-  () => import("@/app/_components/LoginForm"),
-  {
-    ssr: false,
-  }
-);
+import { Suspense } from "react";
+import LoginForm from "./../../_components/LoginForm";
+
 export default async function Page() {
   const response = await fetch("https://restcountries.com/v3.1/all");
   if (!response.ok) {
@@ -16,9 +10,9 @@ export default async function Page() {
   const data = await response.json();
 
   return (
-    <>
-      <LoginFormComponent countries={data} />
-    </>
+    <Suspense>
+      <LoginForm countries={data} />
+    </Suspense>
   );
 }
 

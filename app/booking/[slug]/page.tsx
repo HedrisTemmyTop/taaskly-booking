@@ -18,7 +18,8 @@ export const generateStaticParams = async function () {
   return slug;
 };
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const booking = await getBooking(params.slug);
   if (!booking) {
     notFound();
