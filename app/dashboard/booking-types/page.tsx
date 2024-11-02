@@ -10,7 +10,7 @@ import Price from "@/app/_icons/Price";
 export default async function Page() {
   const session = (await auth()) as SessionInterface;
   await dbConnect();
-  const bookingTypes: BookingTypesResponse[] = await BookingTypesModel.find({
+  const bookings: BookingTypesResponse[] = await BookingTypesModel.find({
     owner: session?.user?.userId,
     disabled: false,
   });
@@ -20,6 +20,8 @@ export default async function Page() {
   //   _id: booking._id.toString(), // Convert to string
   //   // Include other fields as necessary
   // }));
+
+  const bookingTypes = JSON.parse(JSON.stringify(bookings));
   return (
     <div className="grid gap-4 pb-10 grid-cols-1">
       {bookingTypes.length === 0 && (
