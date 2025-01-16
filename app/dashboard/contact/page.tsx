@@ -8,7 +8,7 @@ export default async function Page() {
   // const session = await auth();
   const bookings = await getUserBookingStats();
 
-  // console.log(bookings);
+  console.log(bookings);
 
   // const nameParts = (session as SessionInterface).user.name.split(" ");
 
@@ -22,7 +22,9 @@ export default async function Page() {
           key={booking.latestBooking._id}
         >
           <div className="flex gap-4 items-center">
-            <span className="font-medium">IDRIS BABALOLA</span>
+            <span className="font-medium">
+              {booking.latestBooking.customerName}
+            </span>
             <span className="bg-accent-400 p-1 items-center  flex rounded-sm text-xs">
               <span className="font-medium">
                 {booking.numberOfBookings} booking
