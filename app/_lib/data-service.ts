@@ -93,16 +93,19 @@ export const createUserWithCredentials = async function (newUser) {
 
   if (data) {
     // const [newUser]: IUser[] = data as IUser[];
-    const token = await fetch("http://localhost:3000/api/users/get-token", {
-      method: "POST",
-      body: JSON.stringify(data[0]),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const token = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/users/get-token`,
+      {
+        method: "POST",
+        body: JSON.stringify(data[0]),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const tokenData = await token.json();
     console.log(tokenData);
-    const response = await fetch(`http://localhost:3000/api/send-code`, {
+    const response = await fetch(`${process.env.NEXTAUTH_URL}/api/send-code`, {
       method: "POST",
       body: JSON.stringify({
         ...data[0],
