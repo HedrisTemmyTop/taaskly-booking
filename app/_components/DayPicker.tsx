@@ -15,16 +15,7 @@ function MyDatePicker({ selected, setSelected, disabledDays }) {
   };
 
   const handleSelect = (date) => {
-    try {
-      // Prevent setting the same date multiple times to avoid crashes
-      if (date && selected && date.getTime() === selected.getTime()) {
-        console.log("Same date selected, ignoring");
-        return;
-      }
-      setSelected(date);
-    } catch (error) {
-      console.error("Error in date selection:", error);
-    }
+    setSelected(date);
   };
 
   const isDisabled = (currDay) => {
