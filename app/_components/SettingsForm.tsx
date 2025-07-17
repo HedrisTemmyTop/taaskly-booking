@@ -148,7 +148,11 @@ export default function SettingsForm({ user }) {
         <ReusableInput
           name="dateJoined"
           readOnly={true}
-          value={"OCt, 06, 2024"}
+          value={new Date(user.createdAt).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
           label="Date Joined"
         />
         <ReusableInput
