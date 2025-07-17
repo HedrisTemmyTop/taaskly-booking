@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 import { CountryInterface } from "../_types/country";
 
 interface AuthContextType {
@@ -31,6 +37,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [selectedCountry, setSelectedCountry] =
     useState<CountryInterface>(initialState);
   const [showCountries, setShowCountries] = useState<boolean>(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return <>{children}</>;
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -49,7 +65,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
-  if (!context)
-    throw new Error("useAuthContext must be used within AuthProvider");
+  if (!context) {
+    // Return a default context during SSR
+    return {
+      state: "email",
+      setState: () => {},
+      showCountries: false,
+      setShowCountries: () => {},
+      selectedCountry: initialState,
+      setSelectedCountry: () => {},
+    };
+  }
   return context;
 };

@@ -45,10 +45,12 @@ export default function BookingButtons({
   };
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(
-        `${window.location.protocol}/${window.location.host}/${email}/${booking.slug}`
-      );
-      setSuccess("Link has been copied");
+      if (typeof window !== "undefined") {
+        await navigator.clipboard.writeText(
+          `${window.location.protocol}/${window.location.host}/${email}/${booking.slug}`
+        );
+        setSuccess("Link has been copied");
+      }
     } catch {
       setErr("Could not copy !!");
     }
