@@ -116,7 +116,6 @@ export default function DashboardHeader() {
 
   useEffect(() => {
     const handleClickOutside = function (event) {
-      console.log("clicked");
       if (
         logoutRef.current &&
         !logoutRef.current.contains(event.target as Node)

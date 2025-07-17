@@ -16,7 +16,6 @@ export const POST = async function (request: Request) {
       inputPassword,
       user.password
     );
-    console.log(isCorrectPassword);
     if (!isCorrectPassword)
       throw new Error("Incorrect password, you can use the forgot password");
 
@@ -37,7 +36,6 @@ export const POST = async function (request: Request) {
     });
   } catch (error) {
     const err = error as ErrorResponse;
-    console.log(error, "error");
     return Response.json({
       success: false,
       message: err.message || "Something went wrong",
