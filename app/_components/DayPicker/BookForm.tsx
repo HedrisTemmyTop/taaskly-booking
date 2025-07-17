@@ -347,10 +347,8 @@ const SelectDate = function ({
           </span>
         </div>
         <div className="mt-4 md:h-[380px] overflow-auto">
-          {availableTime &&
-          Array.isArray(availableTime) &&
-          availableTime.length > 0 ? (
-            availableTime.map((t) => (
+          {availableTime && availableTime.length > 0 ? (
+            availableTime?.map((t) => (
               <button
                 type="button"
                 className="border-[#E5E6EB] mb-2 border w-full rounded text-sm py-2 hover:border-primary-400 duration-300"
