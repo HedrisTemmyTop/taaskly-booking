@@ -141,10 +141,22 @@ export default function BookForm({
   const inActiveDays: number[] = genInactiveDays(booking);
 
   const timeArr = genTimeArr(booking, selectedDay);
-  const availableTime =
-    selectedDay && timeArr && timeArr.length > 0
-      ? generateTimeSlots(timeArr, timeframe, selectedDay)
-      : null;
+  const availableTime = (() => {
+    try {
+      if (
+        !selectedDay ||
+        !timeArr ||
+        !Array.isArray(timeArr) ||
+        timeArr.length === 0
+      ) {
+        return null;
+      }
+      return generateTimeSlots(timeArr, timeframe, selectedDay);
+    } catch (error) {
+      console.error("Error generating available time:", error);
+      return null;
+    }
+  })();
 
   if (!isClient) {
     return <div>Loading...</div>;
@@ -291,13 +303,16 @@ const SelectDate = function ({
   timeframe,
   setTimeFrame,
 }) {
+  // Safety check for inActiveDays
+  const safeInActiveDays = Array.isArray(inActiveDays) ? inActiveDays : [];
+
   return (
     <>
       <div className="border-x border-[#e5e7eb]">
         <MyDatePicker
           setSelected={setSelectedDay}
           selected={selectedDay}
-          disabledDays={inActiveDays}
+          disabledDays={safeInActiveDays}
         />
       </div>
       <div className="pt-3 px-5 md:w-[240px] w-full h-[240px]">
@@ -332,7 +347,9 @@ const SelectDate = function ({
           </span>
         </div>
         <div className="mt-4 md:h-[380px] overflow-auto">
-          {availableTime && availableTime.length > 0 ? (
+          {availableTime &&
+          Array.isArray(availableTime) &&
+          availableTime.length > 0 ? (
             availableTime.map((t) => (
               <button
                 type="button"
@@ -357,72 +374,127 @@ const SelectDate = function ({
 
 export const genInactiveDays = (booking) => {
   const inActiveDays: number[] = [];
-  if (!booking.availability.monday.isActive) {
-    inActiveDays.push(1);
-  }
-  if (!booking.availability.tuesday.isActive) {
-    inActiveDays.push(2);
+
+  try {
+    if (!booking || !booking.availability) {
+      console.warn(
+        "Invalid booking or availability in genInactiveDays:",
+        booking
+      );
+      return inActiveDays;
+    }
+
+    if (!booking.availability.monday?.isActive) {
+      inActiveDays.push(1);
+    }
+    if (!booking.availability.tuesday?.isActive) {
+      inActiveDays.push(2);
+    }
+    if (!booking.availability.wednesday?.isActive) {
+      inActiveDays.push(3);
+    }
+    if (!booking.availability.thursday?.isActive) {
+      inActiveDays.push(4);
+    }
+    if (!booking.availability.friday?.isActive) {
+      inActiveDays.push(5);
+    }
+    if (!booking.availability.saturday?.isActive) {
+      inActiveDays.push(6);
+    }
+    if (!booking.availability.sunday?.isActive) {
+      inActiveDays.push(0);
+    }
+  } catch (error) {
+    console.error("Error in genInactiveDays:", error);
   }
 
-  if (!booking.availability.wednesday.isActive) {
-    inActiveDays.push(3);
-  }
-  if (!booking.availability.thursday.isActive) {
-    inActiveDays.push(4);
-  }
-  if (!booking.availability.friday.isActive) {
-    inActiveDays.push(5);
-  }
-
-  if (!booking.availability.saturday.isActive) {
-    inActiveDays.push(6);
-  }
-  if (!booking.availability.sunday.isActive) {
-    inActiveDays.push(0);
-  }
   return inActiveDays;
 };
 const genTimeArr = (booking, selectedDay) => {
   let timeArr = [];
 
-  // Add safety check for selectedDay
-  if (
-    !selectedDay ||
-    !(selectedDay instanceof Date) ||
-    isNaN(selectedDay.getTime())
-  ) {
-    console.warn("Invalid selectedDay:", selectedDay);
-    return timeArr;
-  }
-
   try {
+    // Add safety check for selectedDay
+    if (
+      !selectedDay ||
+      !(selectedDay instanceof Date) ||
+      isNaN(selectedDay.getTime())
+    ) {
+      console.warn("Invalid selectedDay:", selectedDay);
+      return timeArr;
+    }
+
+    // Add safety check for booking and availability
+    if (!booking || !booking.availability) {
+      console.warn("Invalid booking or availability:", booking);
+      return timeArr;
+    }
+
     const dayOfWeek = selectedDay.getDay();
 
     switch (dayOfWeek) {
       case 0: // Sunday
-        timeArr = booking.availability.sunday.time || [];
+        timeArr =
+          booking.availability.sunday?.time &&
+          Array.isArray(booking.availability.sunday.time)
+            ? booking.availability.sunday.time
+            : [];
         break;
       case 1: // Monday
-        timeArr = booking.availability.monday.time || [];
+        timeArr =
+          booking.availability.monday?.time &&
+          Array.isArray(booking.availability.monday.time)
+            ? booking.availability.monday.time
+            : [];
         break;
       case 2: // Tuesday
-        timeArr = booking.availability.tuesday.time || [];
+        timeArr =
+          booking.availability.tuesday?.time &&
+          Array.isArray(booking.availability.tuesday.time)
+            ? booking.availability.tuesday.time
+            : [];
         break;
       case 3: // Wednesday
-        timeArr = booking.availability.wednesday.time || [];
+        timeArr =
+          booking.availability.wednesday?.time &&
+          Array.isArray(booking.availability.wednesday.time)
+            ? booking.availability.wednesday.time
+            : [];
         break;
       case 4: // Thursday
-        timeArr = booking.availability.thursday.time || [];
+        timeArr =
+          booking.availability.thursday?.time &&
+          Array.isArray(booking.availability.thursday.time)
+            ? booking.availability.thursday.time
+            : [];
         break;
       case 5: // Friday
-        timeArr = booking.availability.friday.time || [];
+        timeArr =
+          booking.availability.friday?.time &&
+          Array.isArray(booking.availability.friday.time)
+            ? booking.availability.friday.time
+            : [];
         break;
       case 6: // Saturday
-        timeArr = booking.availability.saturday.time || [];
+        timeArr =
+          booking.availability.saturday?.time &&
+          Array.isArray(booking.availability.saturday.time)
+            ? booking.availability.saturday.time
+            : [];
         break;
       default:
         console.warn("Invalid day of week:", dayOfWeek);
         timeArr = [];
+    }
+
+    // Ensure we always return an array
+    if (!Array.isArray(timeArr)) {
+      console.warn(
+        "timeArr is not an array, converting to empty array:",
+        timeArr
+      );
+      timeArr = [];
     }
   } catch (error) {
     console.error("Error in genTimeArr:", error);
