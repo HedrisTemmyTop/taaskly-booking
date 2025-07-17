@@ -19,7 +19,6 @@ export default function SettingsForm({ user }) {
   const [bio, setBio] = useState("");
   const [email, setEmail] = useState("");
   const [files, setFile] = useState("");
-  console.log(user, "user");
 
   const handleSubmit = async function (base64) {
     setLoading(true);
