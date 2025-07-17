@@ -26,7 +26,9 @@ export default function RegisterForm({ countries }) {
         await signInAction();
       } else {
         setIsLoading(true);
-        const result = await createUser(formData);
+        const newUserResponse = await createUser(formData);
+        const result = await newUserResponse.json();
+        console.log(result, "result");
         if (result.success) {
           setSuccess(true);
           setError(null);

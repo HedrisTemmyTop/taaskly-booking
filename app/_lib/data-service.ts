@@ -93,16 +93,19 @@ export const createUserWithCredentials = async function (newUser) {
 
   if (data) {
     // const [newUser]: IUser[] = data as IUser[];
-    const token = await fetch("/api/users/get-token", {
-      method: "POST",
-      body: JSON.stringify(data[0]),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const token = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/users/get-token`,
+      {
+        method: "POST",
+        body: JSON.stringify(data[0]),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const tokenData = await token.json();
     console.log(tokenData);
-    const response = await fetch(`/api/send-code`, {
+    const response = await fetch(`${process.env.NEXTAUTH_URL}/api/send-code`, {
       method: "POST",
       body: JSON.stringify({
         ...data[0],
@@ -150,7 +153,7 @@ export async function getUserWithPassword(email: string) {
     console.error("Error fetching user:", error);
     return null;
   }
-
+  console.log(data, "data", error);
   return data;
 }
 
@@ -192,13 +195,13 @@ export async function createUser(formData: FormData) {
     const password = formData.get("password");
     // const { encryptedData } = encrypt(password as string);
     const authMethod = formData.get("authMethod") as string;
-    const hashResponse = await fetch("/api/hashPassword", {
-      method: "POST",
-      body: JSON.stringify({ password }),
-    });
-    console.log("hashResponse here", hashResponse);
-    const hashData = await hashResponse.json();
-    console.log("hashData", hashData);
+    // const hashResponse = await fetch("/api/register-user", {
+    //   method: "POST",
+    //   body: JSON.stringify({}),
+    // });
+    // console.log("hashResponse here", hashResponse);
+    // const hashData = await hashResponse.json();
+    // console.log("hashData", hashData);
     const email = formData.get("email");
 
     if (!name) {
@@ -207,12 +210,15 @@ export async function createUser(formData: FormData) {
     if (!email) throw new Error("E-mail is required");
     if (!password) throw new Error("Password is required");
     // await dbConnect(); // Ensure you're connected to the database
-    const newUser = await createUserWithCredentials({
-      email,
-      name,
-      password: hashData.hashedPassword,
-      authMethod,
-      isVerified: false,
+    const newUser = await fetch("/api/register-user", {
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        name,
+        password,
+        authMethod,
+        isVerified: false,
+      }),
     });
     console.log(newUser);
     if (newUser) return newUser;
@@ -227,7 +233,6 @@ export async function createUser(formData: FormData) {
     );
   }
 }
-
 export async function resetPassword(userId: string, password: string) {
   const hashResponse = await fetch("/api/hashPassword", {
     method: "POST",
@@ -267,21 +272,28 @@ export async function loginAction(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  const user = await getUserWithPassword(email);
-  if (!user) throw new Error("User does not exist, kindly register");
-  if (user.authMethod !== "credentials")
-    throw new Error("You registered with a different auth method");
-  if (!user.isVerified) throw new Error("Your account is not verified");
-  const response = await fetch("/api/correct-password", {
+  const response = await fetch("/api/login-user", {
     method: "POST",
     body: JSON.stringify({
-      ...user,
-      image: null,
-      credentialPassword: password,
+      email,
+      inputPassword: password,
     }),
   });
+  // if (!user) throw new Error("User does not exist, kindly register");
+  // if (user.authMethod !== "credentials")
+  //   throw new Error("You registered with a different auth method");
+  // if (!user.isVerified) throw new Error("Your account is not verified");
+  // const response = await fetch("/api/correct-password", {
+  //   method: "POST",
+  //   body: JSON.stringify({
+  //     ...user,
+  //     image: null,
+  //     credentialPassword: password,
+  //   }),
+  // });
+  console.log("response", response);
   const responseData = await response.json();
-  console.log(responseData);
+  console.log(responseData, response, "response");
   if (responseData.success) window.location.href = "/dashboard/booking-types";
   else throw new Error(responseData.message || "Something went wrong");
 }

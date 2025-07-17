@@ -1,34 +1,33 @@
-import { Suspense } from "react";
-import LoginForm from "./../../_components/LoginForm";
+import LoginForm from "@/app/_components/LoginForm";
+export const metadata = {
+  title: "Login",
+  description: "Taaskly bookings login",
+};
+async function getCountries() {
+  const response = await fetch(
+    "https://restcountries.com/v3.1/all?fields=name,flags,idd",
+    {
+      next: {
+        revalidate: 3600, // Revalidate every hour
+      },
+    }
+  );
 
-export default async function Page() {
-  const response = await fetch("https://restcountries.com/v3.1/all");
   if (!response.ok) {
     throw new Error("Failed to fetch countries");
   }
 
-  const data = await response.json();
-
-  return (
-    <Suspense>
-      <LoginForm countries={data} />
-    </Suspense>
-  );
+  return response.json();
 }
 
-// import AuthForm from "@/app/_components/AuthForm";
-// import { signInAction } from "@/app/_lib/actions";
-// export const metadata = {
-//   title: "Login",
-//   description: "Taaskly bookings login",
-// };
-// export default function Page() {
-//   return (
-//     <form className="form mt-1.5 w-[100%]" action={signInAction}>
-//       {/* <input type="hidden" name="redirectTo" value="/booking-types" /> */}
-//       {/* {modal && <Modal showModal={modal} message={error} type={"fail"} />} */}
-
-//       <AuthForm page={"login"} />
-//     </form>
-//   );
-// }
+export default async function Page() {
+  // Use error boundary to handle fetch errors gracefully
+  try {
+    const countries = await getCountries();
+    return <LoginForm countries={countries} />;
+  } catch (error) {
+    // You might want to render an error component instead
+    console.error("Error fetching countries:", error);
+    return <LoginForm countries={[]} />;
+  }
+}

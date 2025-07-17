@@ -1,5 +1,5 @@
 import { auth } from "@/app/_lib/auth";
-import { getBooking, getBookings } from "@/app/_lib/booking";
+import { getBooking } from "@/app/_lib/booking";
 import { getUserById } from "@/app/_lib/data-service";
 import { addDuration } from "@/app/_utils/generateTime";
 import { addMinutes, format } from "date-fns";
@@ -9,17 +9,7 @@ import { notFound } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoCheckmarkSharp } from "react-icons/io5";
 
-export const generateStaticParams = async function () {
-  const bookings = await getBookings();
-  const slug = bookings.map((booking) => ({
-    slug: booking.slug,
-  }));
-
-  return slug;
-};
-
-export default async function Page(props: { params: Promise<{ slug: string }> }) {
-  const params = await props.params;
+export default async function Page({ params }: { params: { slug: string } }) {
   const booking = await getBooking(params.slug);
   if (!booking) {
     notFound();

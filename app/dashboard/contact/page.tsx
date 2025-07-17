@@ -1,21 +1,14 @@
-import { auth } from "@/app/_lib/auth";
 import { getUserBookingStats } from "@/app/_lib/booking";
-import { SessionInterface } from "@/app/_types/user";
 import { format } from "date-fns";
 export const metadata = {
   title: "Contact",
 };
 
 export default async function Page() {
-  const session = await auth();
   const bookings = await getUserBookingStats();
 
-  // console.log(bookings);
+  console.log(bookings);
 
-  const nameParts = (session as SessionInterface).user.name.split(" ");
-
-  const firstName = nameParts[0] || "";
-  const lastName = nameParts[nameParts.length - 1];
   return (
     <div className="grid grid-cols-1">
       {bookings.map((booking) => (
@@ -25,8 +18,7 @@ export default async function Page() {
         >
           <div className="flex gap-4 items-center">
             <span className="font-medium">
-              {firstName}
-              {lastName}
+              {booking.latestBooking.customerName}
             </span>
             <span className="bg-accent-400 p-1 items-center  flex rounded-sm text-xs">
               <span className="font-medium">
