@@ -19,6 +19,7 @@ export default function SettingsForm({ user }) {
   const [bio, setBio] = useState("");
   const [email, setEmail] = useState("");
   const [files, setFile] = useState("");
+  console.log(user, "user");
 
   const handleSubmit = async function (base64) {
     setLoading(true);
@@ -148,7 +149,7 @@ export default function SettingsForm({ user }) {
         <ReusableInput
           name="dateJoined"
           readOnly={true}
-          value={new Date(user.createdAt).toLocaleDateString("en-US", {
+          value={new Date(user.created_at).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
             year: "numeric",
