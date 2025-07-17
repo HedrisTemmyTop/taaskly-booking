@@ -142,7 +142,9 @@ export default function BookForm({
 
   const timeArr = genTimeArr(booking, selectedDay);
   const availableTime =
-    selectedDay && generateTimeSlots(timeArr, timeframe, selectedDay);
+    selectedDay && timeArr && timeArr.length > 0
+      ? generateTimeSlots(timeArr, timeframe, selectedDay)
+      : null;
 
   if (!isClient) {
     return <div>Loading...</div>;
@@ -382,26 +384,49 @@ export const genInactiveDays = (booking) => {
 };
 const genTimeArr = (booking, selectedDay) => {
   let timeArr = [];
-  if (selectedDay?.getDay() === 0) {
-    timeArr = booking.availability.sunday.time;
+
+  // Add safety check for selectedDay
+  if (
+    !selectedDay ||
+    !(selectedDay instanceof Date) ||
+    isNaN(selectedDay.getTime())
+  ) {
+    console.warn("Invalid selectedDay:", selectedDay);
+    return timeArr;
   }
-  if (selectedDay?.getDay() === 1) {
-    timeArr = booking.availability.monday.time;
-  }
-  if (selectedDay?.getDay() === 2) {
-    timeArr = booking.availability.tuesday.time;
-  }
-  if (selectedDay?.getDay() === 3) {
-    timeArr = booking.availability.wednesday.time;
-  }
-  if (selectedDay?.getDay() === 4) {
-    timeArr = booking.availability.thursday.time;
-  }
-  if (selectedDay?.getDay() === 5) {
-    timeArr = booking.availability.friday.time;
-  }
-  if (selectedDay?.getDay() === 6) {
-    timeArr = booking.availability.saturday.time;
+
+  try {
+    const dayOfWeek = selectedDay.getDay();
+
+    switch (dayOfWeek) {
+      case 0: // Sunday
+        timeArr = booking.availability.sunday.time || [];
+        break;
+      case 1: // Monday
+        timeArr = booking.availability.monday.time || [];
+        break;
+      case 2: // Tuesday
+        timeArr = booking.availability.tuesday.time || [];
+        break;
+      case 3: // Wednesday
+        timeArr = booking.availability.wednesday.time || [];
+        break;
+      case 4: // Thursday
+        timeArr = booking.availability.thursday.time || [];
+        break;
+      case 5: // Friday
+        timeArr = booking.availability.friday.time || [];
+        break;
+      case 6: // Saturday
+        timeArr = booking.availability.saturday.time || [];
+        break;
+      default:
+        console.warn("Invalid day of week:", dayOfWeek);
+        timeArr = [];
+    }
+  } catch (error) {
+    console.error("Error in genTimeArr:", error);
+    timeArr = [];
   }
 
   return timeArr;

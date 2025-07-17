@@ -4,7 +4,7 @@ import {
   isAfter,
   isBefore,
   isToday,
-  parse
+  parse,
 } from "date-fns";
 
 function parseTime(time: string): Date {
@@ -30,31 +30,56 @@ export function generateTimeSlots(
   date: Date
 ): string[] {
   const slots: string[] = [];
-  const now = new Date();
-  const isToday = checkIfToday(date);
-  console.log(`Generating ${formatType} slots for ranges:`, ranges);
 
-  ranges.forEach((range) => {
-    let start = parseTime(range.from);
-    const end = parseTime(range.to);
-
-    if (isAfter(start, end)) {
-      console.warn(`Invalid time range: ${range.from} to ${range.to}`);
-      return; // Skip invalid ranges
-    }
-
-    const timeFormat = formatType === "12h" ? "h:mma" : "HH:mm";
-
-    while (
-      isBefore(start, end) ||
-      format(start, timeFormat) === format(end, timeFormat)
+  try {
+    // Validate inputs
+    if (
+      !Array.isArray(ranges) ||
+      !date ||
+      !(date instanceof Date) ||
+      isNaN(date.getTime())
     ) {
-      if (!isToday || isAfter(start, now)) {
-        slots.push(format(start, timeFormat)); // Add formatted time
-      }
-      start = addMinutes(start, 15);
+      console.warn("Invalid inputs to generateTimeSlots:", { ranges, date });
+      return slots;
     }
-  });
+
+    const now = new Date();
+    const isToday = checkIfToday(date);
+    console.log(`Generating ${formatType} slots for ranges:`, ranges);
+
+    ranges.forEach((range) => {
+      try {
+        if (!range || !range.from || !range.to) {
+          console.warn("Invalid range object:", range);
+          return;
+        }
+
+        let start = parseTime(range.from);
+        const end = parseTime(range.to);
+
+        if (isAfter(start, end)) {
+          console.warn(`Invalid time range: ${range.from} to ${range.to}`);
+          return; // Skip invalid ranges
+        }
+
+        const timeFormat = formatType === "12h" ? "h:mma" : "HH:mm";
+
+        while (
+          isBefore(start, end) ||
+          format(start, timeFormat) === format(end, timeFormat)
+        ) {
+          if (!isToday || isAfter(start, now)) {
+            slots.push(format(start, timeFormat)); // Add formatted time
+          }
+          start = addMinutes(start, 15);
+        }
+      } catch (error) {
+        console.error("Error processing range:", range, error);
+      }
+    });
+  } catch (error) {
+    console.error("Error in generateTimeSlots:", error);
+  }
 
   return slots;
 }
