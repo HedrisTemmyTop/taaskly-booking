@@ -40,7 +40,7 @@ function MyDatePicker({ selected, setSelected, disabledDays }) {
     <DayPicker
       mode="single"
       selected={selected}
-      onSelect={handleSelect}
+      onDayClick={handleSelect}
       defaultMonth={new Date()}
       disabled={isDisabled}
       formatters={{
