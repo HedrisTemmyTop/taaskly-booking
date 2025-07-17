@@ -23,12 +23,15 @@ export const metadata = {
 // // }
 
 async function getCountries() {
-  const response = await fetch("https://restcountries.com/v3.1/all", {
-    // Add cache options for better performance
-    next: {
-      revalidate: 3600, // Revalidate every hour
-    },
-  });
+  const response = await fetch(
+    "https://restcountries.com/v3.1/all?fields=name,flags,idd",
+    {
+      // Add cache options for better performance
+      next: {
+        revalidate: 3600, // Revalidate every hour
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch countries");
