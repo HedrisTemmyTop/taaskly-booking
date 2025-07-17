@@ -20,7 +20,6 @@ import {
 } from "@/app/_utils/generateTime";
 import validateEmail from "@/app/_utils/validateEmail";
 import { useRouter } from "next/navigation";
-import { PaystackButton } from "react-paystack";
 import BackDrop from "../BackDrop";
 import Modal from "../Modal";
 import { BookingTypesResponse } from "@/app/_types/IBookingTypes";
@@ -51,6 +50,13 @@ export default function BookForm({
   const [phoneNumber, setPhoneNumber] = useState<null | number>(null);
   const { selectedCountry } = useAuthContext();
   const router = useRouter();
+
+  // Ensure we're on the client side
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const nameParts = ownersName.split(" ");
   const firstName = nameParts[0] || "";
@@ -124,39 +130,6 @@ export default function BookForm({
       setLoading(false);
     }
   };
-  const componentProps = {
-    email: "hedristemitope2001@gmail.com",
-    amount: booking.price * 100, // Paystack expects amount in kobo (NGN cents)
-    metadata: {
-      name: "he",
-      phoneNumber: "08161126466",
-      custom_fields: [
-        {
-          display_name: "Customer Name",
-          variable_name: "customerName",
-          value: name,
-        },
-        {
-          display_name: "Customer Email",
-          variable_name: "customerEmail",
-          value: email,
-        },
-        {
-          display_name: "Owner's Name",
-          variable_name: "ownerNamae",
-          value: ownersName,
-        },
-        {
-          display_name: "Owner's Email",
-          variable_name: "ownerEmail",
-          value: ownersName,
-        },
-      ],
-    },
-    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
-    text: "Create Booking",
-    onSuccess: handleCreateBooking,
-  };
 
   useEffect(() => {
     if (time && selectedDay && !showForm) {
@@ -170,6 +143,10 @@ export default function BookForm({
   const timeArr = genTimeArr(booking, selectedDay);
   const availableTime =
     selectedDay && generateTimeSlots(timeArr, timeframe, selectedDay);
+
+  if (!isClient) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="m-auto w-full min-h-[100vh] md:min-h-[463px] md:w-auto bg-secondary-400 flex md:flex-row flex-col border-1 border border-[#E5E6EB]">
@@ -276,11 +253,15 @@ export default function BookForm({
                 Create Booking
               </button>
             ) : (
-              <PaystackButton
+              <button
                 className="border disabled:cursor-not-allowed hover:shadow-custom duration-300 px-8 py-2.5 border-primary-400 rounded ml-4"
-                {...componentProps}
                 disabled={!isFormReady}
-              />
+                onClick={() =>
+                  alert("Paystack integration temporarily disabled")
+                }
+              >
+                Pay with Paystack
+              </button>
             )}
           </div>
         </div>

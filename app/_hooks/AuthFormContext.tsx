@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useState,
-  useEffect,
-} from "react";
+import React, { createContext, ReactNode, useContext, useState } from "react";
 import { CountryInterface } from "../_types/country";
 
 interface AuthContextType {
@@ -37,15 +31,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [selectedCountry, setSelectedCountry] =
     useState<CountryInterface>(initialState);
   const [showCountries, setShowCountries] = useState<boolean>(false);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return <>{children}</>;
-  }
 
   return (
     <AuthContext.Provider
