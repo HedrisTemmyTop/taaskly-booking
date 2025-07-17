@@ -8,6 +8,7 @@ import convertToBase64 from "../_utils/convertToBase64";
 import { GreySpinner } from "./Spinner";
 import { updateUser } from "../_lib/data-service";
 import Modal from "./Modal";
+import { format } from "date-fns";
 export default function SettingsForm({ user }) {
   const [isEdit, setIsEdit] = useState(false);
   const [image, setImage] = useState("");
@@ -148,7 +149,11 @@ export default function SettingsForm({ user }) {
         <ReusableInput
           name="dateJoined"
           readOnly={true}
-          value={"OCt, 06, 2024"}
+          value={
+            user.createdAt
+              ? format(new Date(user.createdAt), "MMM, dd, yyyy")
+              : "N/A"
+          }
           label="Date Joined"
         />
         <ReusableInput
