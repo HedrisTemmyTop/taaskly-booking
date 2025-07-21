@@ -7,7 +7,7 @@ import MyDatePicker from "../DayPicker";
 
 import { useAuthContext } from "@/app/_hooks/AuthFormContext";
 import Booking from "@/app/_icons/Booking";
-import NoTime from "@/app/_icons/NoTime";
+// import NoTime from "@/app/_icons/NoTime";
 import Price from "@/app/_icons/Price";
 import { createBooking, verifyPayment } from "@/app/_lib/booking";
 import { ErrorResponse } from "@/app/_types/user";
@@ -305,6 +305,7 @@ const SelectDate = function ({
 }) {
   // Safety check for inActiveDays
   const safeInActiveDays = Array.isArray(inActiveDays) ? inActiveDays : [];
+  console.log(availableTime, "selectedDay", handleSetTime);
 
   return (
     <>
@@ -346,7 +347,7 @@ const SelectDate = function ({
             </button>
           </span>
         </div>
-        <div className="mt-4 md:h-[380px] overflow-auto">
+        {/* <div className="mt-4 md:h-[380px] overflow-auto">
           {availableTime && availableTime.length > 0 ? (
             availableTime?.map((t) => (
               <button
@@ -364,7 +365,7 @@ const SelectDate = function ({
               <div className="text-xl text-center mt-2">No Time Available</div>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     </>
   );
