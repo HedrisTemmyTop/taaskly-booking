@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import BackDrop from "../BackDrop";
 import Modal from "../Modal";
 import { BookingTypesResponse } from "@/app/_types/IBookingTypes";
+import { PaystackButton } from "react-paystack";
 
 export default function BookForm({
   children,
@@ -131,6 +132,39 @@ export default function BookForm({
     }
   };
 
+  const componentProps = {
+    email: "hedristemitope2001@gmail.com",
+    amount: booking.price * 100, // Paystack expects amount in kobo (NGN cents)
+    metadata: {
+      name: "he",
+      phoneNumber: "08161126466",
+      custom_fields: [
+        {
+          display_name: "Customer Name",
+          variable_name: "customerName",
+          value: name,
+        },
+        {
+          display_name: "Customer Email",
+          variable_name: "customerEmail",
+          value: email,
+        },
+        {
+          display_name: "Owner's Name",
+          variable_name: "ownerNamae",
+          value: ownersName,
+        },
+        {
+          display_name: "Owner's Email",
+          variable_name: "ownerEmail",
+          value: ownersName,
+        },
+      ],
+    },
+    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
+    text: "Create Booking",
+    onSuccess: handleCreateBooking,
+  };
   useEffect(() => {
     if (time && selectedDay && !showForm) {
       setShowForm(true);
@@ -141,22 +175,10 @@ export default function BookForm({
   const inActiveDays: number[] = genInactiveDays(booking);
 
   const timeArr = genTimeArr(booking, selectedDay);
-  const availableTime = (() => {
-    try {
-      if (
-        !selectedDay ||
-        !timeArr ||
-        !Array.isArray(timeArr) ||
-        timeArr.length === 0
-      ) {
-        return null;
-      }
-      return generateTimeSlots(timeArr, timeframe, selectedDay);
-    } catch (error) {
-      console.error("Error generating available time:", error);
-      return null;
-    }
-  })();
+  const availableTime =
+    selectedDay && timeArr && timeArr.length > 0
+      ? generateTimeSlots(timeArr, timeframe, selectedDay)
+      : null;
 
   if (!isClient) {
     return <div>Loading...</div>;
@@ -267,15 +289,11 @@ export default function BookForm({
                 Create Booking
               </button>
             ) : (
-              <button
+              <PaystackButton
                 className="border disabled:cursor-not-allowed hover:shadow-custom duration-300 px-8 py-2.5 border-primary-400 rounded ml-4"
+                {...componentProps}
                 disabled={!isFormReady}
-                onClick={() =>
-                  alert("Paystack integration temporarily disabled")
-                }
-              >
-                Pay with Paystack
-              </button>
+              />
             )}
           </div>
         </div>
@@ -303,16 +321,13 @@ const SelectDate = function ({
   timeframe,
   setTimeFrame,
 }) {
-  // Safety check for inActiveDays
-  const safeInActiveDays = Array.isArray(inActiveDays) ? inActiveDays : [];
-
   return (
     <>
       <div className="border-x border-[#e5e7eb]">
         <MyDatePicker
           setSelected={setSelectedDay}
           selected={selectedDay}
-          disabledDays={safeInActiveDays}
+          disabledDays={inActiveDays}
         />
       </div>
       <div className="pt-3 px-5 md:w-[240px] w-full h-[240px]">
@@ -348,7 +363,7 @@ const SelectDate = function ({
         </div>
         <div className="mt-4 md:h-[380px] overflow-auto">
           {availableTime && availableTime.length > 0 ? (
-            availableTime?.map((t) => (
+            availableTime.map((t) => (
               <button
                 type="button"
                 className="border-[#E5E6EB] mb-2 border w-full rounded text-sm py-2 hover:border-primary-400 duration-300"
@@ -372,131 +387,53 @@ const SelectDate = function ({
 
 export const genInactiveDays = (booking) => {
   const inActiveDays: number[] = [];
-
-  try {
-    if (!booking || !booking.availability) {
-      console.warn(
-        "Invalid booking or availability in genInactiveDays:",
-        booking
-      );
-      return inActiveDays;
-    }
-
-    if (!booking.availability.monday?.isActive) {
-      inActiveDays.push(1);
-    }
-    if (!booking.availability.tuesday?.isActive) {
-      inActiveDays.push(2);
-    }
-    if (!booking.availability.wednesday?.isActive) {
-      inActiveDays.push(3);
-    }
-    if (!booking.availability.thursday?.isActive) {
-      inActiveDays.push(4);
-    }
-    if (!booking.availability.friday?.isActive) {
-      inActiveDays.push(5);
-    }
-    if (!booking.availability.saturday?.isActive) {
-      inActiveDays.push(6);
-    }
-    if (!booking.availability.sunday?.isActive) {
-      inActiveDays.push(0);
-    }
-  } catch (error) {
-    console.error("Error in genInactiveDays:", error);
+  if (!booking.availability.monday.isActive) {
+    inActiveDays.push(1);
+  }
+  if (!booking.availability.tuesday.isActive) {
+    inActiveDays.push(2);
   }
 
+  if (!booking.availability.wednesday.isActive) {
+    inActiveDays.push(3);
+  }
+  if (!booking.availability.thursday.isActive) {
+    inActiveDays.push(4);
+  }
+  if (!booking.availability.friday.isActive) {
+    inActiveDays.push(5);
+  }
+
+  if (!booking.availability.saturday.isActive) {
+    inActiveDays.push(6);
+  }
+  if (!booking.availability.sunday.isActive) {
+    inActiveDays.push(0);
+  }
   return inActiveDays;
 };
 const genTimeArr = (booking, selectedDay) => {
   let timeArr = [];
-
-  try {
-    // Add safety check for selectedDay
-    if (
-      !selectedDay ||
-      !(selectedDay instanceof Date) ||
-      isNaN(selectedDay.getTime())
-    ) {
-      console.warn("Invalid selectedDay:", selectedDay);
-      return timeArr;
-    }
-
-    // Add safety check for booking and availability
-    if (!booking || !booking.availability) {
-      console.warn("Invalid booking or availability:", booking);
-      return timeArr;
-    }
-
-    const dayOfWeek = selectedDay.getDay();
-
-    switch (dayOfWeek) {
-      case 0: // Sunday
-        timeArr =
-          booking.availability.sunday?.time &&
-          Array.isArray(booking.availability.sunday.time)
-            ? booking.availability.sunday.time
-            : [];
-        break;
-      case 1: // Monday
-        timeArr =
-          booking.availability.monday?.time &&
-          Array.isArray(booking.availability.monday.time)
-            ? booking.availability.monday.time
-            : [];
-        break;
-      case 2: // Tuesday
-        timeArr =
-          booking.availability.tuesday?.time &&
-          Array.isArray(booking.availability.tuesday.time)
-            ? booking.availability.tuesday.time
-            : [];
-        break;
-      case 3: // Wednesday
-        timeArr =
-          booking.availability.wednesday?.time &&
-          Array.isArray(booking.availability.wednesday.time)
-            ? booking.availability.wednesday.time
-            : [];
-        break;
-      case 4: // Thursday
-        timeArr =
-          booking.availability.thursday?.time &&
-          Array.isArray(booking.availability.thursday.time)
-            ? booking.availability.thursday.time
-            : [];
-        break;
-      case 5: // Friday
-        timeArr =
-          booking.availability.friday?.time &&
-          Array.isArray(booking.availability.friday.time)
-            ? booking.availability.friday.time
-            : [];
-        break;
-      case 6: // Saturday
-        timeArr =
-          booking.availability.saturday?.time &&
-          Array.isArray(booking.availability.saturday.time)
-            ? booking.availability.saturday.time
-            : [];
-        break;
-      default:
-        console.warn("Invalid day of week:", dayOfWeek);
-        timeArr = [];
-    }
-
-    // Ensure we always return an array
-    if (!Array.isArray(timeArr)) {
-      console.warn(
-        "timeArr is not an array, converting to empty array:",
-        timeArr
-      );
-      timeArr = [];
-    }
-  } catch (error) {
-    console.error("Error in genTimeArr:", error);
-    timeArr = [];
+  if (selectedDay?.getDay() === 0) {
+    timeArr = booking.availability.sunday.time;
+  }
+  if (selectedDay?.getDay() === 1) {
+    timeArr = booking.availability.monday.time;
+  }
+  if (selectedDay?.getDay() === 2) {
+    timeArr = booking.availability.tuesday.time;
+  }
+  if (selectedDay?.getDay() === 3) {
+    timeArr = booking.availability.wednesday.time;
+  }
+  if (selectedDay?.getDay() === 4) {
+    timeArr = booking.availability.thursday.time;
+  }
+  if (selectedDay?.getDay() === 5) {
+    timeArr = booking.availability.friday.time;
+  }
+  if (selectedDay?.getDay() === 6) {
+    timeArr = booking.availability.saturday.time;
   }
 
   return timeArr;
