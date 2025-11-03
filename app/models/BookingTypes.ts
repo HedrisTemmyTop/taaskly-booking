@@ -66,7 +66,7 @@ BookingTypeSchema.pre("save", async function (next) {
 });
 
 const BookingTypesModel: mongoose.Model<IBookingTypes> =
-  mongoose.models["Booking-Type"] ||
+  mongoose.models?.["Booking-Type"] ||
   model<IBookingTypes>("Booking-Type", BookingTypeSchema);
 
 export default BookingTypesModel;

@@ -63,6 +63,6 @@ const withdrawalSchema = new Schema<IWithdrawal>(
 );
 
 const WithdrawalModel =
-  mongoose.models.Withdrawal || mongoose.model("Withdrawal", withdrawalSchema);
+  mongoose.models?.Withdrawal || mongoose.model("Withdrawal", withdrawalSchema);
 
 export default WithdrawalModel;

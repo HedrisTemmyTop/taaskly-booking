@@ -15,7 +15,7 @@ import { addDuration } from "../_utils/generateTime";
 import sendWhatsappMessage from "../_utils/sendWhatsappMessage";
 import { auth } from "./auth";
 import { dbConnect } from "./mongodb";
-import { supabase } from "./supabase";
+import UserModel from "../models/User";
 import WithdrawalModel from "../models/Withdrawal";
 
 export const createBooking = async function (bookingData) {
@@ -336,23 +336,24 @@ export const updateCustomerBalance = async function (
   if (type !== "deposit" && type !== "withdraw") {
     throw new Error("Invalid transaction type");
   }
-  const { data, error } = await supabase
-    .from("users")
-    .select("userBalance")
-    .eq("email", email)
-    .single();
 
-  if (error) {
-    throw new Error(error.message || "User could not be updated");
-  }
-  if (data) {
+  try {
+    await dbConnect();
+    const user = await UserModel.findOne({ email })
+      .select("userBalance")
+      .lean();
+
+    if (!user) {
+      throw new Error("User could not be found");
+    }
+
     let newBalance;
     if (type === "deposit") {
-      newBalance = data.userBalance + amount;
+      newBalance = (user.userBalance || 0) + amount;
     }
     if (type === "withdraw") {
-      if (amount < data.userBalance) {
-        newBalance = data.userBalance - amount;
+      if (amount <= (user.userBalance || 0)) {
+        newBalance = (user.userBalance || 0) - amount;
         const newWithdrawal = await WithdrawalModel.create({
           amountDebited: amount,
           userId: withdrawData?.userId,
@@ -373,20 +374,30 @@ export const updateCustomerBalance = async function (
       }
     }
 
-    const { data: newData, error } = await supabase
-      .from("users")
-      .update({ userBalance: newBalance })
-      .eq("email", email)
-      .select();
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { email },
+      { $set: { userBalance: newBalance } },
+      { new: true }
+    ).lean();
 
-    if (error) {
-      throw new Error(error.message || "Something went wrong");
+    if (!updatedUser) {
+      throw new Error("User could not be updated");
     }
 
     revalidatePath("/dashboard/wallet");
-    if (newData) {
-      return newData;
-    }
+
+    // Convert MongoDB _id to id for consistency
+    const userData = {
+      ...updatedUser,
+      id: updatedUser._id.toString(),
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (userData as Record<string, unknown> & { _id?: unknown })._id;
+
+    return [userData]; // Return array to match Supabase format
+  } catch (error: unknown) {
+    const err = error as { message?: string };
+    throw new Error(err.message || "Something went wrong");
   }
 };
 

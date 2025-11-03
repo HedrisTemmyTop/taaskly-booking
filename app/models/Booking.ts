@@ -91,5 +91,5 @@ bookingSchema.pre("save", function (next) {
 
 console.log(mongoose.models, "models");
 const BookingModel =
-  mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
+  mongoose.models?.Booking || mongoose.model("Booking", bookingSchema);
 export default BookingModel;

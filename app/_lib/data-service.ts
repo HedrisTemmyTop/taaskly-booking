@@ -1,11 +1,8 @@
-// import User from "@/app/_lib/models/User";
-// import { dbConnect } from "@/app/_lib/mongodb";
+import UserModel from "@/app/models/User";
+import { dbConnect } from "@/app/_lib/mongodb";
 // import { sendWelcome } from "@/app/_utils/sendEmail";
 
-// import { IUser } from "../_types/user";
-
 import { ErrorResponse, IUser } from "../_types/user";
-import { supabase } from "./supabase";
 
 export async function verifyEmail(token: string) {
   try {
@@ -48,56 +45,54 @@ export async function verifyEmail(token: string) {
 }
 
 export const createUserWithOauth = async function (newUser) {
-  const { data, error } = await supabase
-    .from("users")
-    .insert([newUser])
-    .select();
-  if (error) {
-    throw new Error("User could not be created");
-  }
-  const defaultAvResponse = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/create-deafult-availability`,
-    {
-      method: "POST",
-      body: JSON.stringify(data[0]),
+  try {
+    await dbConnect();
+    const createdUser = await UserModel.create(newUser);
+    const userData = createdUser.toJSON();
+
+    const defaultAvResponse = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/create-deafult-availability`,
+      {
+        method: "POST",
+        body: JSON.stringify(userData),
+      }
+    );
+
+    if (defaultAvResponse.ok) {
+      await fetch(`${process.env.NEXTAUTH_URL}/api/send-email`, {
+        method: "POST",
+        body: JSON.stringify(userData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // await sendWelcome(userData);
+
+      return [userData];
+    } else {
+      throw new Error("Something went wrong");
     }
-  );
-
-  if (defaultAvResponse.ok) {
-    await fetch(`${process.env.NEXTAUTH_URL}/api/send-email`, {
-      method: "POST",
-      body: JSON.stringify(data[0]),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    // await sendWelcome(data[0]);
-
-    return data;
-  } else {
-    throw new Error("Somethingw went wrong ");
+  } catch (error: unknown) {
+    const err = error as { code?: number };
+    if (err.code === 11000) {
+      throw new Error("Email already exists");
+    }
+    throw new Error("User could not be created");
   }
 };
 
 export const createUserWithCredentials = async function (newUser) {
-  const { data, error } = await supabase
-    .from("users")
-    .insert([newUser])
-    .select();
-  if (error) {
-    console.log(error);
-    if (error.code === "23505") throw new Error("Email already exist");
-    else throw new Error("User could not be created");
-  }
+  try {
+    await dbConnect();
+    const createdUser = await UserModel.create(newUser);
+    const userData = createdUser.toJSON();
 
-  if (data) {
-    // const [newUser]: IUser[] = data as IUser[];
     const token = await fetch(
       `${process.env.NEXTAUTH_URL}/api/users/get-token`,
       {
         method: "POST",
-        body: JSON.stringify(data[0]),
+        body: JSON.stringify(userData),
         headers: {
           "Content-Type": "application/json",
         },
@@ -108,7 +103,7 @@ export const createUserWithCredentials = async function (newUser) {
     const response = await fetch(`${process.env.NEXTAUTH_URL}/api/send-code`, {
       method: "POST",
       body: JSON.stringify({
-        ...data[0],
+        ...userData,
         token: tokenData.token,
       }),
       headers: {
@@ -123,70 +118,116 @@ export const createUserWithCredentials = async function (newUser) {
       success: true,
       message: "Verification code sent to your mail",
     };
+  } catch (error: unknown) {
+    console.log(error);
+    const err = error as { code?: number };
+    if (err.code === 11000) throw new Error("Email already exist");
+    else throw new Error("User could not be created");
   }
 
-  // await sendWelcome(data[0]);
+  // await sendWelcome(userData);
 };
 export async function getUser(email: string) {
-  const { data, error } = await supabase
-    .from("users_safe")
-    .select("*")
-    .eq("email", email)
-    .maybeSingle();
+  try {
+    await dbConnect();
+    const user = await UserModel.findOne({ email }).lean();
 
-  if (error) {
+    if (!user) {
+      return null;
+    }
+
+    // Convert MongoDB _id to id for consistency
+    const userData = {
+      ...user,
+      id: user._id.toString(),
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (userData as Record<string, unknown> & { _id?: unknown })._id;
+
+    return userData;
+  } catch (error) {
     console.error("Error fetching user:", error);
     return null;
   }
-
-  return data;
 }
 
 export async function getUserWithPassword(email: string) {
-  const { data, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("email", email)
-    .maybeSingle();
+  try {
+    await dbConnect();
+    const user = await UserModel.findOne({ email }).select("+password").lean();
 
-  if (error) {
+    if (!user) {
+      return null;
+    }
+
+    // Convert MongoDB _id to id for consistency
+    const userData = {
+      ...user,
+      id: user._id.toString(),
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (userData as Record<string, unknown> & { _id?: unknown })._id;
+
+    console.log(userData, "data");
+    return userData;
+  } catch (error) {
     console.error("Error fetching user:", error);
     return null;
   }
-  console.log(data, "data", error);
-  return data;
 }
 
 export async function getUserById(id: string) {
-  const { data } = await supabase
-    .from("users_safe")
-    .select("*")
-    .eq("id", id)
-    .single();
+  try {
+    await dbConnect();
+    const user = await UserModel.findById(id).lean();
 
-  return data;
+    if (!user) {
+      return null;
+    }
+
+    // Convert MongoDB _id to id for consistency
+    const userData = {
+      ...user,
+      id: user._id.toString(),
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (userData as Record<string, unknown> & { _id?: unknown })._id;
+
+    return userData;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return null;
+  }
 }
 
 export const updateUser = async (
   userId: string,
   updatedUserData: Partial<IUser>
 ) => {
-  const user = await getUserById(userId);
-  if (!user) throw new Error("You brazzy gaan ooo, user does not exist");
+  try {
+    await dbConnect();
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      { $set: updatedUserData },
+      { new: true, runValidators: true }
+    ).lean();
 
-  const { data, error } = await supabase
-    .from("users") // Replace with your table name
-    .update(updatedUserData)
-    .eq("id", userId)
-    .select();
+    if (!user) throw new Error("You brazzy gaan ooo, user does not exist");
 
-  if (error) {
+    // Convert MongoDB _id to id for consistency
+    const userData = {
+      ...user,
+      id: user._id.toString(),
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (userData as Record<string, unknown> & { _id?: unknown })._id;
+
+    console.log([userData]);
+    return [userData]; // Return array to match Supabase format
+  } catch (error) {
     console.error("Error updating user:", error);
     throw new Error("User could not be updated");
   }
-  if (!data || data.length === 0) throw new Error("User does not exist");
-  console.log(data);
-  return data; // Return the updated user data
 };
 
 export async function createUser(formData: FormData) {
@@ -246,27 +287,41 @@ export async function resetPassword(userId: string, password: string) {
   console.log("hashResponse here", hashResponse);
   const hashData = await hashResponse.json();
   console.log(hashData);
-  const { data, error } = await supabase
-    .from("users")
-    .update({
-      password: hashData.hashedPassword,
-      passwordResetTokenExpiresAt: null,
-      passwordResetToken: null,
-      authMethod: "credentials",
-    })
-    .eq("id", userId) // Assuming 'id' is the primary key for your users table
-    .select();
 
-  // Get affected rows count
+  try {
+    await dbConnect();
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          password: hashData.hashedPassword,
+          passwordResetTokenExpiresAt: null,
+          passwordResetToken: null,
+          authMethod: "credentials",
+        },
+      },
+      { new: true, runValidators: true }
+    ).lean();
 
-  console.log(data, error);
-  if (error) throw new Error(error.message || "Something went wrong");
-  // updateUser()
+    if (!updatedUser) throw new Error("User does not exist");
 
-  return {
-    success: true,
-    data,
-  };
+    // Convert MongoDB _id to id for consistency
+    const userData = {
+      ...updatedUser,
+      id: updatedUser._id.toString(),
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (userData as Record<string, unknown> & { _id?: unknown })._id;
+
+    console.log([userData]);
+    return {
+      success: true,
+      data: [userData],
+    };
+  } catch (error: unknown) {
+    const err = error as { message?: string };
+    throw new Error(err.message || "Something went wrong");
+  }
 }
 export async function loginAction(formData: FormData) {
   const email = formData.get("email") as string;

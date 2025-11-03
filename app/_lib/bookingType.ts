@@ -7,7 +7,7 @@ import BookingTypesModel from "../models/BookingTypes";
 import { auth } from "./auth";
 import { dbConnect } from "./mongodb";
 import { BookingTypesResponse } from "../_types/IBookingTypes";
-import { supabase } from "./supabase";
+import UserModel from "../models/User";
 interface IBookingType {
   name: string;
   description: string;
@@ -185,16 +185,24 @@ export const getUserBookingWithAvailability = async function (slug) {
 };
 
 export async function getUserInServer(email: string) {
-  const { data, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("email", email)
-    .single();
+  try {
+    await dbConnect();
+    const user = await UserModel.findOne({ email }).lean();
 
-  if (error) {
+    if (!user) {
+      return null;
+    }
+
+    // Convert MongoDB _id to id for consistency
+    const userData = {
+      ...user,
+      id: user._id.toString(),
+    };
+    delete (userData as unknown as { _id: string })._id;
+
+    return JSON.parse(JSON.stringify(userData));
+  } catch (error) {
     console.error("Error fetching user:", error);
     return null;
   }
-
-  return JSON.parse(JSON.stringify(data));
 }

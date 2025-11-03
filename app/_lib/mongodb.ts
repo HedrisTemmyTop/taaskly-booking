@@ -4,6 +4,7 @@ import BookingModel from "../models/Booking";
 import AvailabilityModel from "../models/Availability";
 import BookingTypesModel from "../models/BookingTypes";
 import WithdrawalModel from "../models/Withdrawal";
+import UserModel from "../models/User";
 
 const password = process.env.MONGODB_PASSWORD as string;
 const username = process.env.MONGO_DB_USERNAME as string;
@@ -53,7 +54,7 @@ function ensureModelsRegistered() {
     mongoose.model("Availability", AvailabilityModel.schema);
   }
 
-  if (!mongoose.models.BookingTypesModel) {
+  if (!mongoose.models["Booking-Type"]) {
     mongoose.model("Booking-Type", BookingTypesModel.schema);
   }
   if (!mongoose.models.Booking) {
@@ -61,6 +62,9 @@ function ensureModelsRegistered() {
   }
   if (!mongoose.models.Withdrawal) {
     mongoose.model("Withdrawal", WithdrawalModel.schema);
+  }
+  if (!mongoose.models.User) {
+    mongoose.model("User", UserModel.schema);
   }
 
   console.log(mongoose.models, "mongoose models");
